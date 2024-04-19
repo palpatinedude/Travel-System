@@ -11,7 +11,7 @@ Planning Phase:
 
 Requirement Analysis Phase:
 
-    User Stories: Describing features from the user's perspective.
+    User Cases: Describing features from the user's perspective.
 
 Design Phase:
 

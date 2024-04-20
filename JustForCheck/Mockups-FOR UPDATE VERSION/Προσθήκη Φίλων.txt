@@ -19,6 +19,7 @@ Use Case 5: Προσθήκη Φίλων
  3.2. Το σύστημα τον μεταφέρει βήμα 7.
 
 Εναλλακτική Ροή 2
-5.1. Το σύστημα εμφανίζει το μήνυμα "There isnt user with such a username!".
+5.1. Το σύστημα εμφανίζει μήνυμα "There isnt user with such a username!".
 
-
+Εναλλακτική Ροή 3
+5.2 Το σύστημα εμφανίζει μήνυμα "You havent type anything,please write a username."

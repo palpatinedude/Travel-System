@@ -1,0 +1,38 @@
+Παραδοχές
+
+1. Ο χρήστης μπορεί να στείλει μήνυμα και σε κάποιον που δεν είναι φίλος.
+2. Τη χώρα που επιλέγει ο χρήστης ως βάση και μόνο εκεί μπορεί να προσφέρει υπηρεσίες.
+3. Η συνδρομή στην εφαρμογή ταξιδιού περιλαμβάνει κάρτα μέλους και συγκέντρωση πόντων.
+4. Κάθε πρόγραμμα συνδρομής σχετίζεται με ακριβώς μία κάρτα, δεν παρέχουμε επιλογές όπως οικογενειακές συνδρομές κ.λπ.
+
+
+1. Ένας User χωρίζεται σε Admin,Beneficiery,BusinessPartner . --> ISA
+2. Ένας Beneficiery χωρίζεται σε ServiceProvider,SimplerUser. --> ISA
+3. Ο ServiceProvider παρέχει τουλάχιστον μία Service . --> 1-N
+4. Οι Service χωρίζονται σε Car,Accomodation,Activity. --> ISA
+5. Ο BusinessPartner διαφημίζει τουλάχιστον μία επιχείρηση του. --> 1-N
+6. Οι Business που διαφημίζονται μέσα από την εφαρμογή είναι του τύπου Bars,Hotels,Food and Beverage,Market. --> ISA
+7. Οι Beneficiery μπορούν να περιηγηθούν στις Business. --> N-M
+8. Ένας Beneficiery μπορεί να κάνει Booking σε Service. --> 1-N
+9. Οποιοσδήποτε User μπορεί να κάνει Review . --> 1-N
+10. Ένα Review σχετίζεται με μία Service ή Business. --> Ν-1
+11. Οποισδήποτε User μπορεί να απαντήσει σε κάποιο review(Response) . --> 1-N
+12. Ο SimpleUser μπορεί να κάνει αίτηση σε Admin για να γίνει ServiceProvider. --> 1-1
+13  Ο Admin αναλαμβάνει να δέχεται/απορρίπτει αιτήσεις . --> 1-N
+14. Ένας Beneficiery μπορεί να στείλει FriendRequest . --> 1-N
+15. Ένα friend request(Friendship) στέλνεται σε έναν άλλον Beneficiery. --> 1-N
+16. Ένας Beneficiery μπορεί να στείλει ChatMessage. --> 1-Ν
+17. Ένα ChatMessage αφορά έναν άλλον Beneficiery --> Ν-1
+18. Κάθε User επιλέγει ένα Membership. --> Ν-1
+19. Ένας Beneficiery μπορεί να αποθηκεύσει είτε Business είτε Service. --> N-M
+20. Κάθε Business || Service έχουν μία τοποθεσία. --> 1-1
+21. Οι Beneficery μπορούν να δουν την τοποθεσία των Service και Business . --> N-M
+22. Οι Beneficiery μπορούν να μοιράζονται με άλλους Beneficiery την τοποθεσία τους. --> Ν-Μ 
+23. Κάθε Card συνδέεται με ένα Membership. --> N-1
+24. Κάθε Card διαθέτει Points . -->
+25. Πολλαπλές PointsHistory μπορούν να συσχετιστούν με το ίδιο σύνολο Points. --> N-1
+26. Ένας Beneficiery μπορεί να αποθηκεύσει Service/Business . --> N-M
+27. Κάθε Service || Business βρίσκονται σε μία πόλη. --> Ν-1 ; δεν τα εχω κανει
+28. Κάθε beneficiery μπορεί να μοιράζεται την τοποθεσία του. ; δεν τα έχω κανει
+
+ 

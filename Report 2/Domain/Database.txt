@@ -43,6 +43,14 @@ CREATE TABLE User (
 );
 
 
+CREATE TABLE BusinessPartner (
+    partner_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT UNIQUE,
+    tax_code VARCHAR(255),
+    registration_number VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
+);
+
 CREATE TABLE Admin (
     admin_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT UNIQUE,
@@ -57,7 +65,7 @@ CREATE TABLE Admin (
 );
 
 
-CREATE TABLE Businesses (
+CREATE TABLE Business (
     business_id INT PRIMARY KEY AUTO_INCREMENT,
     partner_id INT,
     business_name VARCHAR(255) NOT NULL,
@@ -148,7 +156,7 @@ CREATE TABLE Accommodation (
     service_id INT PRIMARY KEY,
     num_rooms INT,
     facilities TEXT,
-    FOREIGN KEY (service_id) REFERENCESService(provider_service_id) ON DELETE CASCADE
+    FOREIGN KEY (service_id) REFERENCES Service(provider_service_id) ON DELETE CASCADE
 );
 
 
@@ -173,9 +181,9 @@ CREATE TABLE Activity (
 
 
 CREATE TABLE Membership (
-    MembershipID INT PRIMARY KEY AUTO_INCREMENT,
-    MembershipType ENUM('Basic', 'Premium', 'Professional'),
-    Duration ENUM('Monthly', '6-monthly', 'One year'),
+    membership_id INT PRIMARY KEY AUTO_INCREMENT,
+    membership_type ENUM('Basic', 'Premium', 'Professional'),
+    duration ENUM('Monthly', '6-monthly', 'One year'),
     membership_status VARCHAR(255),
     description VARCHAR(255)
 );

@@ -1,3 +1,7 @@
+DROP DATABASE if exists odyssey;
+CREATE DATABASE odyssey;
+USE odyssey;
+
 CREATE TABLE Country (
     country_id INT PRIMARY KEY AUTO_INCREMENT,
     country_name VARCHAR(255) NOT NULL,
@@ -26,6 +30,14 @@ CREATE TABLE Location (
     FOREIGN KEY (city_id) REFERENCES City(city_id) ON DELETE SET NULL
 );
 
+CREATE TABLE Membership (
+    membership_id INT PRIMARY KEY AUTO_INCREMENT,
+    membership_type ENUM('Basic', 'Premium', 'Professional'),
+    duration ENUM('Monthly', '6-monthly', 'One year'),
+    membership_status VARCHAR(255),
+    description VARCHAR(255)
+);
+
 
 CREATE TABLE User (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -38,10 +50,8 @@ CREATE TABLE User (
     password VARCHAR(255) NOT NULL,
     role ENUM('admin', 'beneficiary', 'partner') NOT NULL,
     membership_id INT UNIQUE,
-    FOREIGN KEY (membership_id) REFERENCES Memberships(membership_id)
-   
+    FOREIGN KEY (membership_id) REFERENCES Membership(membership_id)
 );
-
 
 CREATE TABLE BusinessPartner (
     partner_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -81,13 +91,13 @@ CREATE TABLE Market (
     business_id INT PRIMARY KEY,
     market_type ENUM('Supermarket', 'Farmer Market', 'Flea Market', 'Specialty Market') NOT NULL,
     market_specific_attribute VARCHAR(255), 
-    FOREIGN KEY (business_id) REFERENCES Businesses(business_id) ON DELETE CASCADE
+    FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
 );
 
 CREATE TABLE FoodAndBeverage (
     business_id INT PRIMARY KEY,
     food_type ENUM('Restaurant', 'Cafe', 'Bar', 'Fast Food', 'Pub') NOT NULL,
-    food_beverage_specific_attribute VARCHAR(255),     FOREIGN KEY (business_id) REFERENCES Businesses(business_id) ON DELETE CASCADE
+    food_beverage_specific_attribute VARCHAR(255),     FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Hotels (
@@ -96,7 +106,7 @@ CREATE TABLE Hotels (
     hotel_stars INT, -- Add attributes for hotel stars
     hotel_floors INT, -- Add attributes for hotel floors
     hotel_specific_attribute VARCHAR(255), -- Add other specific attributes for hotels
-    FOREIGN KEY (business_id) REFERENCES Businesses(business_id) ON DELETE CASCADE
+    FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Bars (
@@ -104,7 +114,7 @@ CREATE TABLE Bars (
     age_boundary INT, -- Add attributes for age boundary
     bar_type ENUM('Sports Bar', 'Cocktail Bar', 'Pub', 'Wine Bar', 'Dive Bar') NOT NULL,
     bar_specific_attribute VARCHAR(255), 
-    FOREIGN KEY (business_id) REFERENCES Businesses(business_id) ON DELETE CASCADE
+    FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Beneficiary (
@@ -180,15 +190,6 @@ CREATE TABLE Activity (
 );
 
 
-CREATE TABLE Membership (
-    membership_id INT PRIMARY KEY AUTO_INCREMENT,
-    membership_type ENUM('Basic', 'Premium', 'Professional'),
-    duration ENUM('Monthly', '6-monthly', 'One year'),
-    membership_status VARCHAR(255),
-    description VARCHAR(255)
-);
-
-
 CREATE TABLE Card (
     card_id INT PRIMARY KEY AUTO_INCREMENT,
     beneficiary_id INT UNIQUE,
@@ -196,7 +197,7 @@ CREATE TABLE Card (
     barcode VARCHAR(50) NOT NULL,
     expiration_date DATE NOT NULL,
     FOREIGN KEY (beneficiary_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE,
-    FOREIGN KEY (membership_id) REFERENCES Membership(membership_id)
+    FOREIGN KEY (card_id) REFERENCES Membership(membership_id)
 
 );
 
@@ -268,7 +269,7 @@ CREATE TABLE SavedBusiness (
     business_id INT,
     saved_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (beneficiary_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE,
-    FOREIGN KEY (business_id) REFERENCES Businesses(business_id) ON DELETE CASCADE
+    FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
 );
 
 CREATE TABLE SavedService (
@@ -298,6 +299,6 @@ CREATE TABLE FriendRequest (
     status ENUM('pending', 'accepted','rejected','ended') NOT NULL DEFAULT 'pending',
     requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     accepted_at TIMESTAMP,
-    FOREIGN KEY (user1_id) REFERENCES Beneficiery(beneficiery_id) ON DELETE CASCADE,
-    FOREIGN KEY (user2_id) REFERENCES Beneficiery(beneficiery_id) ON DELETE CASCADE
+    FOREIGN KEY (user1_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE,
+    FOREIGN KEY (user2_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE
 );

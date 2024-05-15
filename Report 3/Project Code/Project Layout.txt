@@ -1,0 +1,24 @@
+project_directory/
+│
+├── gui/
+│   ├── styles.css
+│   ├── login_page.py
+│   ├── registration_page.py
+│   
+│
+├── models/
+│   ├── user.py
+│   
+│  
+│
+├── services/
+│   ├── authentication_service.py
+│   ├── database_service.py
+│   └── other_service_files.py
+│
+├── database/
+│   ├── db_connection.py
+│   ├── create_tables.sql
+│   └── other_database_files.py
+│
+└── main.py

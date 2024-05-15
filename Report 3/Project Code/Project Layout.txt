@@ -1,6 +1,7 @@
 project_directory/
 │
 ├── gui/
+|   ├── images/  
 │   ├── styles.css
 │   ├── login_page.py
 │   ├── registration_page.py

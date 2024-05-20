@@ -13,7 +13,7 @@ def main():
         # Check if both users are beneficiaries
         beneficiary1 = Beneficiary.get_by_user_id(user1.user_id)
         beneficiary2 = Beneficiary.get_by_user_id(user2.user_id)
-
+    
         if beneficiary1 and beneficiary2:  # Check if both users are beneficiaries
             # Send a friend request from user1 to user2
             friend_request = FriendRequest(user1_id=user1.user_id, user2_id=user2.user_id)

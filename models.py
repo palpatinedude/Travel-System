@@ -377,6 +377,22 @@ class Beneficiary:
         self.contact_number = contact_number
         self.location_id = location_id
 
+    @classmethod
+    def get_all(cls):
+        connection = create_connection()
+        cursor = connection.cursor()
+        try:
+            cursor.execute("SELECT * FROM Beneficiary")
+            beneficiaries = cursor.fetchall()
+            return [cls(*row) for row in beneficiaries]
+        except Exception as e:
+            print(f"Error: {e}")
+            return []
+        finally:
+            cursor.close()
+            close_connection(connection)
+
+
     def save(self):
         connection = create_connection()
         cursor = connection.cursor()

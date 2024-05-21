@@ -2,90 +2,90 @@ import tkinter as tk
 from tkinter import messagebox
 from db_connector import create_connection, close_connection
 
-class Review:
-    def __init__(self, review_id=None, reviewer_id=None, reviewee_id=None, rating=None, review_text=None, review_date=None):
-        self.review_id = review_id
-        self.reviewer_id = reviewer_id
-        self.reviewee_id = reviewee_id
-        self.rating = rating
-        self.review_text = review_text
-        self.review_date = review_date
+# class Review:
+#     def __init__(self, review_id=None, reviewer_id=None, reviewee_id=None, rating=None, review_text=None, review_date=None):
+#         self.review_id = review_id
+#         self.reviewer_id = reviewer_id
+#         self.reviewee_id = reviewee_id
+#         self.rating = rating
+#         self.review_text = review_text
+#         self.review_date = review_date
 
-    def save(self):
-        connection = create_connection()
-        cursor = connection.cursor()
-        if self.review_id is None:
-            try:
-                cursor.execute(
-                    "INSERT INTO Review (reviewer_id, reviewee_id, rating, review_text) VALUES (%s, %s, %s, %s)", 
-                    (self.reviewer_id, self.reviewee_id, self.rating, self.review_text)
-                )
-                connection.commit()
-                self.review_id = cursor.lastrowid
-                print("Review added successfully")
-            except Exception as e:
-                print(f"Error: {e}")
-                connection.rollback()
-        else:
-            try:
-                cursor.execute(
-                    "UPDATE Review SET reviewer_id=%s, reviewee_id=%s, rating=%s, review_text=%s WHERE review_id=%s",
-                    (self.reviewer_id, self.reviewee_id, self.rating, self.review_text, self.review_id)
-                )
-                connection.commit()
-                print("Review updated successfully")
-            except Exception as e:
-                print(f"Error: {e}")
-                connection.rollback()
-            finally:
-                cursor.close()
-                close_connection(connection)
+#     def save(self):
+#         connection = create_connection()
+#         cursor = connection.cursor()
+#         if self.review_id is None:
+#             try:
+#                 cursor.execute(
+#                     "INSERT INTO Review (reviewer_id, reviewee_id, rating, review_text) VALUES (%s, %s, %s, %s)", 
+#                     (self.reviewer_id, self.reviewee_id, self.rating, self.review_text)
+#                 )
+#                 connection.commit()
+#                 self.review_id = cursor.lastrowid
+#                 print("Review added successfully")
+#             except Exception as e:
+#                 print(f"Error: {e}")
+#                 connection.rollback()
+#         else:
+#             try:
+#                 cursor.execute(
+#                     "UPDATE Review SET reviewer_id=%s, reviewee_id=%s, rating=%s, review_text=%s WHERE review_id=%s",
+#                     (self.reviewer_id, self.reviewee_id, self.rating, self.review_text, self.review_id)
+#                 )
+#                 connection.commit()
+#                 print("Review updated successfully")
+#             except Exception as e:
+#                 print(f"Error: {e}")
+#                 connection.rollback()
+#             finally:
+#                 cursor.close()
+#                 close_connection(connection)
 
-    def delete(self):
-        connection = create_connection()
-        cursor = connection.cursor()
-        try:
-            cursor.execute("DELETE FROM Review WHERE review_id=%s", (self.review_id,))
-            connection.commit()
-            print("Review deleted successfully")
-        except Exception as e:
-            print(f"Error: {e}")
-            connection.rollback()
-        finally:
-            cursor.close()
-            close_connection(connection)
+#     def delete(self):
+#         connection = create_connection()
+#         cursor = connection.cursor()
+#         try:
+#             cursor.execute("DELETE FROM Review WHERE review_id=%s", (self.review_id,))
+#             connection.commit()
+#             print("Review deleted successfully")
+#         except Exception as e:
+#             print(f"Error: {e}")
+#             connection.rollback()
+#         finally:
+#             cursor.close()
+#             close_connection(connection)
 
-    @classmethod
-    def get_all(cls):
-        connection = create_connection()
-        cursor = connection.cursor()
-        try:
-            cursor.execute("SELECT * FROM Review")
-            reviews = cursor.fetchall()
-            return [cls(*row) for row in reviews]
-        except Exception as e:
-            print(f"Error: {e}")
-            return []
-        finally:
-            cursor.close()
-            close_connection(connection)
+#     @classmethod
+#     def get_all(cls):
+#         connection = create_connection()
+#         cursor = connection.cursor()
+#         try:
+#             cursor.execute("SELECT * FROM Review")
+#             reviews = cursor.fetchall()
+#             return [cls(*row) for row in reviews]
+#         except Exception as e:
+#             print(f"Error: {e}")
+#             return []
+#         finally:
+#             cursor.close()
+#             close_connection(connection)
 
-    @classmethod
-    def get_by_id(cls, review_id):
-        connection = create_connection()
-        cursor = connection.cursor()
-        try:
-            cursor.execute("SELECT * FROM Review WHERE review_id=%s", (review_id,))
-            row = cursor.fetchone()
-            if row:
-                return cls(*row)
-            return None
-        except Exception as e:
-            print(f"Error: {e}")
-            return None
-        finally:
-            cursor.close()
-            close_connection(connection)
+#     @classmethod
+#     def get_by_id(cls, review_id):
+#         connection = create_connection()
+#         cursor = connection.cursor()
+#         try:
+#             cursor.execute("SELECT * FROM Review WHERE review_id=%s", (review_id,))
+#             row = cursor.fetchone()
+#             if row:
+#                 return cls(*row)
+#             return None
+#         except Exception as e:
+#             print(f"Error: {e}")
+#             return None
+#         finally:
+#             cursor.close()
+#             close_connection(connection)
 
 
 class Response:
@@ -436,72 +436,47 @@ class Beneficiary:
             close_connection(connection)
 
 ########################################################## REVIEW GUI ##########################################################
+
 class ReviewApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Review Publication System")
+        self.root.geometry("360x640")  # Set window size to simulate a phone screen
 
-        self.review_frame = tk.Frame(root)
-        self.review_frame.pack(pady=10)
+        self.review_frame = tk.Frame(root, bg='#118599')
+        self.review_frame.pack(fill=tk.BOTH, expand=True)
 
-        tk.Label(self.review_frame, text="Reviewer ID:").grid(row=0, column=0, padx=5, pady=5)
-        self.reviewer_id_entry = tk.Entry(self.review_frame)
-        self.reviewer_id_entry.grid(row=0, column=1, padx=5, pady=5)
+        # Add empty rows at the top to lower the content
+        for i in range(5):
+            self.review_frame.grid_rowconfigure(i, minsize=10)
 
-        tk.Label(self.review_frame, text="Reviewee ID:").grid(row=1, column=0, padx=5, pady=5)
-        self.reviewee_id_entry = tk.Entry(self.review_frame)
-        self.reviewee_id_entry.grid(row=1, column=1, padx=5, pady=5)
+        tk.Label(self.review_frame,text="Please let us know about your experience!", bg='#118599', fg='white',font=('Arial',22,'bold'),wraplength=360,anchor='w',justify='left').grid(row=0, column=0, columnspan=6, padx=5, pady=5, sticky="ew")
+        tk.Label(self.review_frame,text="Leave your feedback and help us improve our services", bg='#118599', fg='white',font=('Arial',16),wraplength=360,anchor='w',justify='left').grid(row=1, column=0, columnspan=6, padx=5, pady=5, sticky="ew")
 
-        # tk.Label(self.review_frame, text="Rating:").grid(row=2, column=0, padx=5, pady=5)     #gia rating se text 1~5
-        # self.rating_entry = tk.Entry(self.review_frame)
-        # self.rating_entry.grid(row=2, column=1, padx=5, pady=5)
 
-        tk.Label(self.review_frame, text="Rate Service:").grid(row=2, column=0, padx=5, pady=5)
+        # Add empty rows at the top to lower the content
+        for i in range(5):
+            self.review_frame.grid_rowconfigure(i, minsize=20)
+
+        tk.Label(self.review_frame, text="Rate Service:", bg='#118599', fg='white',font=('Arial',14,'bold')).grid(row=5, column=0, padx=5, pady=5, sticky='w')
         self.rating_var = tk.IntVar()
         self.rating_var.set(0)  # Default rating to 0 stars
 
         self.stars = []
         for i in range(5):
-            star = tk.Button(self.review_frame, text="★", font=("Arial", 20), command=lambda i=i: self.set_rating(i+1))
-            star.grid(row=2, column=i+1, padx=2, pady=5)
+            star = tk.Button(self.review_frame, text="★", font=("Arial", 8), command=lambda i=i: self.set_rating(i+1))
+            star.grid(row=6, column=i+1, padx=1, pady=1)
             self.stars.append(star)
 
-        tk.Label(self.review_frame, text="Write a Review:").grid(row=3, column=0, padx=5, pady=5)
-        self.review_text_entry = tk.Entry(self.review_frame)
-        self.review_text_entry.grid(row=3, column=2, padx=5, pady=5)
+        tk.Label(self.review_frame, text="Write a Review:", bg='#118599', fg='white',font=('Arial',14,'bold')).grid(row=7, column=0, padx=5, pady=5, sticky='nw')
+        self.review_text = tk.Text(self.review_frame, width=30, height=8)
+        self.review_text.grid(row=8, column=0, columnspan=6, padx=5, pady=5, sticky='w')
 
-        self.create_review_button = tk.Button(self.review_frame, text="Submit", command=self.create_review)
-        self.create_review_button.grid(row=4, column=0, columnspan=2, pady=10)
+        self.submit_button = tk.Button(self.review_frame, text="Submit", command=self.create_review, bg="green", fg="white")
+        self.submit_button.grid(row=10, column=0, columnspan=3, padx=5, pady=10, sticky='e')
 
-        self.display_reviews_button = tk.Button(self.review_frame, text="Display Reviews", command=self.display_reviews)
-        self.display_reviews_button.grid(row=5, column=0, columnspan=2, pady=10)
-
-        self.review_listbox = tk.Listbox(root, width=80)
-        self.review_listbox.pack(pady=10)
-
-        self.response_frame = tk.Frame(root)
-        self.response_frame.pack(pady=10)
-
-        tk.Label(self.response_frame, text="Review ID:").grid(row=0, column=0, padx=5, pady=5)
-        self.review_id_entry = tk.Entry(self.response_frame)
-        self.review_id_entry.grid(row=0, column=1, padx=5, pady=5)
-
-        tk.Label(self.response_frame, text="Replier ID:").grid(row=1, column=0, padx=5, pady=5)
-        self.replier_id_entry = tk.Entry(self.response_frame)
-        self.replier_id_entry.grid(row=1, column=1, padx=5, pady=5)
-
-        tk.Label(self.response_frame, text="Reply Text:").grid(row=2, column=0, padx=5, pady=5)
-        self.reply_text_entry = tk.Entry(self.response_frame)
-        self.reply_text_entry.grid(row=2, column=1, padx=5, pady=5)
-
-        self.create_response_button = tk.Button(self.response_frame, text="Create Response", command=self.create_response)
-        self.create_response_button.grid(row=3, column=0, columnspan=2, pady=10)
-
-        self.display_responses_button = tk.Button(self.response_frame, text="Display Responses", command=self.display_responses)
-        self.display_responses_button.grid(row=4, column=0, columnspan=2, pady=10)
-
-        self.response_listbox = tk.Listbox(root, width=80)
-        self.response_listbox.pack(pady=10)
+        self.cancel_button = tk.Button(self.review_frame, text="Cancel", command=self.root.destroy, bg="red", fg="white")
+        self.cancel_button.grid(row=10, column=3, columnspan=3, padx=5, pady=10, sticky='w')
 
     def set_rating(self, rating):
         self.rating_var.set(rating)
@@ -515,7 +490,7 @@ class ReviewApp:
         reviewer_id = self.reviewer_id_entry.get()
         reviewee_id = self.reviewee_id_entry.get()
         rating = self.rating_var.get()
-        review_text = self.review_text_entry.get()
+        review_text = self.review_text.get("1.0", tk.END)
 
         if not reviewer_id or not reviewee_id or not rating or not review_text:
             messagebox.showerror("Error", "All fields are required")
@@ -528,30 +503,47 @@ class ReviewApp:
         except Exception as e:
             messagebox.showerror("Error", f"Failed to create review: {e}")
 
-    def display_reviews(self):
-        self.review_listbox.delete(0, tk.END)
-        reviews = Review.get_all()
-        for review in reviews:
-            self.review_listbox.insert(tk.END, f"ID: {review.review_id}, Reviewer: {review.reviewer_id}, Reviewee: {review.reviewee_id}, Rating: {review.rating}, Text: {review.review_text}")
+########################################### ENTER DESTINATION ############################################################
 
-    def create_response(self):
-        review_id = self.review_id_entry.get()
-        replier_id = self.replier_id_entry.get()
-        reply_text = self.reply_text_entry.get()
+class DestinationGui:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Destination Finder")
+        self.root.geometry("360x640")  # Set window size to simulate a phone screen
 
-        if not review_id or not replier_id or not reply_text:
-            messagebox.showerror("Error", "All fields are required")
+        self.destination_frame = tk.Frame(root, bg='#118599')
+        self.destination_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Add empty rows at the top to lower the content
+        for i in range(5):
+            self.destination_frame.grid_rowconfigure(i, minsize=10)
+
+        tk.Label(self.destination_frame,text="Find your destination!", bg='#118599', fg='white',font=('Arial',22,'bold'),wraplength=360,anchor='w',justify='left').grid(row=0, column=0, columnspan=6, padx=5, pady=5, sticky="ew")
+        tk.Label(self.destination_frame,text="Enter your location and find the best places to visit", bg='#118599', fg='white',font=('Arial',16),wraplength=360,anchor='w',justify='left').grid(row=1, column=0, columnspan=6, padx=5, pady=5, sticky="ew")
+
+
+        # Add empty rows at the top to lower the content
+        for i in range(5):
+            self.destination_frame.grid_rowconfigure(i, minsize=20)
+
+        tk.Label(self.destination_frame, text="Enter Location:", bg='#118599', fg='white',font=('Arial',14,'bold')).grid(row=5, column=0, padx=5, pady=5, sticky='w')
+        self.location_entry = tk.Entry(self.destination_frame, width=30)
+        self.location_entry.grid(row=6, column=0, columnspan=6, padx=5, pady=5, sticky='w')
+
+        self.submit_button = tk.Button(self.destination_frame, text="Find Destination", command=self.find_destination, bg="green", fg="white")
+        self.submit_button.grid(row=10, column=0, columnspan=3, padx=5, pady=10, sticky='e')
+
+        self.cancel_button = tk.Button(self.destination_frame, text="Cancel", command=self.root.destroy, bg="red", fg="white")
+        self.cancel_button.grid(row=10, column=3, columnspan=3, padx=5, pady=10, sticky='w')
+
+    def find_destination(self):
+        location = self.location_entry.get()
+
+        if not location:
+            messagebox.showerror("Error", "Location is required")
             return
 
-        try:
-            response = Response(review_id=int(review_id), replier_id=int(replier_id), reply_text=reply_text)
-            response.save()
-            messagebox.showinfo("Success", "Response created successfully")
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to create response: {e}")
+        # Call a function to find the destination
+        print(f"Finding destination for {location}")
 
-    def display_responses(self):
-        self.response_listbox.delete(0, tk.END)
-        responses = Response.get_all()
-        for response in responses:
-            self.response_listbox.insert(tk.END, f"ID: {response.response_id}, Review ID: {response.review_id}, Replier: {response.replier_id}, Text: {response.reply_text}")
+        

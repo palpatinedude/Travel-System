@@ -1,3 +1,5 @@
+import tkinter as tk
+from tkinter import messagebox
 from db_connector import create_connection, close_connection
 
 class Review:
@@ -432,3 +434,124 @@ class Beneficiary:
         finally:
             cursor.close()
             close_connection(connection)
+
+########################################################## REVIEW GUI ##########################################################
+class ReviewApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Review Publication System")
+
+        self.review_frame = tk.Frame(root)
+        self.review_frame.pack(pady=10)
+
+        tk.Label(self.review_frame, text="Reviewer ID:").grid(row=0, column=0, padx=5, pady=5)
+        self.reviewer_id_entry = tk.Entry(self.review_frame)
+        self.reviewer_id_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        tk.Label(self.review_frame, text="Reviewee ID:").grid(row=1, column=0, padx=5, pady=5)
+        self.reviewee_id_entry = tk.Entry(self.review_frame)
+        self.reviewee_id_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        # tk.Label(self.review_frame, text="Rating:").grid(row=2, column=0, padx=5, pady=5)     #gia rating se text 1~5
+        # self.rating_entry = tk.Entry(self.review_frame)
+        # self.rating_entry.grid(row=2, column=1, padx=5, pady=5)
+
+        tk.Label(self.review_frame, text="Rate Service:").grid(row=2, column=0, padx=5, pady=5)
+        self.rating_var = tk.IntVar()
+        self.rating_var.set(0)  # Default rating to 0 stars
+
+        self.stars = []
+        for i in range(5):
+            star = tk.Button(self.review_frame, text="★", font=("Arial", 20), command=lambda i=i: self.set_rating(i+1))
+            star.grid(row=2, column=i+1, padx=2, pady=5)
+            self.stars.append(star)
+
+        tk.Label(self.review_frame, text="Write a Review:").grid(row=3, column=0, padx=5, pady=5)
+        self.review_text_entry = tk.Entry(self.review_frame)
+        self.review_text_entry.grid(row=3, column=2, padx=5, pady=5)
+
+        self.create_review_button = tk.Button(self.review_frame, text="Submit", command=self.create_review)
+        self.create_review_button.grid(row=4, column=0, columnspan=2, pady=10)
+
+        self.display_reviews_button = tk.Button(self.review_frame, text="Display Reviews", command=self.display_reviews)
+        self.display_reviews_button.grid(row=5, column=0, columnspan=2, pady=10)
+
+        self.review_listbox = tk.Listbox(root, width=80)
+        self.review_listbox.pack(pady=10)
+
+        self.response_frame = tk.Frame(root)
+        self.response_frame.pack(pady=10)
+
+        tk.Label(self.response_frame, text="Review ID:").grid(row=0, column=0, padx=5, pady=5)
+        self.review_id_entry = tk.Entry(self.response_frame)
+        self.review_id_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        tk.Label(self.response_frame, text="Replier ID:").grid(row=1, column=0, padx=5, pady=5)
+        self.replier_id_entry = tk.Entry(self.response_frame)
+        self.replier_id_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        tk.Label(self.response_frame, text="Reply Text:").grid(row=2, column=0, padx=5, pady=5)
+        self.reply_text_entry = tk.Entry(self.response_frame)
+        self.reply_text_entry.grid(row=2, column=1, padx=5, pady=5)
+
+        self.create_response_button = tk.Button(self.response_frame, text="Create Response", command=self.create_response)
+        self.create_response_button.grid(row=3, column=0, columnspan=2, pady=10)
+
+        self.display_responses_button = tk.Button(self.response_frame, text="Display Responses", command=self.display_responses)
+        self.display_responses_button.grid(row=4, column=0, columnspan=2, pady=10)
+
+        self.response_listbox = tk.Listbox(root, width=80)
+        self.response_listbox.pack(pady=10)
+
+    def set_rating(self, rating):
+        self.rating_var.set(rating)
+        for i in range(5):
+            if i < rating:
+                self.stars[i].config(fg="gold")
+            else:
+                self.stars[i].config(fg="black")
+
+    def create_review(self):
+        reviewer_id = self.reviewer_id_entry.get()
+        reviewee_id = self.reviewee_id_entry.get()
+        rating = self.rating_var.get()
+        review_text = self.review_text_entry.get()
+
+        if not reviewer_id or not reviewee_id or not rating or not review_text:
+            messagebox.showerror("Error", "All fields are required")
+            return
+
+        try:
+            review = Review(reviewer_id=int(reviewer_id), reviewee_id=int(reviewee_id), rating=int(rating), review_text=review_text)
+            review.save()
+            messagebox.showinfo("Success", "Review created successfully")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to create review: {e}")
+
+    def display_reviews(self):
+        self.review_listbox.delete(0, tk.END)
+        reviews = Review.get_all()
+        for review in reviews:
+            self.review_listbox.insert(tk.END, f"ID: {review.review_id}, Reviewer: {review.reviewer_id}, Reviewee: {review.reviewee_id}, Rating: {review.rating}, Text: {review.review_text}")
+
+    def create_response(self):
+        review_id = self.review_id_entry.get()
+        replier_id = self.replier_id_entry.get()
+        reply_text = self.reply_text_entry.get()
+
+        if not review_id or not replier_id or not reply_text:
+            messagebox.showerror("Error", "All fields are required")
+            return
+
+        try:
+            response = Response(review_id=int(review_id), replier_id=int(replier_id), reply_text=reply_text)
+            response.save()
+            messagebox.showinfo("Success", "Response created successfully")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to create response: {e}")
+
+    def display_responses(self):
+        self.response_listbox.delete(0, tk.END)
+        responses = Response.get_all()
+        for response in responses:
+            self.response_listbox.insert(tk.END, f"ID: {response.response_id}, Review ID: {response.review_id}, Replier: {response.replier_id}, Text: {response.reply_text}")

@@ -1,19 +1,41 @@
 import tkinter as tk
+from tkinter import messagebox
 from PIL import Image, ImageTk
 from subprocess import Popen
-from registration import create_registration_window 
+from registration import registrationWindow 
+import sys
+sys.path.append('../functions/')
+from loginAuthentication import authenticate
+from mainPage import mainPage
 
 def login():
     print("Login button clicked")
+    username = username_entry.get()
+    password = password_entry.get()
 
-def open_registration_page():
+    if not username or not password:
+        messagebox.showerror("Login Error", "Please enter both username and password.")
+        return
+
+    if authenticate(username, password):
+         # call a function to open the main page 
+        messagebox.showinfo("Login", "Login Successful!")
+        root.destroy()
+        mainPage()
+
+    else:
+        messagebox.showerror("Login Error", "Invalid username or password.")
+        return
+        
+
+def registrationPage():
     '''
    print("Register button clicked")
    root.destroy()
    Popen('registration.py', shell=True)
    '''
     root.destroy()
-    create_registration_window()
+    registrationWindow()
   
 
 # create the main window
@@ -43,7 +65,7 @@ password_entry = tk.Entry(root, show="*", font=("Arial", 12), width=20)  # incre
 
 # create buttons
 login_button = tk.Button(root, text="Login", command=login, font=("Arial", 12), width=7, height=2, bg="pink")  # increased font size and height
-register_button = tk.Button(root, text="Register", command=open_registration_page, font=("Arial", 12), width=7, height=2, bg="pink")  # increased font size and height
+register_button = tk.Button(root, text="Register", command=registrationPage, font=("Arial", 12), width=7, height=2, bg="pink")  # increased font size and height
 
 # place widgets even further below
 username_label.place(relx=0.5, rely=0.7, anchor="center")

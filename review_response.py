@@ -24,9 +24,7 @@ from models import Response, User, ReviewApp
 
 # ########################################################################################################
 
-#user login
-
-
+#user login before accessing the review page
 
 if __name__ == "__main__":
     root = tk.Tk()

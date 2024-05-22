@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from db_connector import create_connection, close_connection
+from mainPage import mainPage
 
 # class Review:
 #     def __init__(self, review_id=None, reviewer_id=None, reviewee_id=None, rating=None, review_text=None, review_date=None):
@@ -505,6 +506,7 @@ class ReviewApp:
 
 ########################################### ENTER DESTINATION ############################################################
 
+
 class DestinationGui:
     def __init__(self, root):
         self.root = root
@@ -518,32 +520,62 @@ class DestinationGui:
         for i in range(5):
             self.destination_frame.grid_rowconfigure(i, minsize=10)
 
-        tk.Label(self.destination_frame,text="Find your destination!", bg='#118599', fg='white',font=('Arial',22,'bold'),wraplength=360,anchor='w',justify='left').grid(row=0, column=0, columnspan=6, padx=5, pady=5, sticky="ew")
-        tk.Label(self.destination_frame,text="Enter your location and find the best places to visit", bg='#118599', fg='white',font=('Arial',16),wraplength=360,anchor='w',justify='left').grid(row=1, column=0, columnspan=6, padx=5, pady=5, sticky="ew")
-
+        tk.Label(self.destination_frame, text="What are you exploring today?", bg='#118599', fg='white', font=('Arial', 22, 'bold'), wraplength=360, anchor='w', justify='left').grid(row=0, column=0, columnspan=6, padx=5, pady=5, sticky="ew")
+        tk.Label(self.destination_frame, text="Please insert country and city", bg='#118599', fg='white', font=('Arial', 16), wraplength=360, anchor='w', justify='left').grid(row=1, column=0, columnspan=6, padx=5, pady=5, sticky="ew")
 
         # Add empty rows at the top to lower the content
         for i in range(5):
             self.destination_frame.grid_rowconfigure(i, minsize=20)
 
-        tk.Label(self.destination_frame, text="Enter Location:", bg='#118599', fg='white',font=('Arial',14,'bold')).grid(row=5, column=0, padx=5, pady=5, sticky='w')
-        self.location_entry = tk.Entry(self.destination_frame, width=30)
-        self.location_entry.grid(row=6, column=0, columnspan=6, padx=5, pady=5, sticky='w')
+        # Input fields for country and city
+        tk.Label(self.destination_frame, text="Enter Country:", bg='#118599', fg='white', font=('Arial', 14, 'bold')).grid(row=5, column=0, padx=5, pady=5, sticky='w')
+        self.country_entry = tk.Entry(self.destination_frame, width=30)
+        self.country_entry.grid(row=6, column=0, columnspan=6, padx=10, pady=5, sticky='ew')
+
+        tk.Label(self.destination_frame, text="Enter City:", bg='#118599', fg='white', font=('Arial', 14, 'bold')).grid(row=7, column=0, padx=5, pady=5, sticky='w')
+        self.city_entry = tk.Entry(self.destination_frame, width=30)
+        self.city_entry.grid(row=8, column=0, columnspan=6, padx=10, pady=5, sticky='ew')
 
         self.submit_button = tk.Button(self.destination_frame, text="Find Destination", command=self.find_destination, bg="green", fg="white")
         self.submit_button.grid(row=10, column=0, columnspan=3, padx=5, pady=10, sticky='e')
 
-        self.cancel_button = tk.Button(self.destination_frame, text="Cancel", command=self.root.destroy, bg="red", fg="white")
-        self.cancel_button.grid(row=10, column=3, columnspan=3, padx=5, pady=10, sticky='w')
-
     def find_destination(self):
-        location = self.location_entry.get()
+        country = self.country_entry.get()
+        city = self.city_entry.get()
 
-        if not location:
-            messagebox.showerror("Error", "Location is required")
+        if not country or not city:
+            messagebox.showerror("Error", "Both country and city are required")
             return
 
-        # Call a function to find the destination
-        print(f"Finding destination for {location}")
+        connection = create_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Find the country ID based on the country name
+            cursor.execute("SELECT country_id FROM Country WHERE country_name=%s", (country,))
+            country_result = cursor.fetchone()
+
+            if not country_result:
+                messagebox.showerror("Error", "Country not found")
+                return
+
+            country_id = country_result[0]
+
+            # Find the city based on the country ID and city name
+            cursor.execute("SELECT city_name, latitude, longitude FROM City WHERE city_name=%s AND country_id=%s", (city, country_id))
+            city_result = cursor.fetchone()
+
+            if city_result:
+                city_name, latitude, longitude = city_result
+                messagebox.showinfo("Destination Found", f"City: {city_name}\nLatitude: {latitude}\nLongitude: {longitude}")
+                self.root.destroy()   #close current window 
+                mainPage()
+            else:
+                messagebox.showerror("Error", "City not found in the specified country")
+        except mysql.connector.Error as err:
+            messagebox.showerror("Error", f"Database error: {err}")
+        finally:
+            cursor.close()
+            connection.close()
 
         

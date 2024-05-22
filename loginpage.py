@@ -7,6 +7,9 @@ import sys
 sys.path.append('../functions/')
 from loginAuthentication import authenticate
 from mainPage import mainPage
+from models import DestinationGui
+import enter_destination_gui  # import the enter_destination_gui.py file
+
 
 def login():
     print("Login button clicked")
@@ -21,6 +24,11 @@ def login():
          # call a function to open the main page 
         messagebox.showinfo("Login", "Login Successful!")
         root.destroy()
+        # enter_destination_gu()
+        # if __name__ == "__main__":
+        #     root = tk.Tk()
+        #     app = DestinationGui(root)
+        #     root.mainloop()
         mainPage()
 
     else:
@@ -47,13 +55,13 @@ phone_width = 360
 phone_height = 640
 root.geometry(f"{phone_width}x{phone_height}")
 
-background_image = Image.open("../images/loginpage.webp")
-background_photo = ImageTk.PhotoImage(background_image)
+# background_image = Image.open("../images/loginpage.webp")  # load the background image
+# background_photo = ImageTk.PhotoImage(background_image)
 
 # create a canvas to display the background image
 canvas = tk.Canvas(root, width=phone_width, height=phone_height)
 canvas.pack(fill="both", expand=True) 
-canvas.create_image(0, 0, anchor="nw", image=background_photo)
+# canvas.create_image(0, 0, anchor="nw", image=background_photo)
 
 # create labels
 username_label = tk.Label(root, text="Username:",  bg="pink")

@@ -1,4 +1,4 @@
-USE od;
+USE odyssey;
 
 -- Insert data into Country table
 INSERT IGNORE INTO Country (country_name, continent, currency)
@@ -58,7 +58,7 @@ VALUES
 ('Gyeongbokgung Palace', 37.579617, 126.977041, 15, 15);
 
 -- Insert data into Membership table
-INSERT IGNORE INTO Membership (membership_type, duration, membership_status, description)
+INSERT IGNORE INTO Membership (membership_type, duration, membership_status,description)
 VALUES 
 ('Basic', 'Monthly', 'Active', 'Basic monthly membership with standard benefits'),
 ('Premium', '6-monthly', 'Active', 'Premium membership with additional benefits'),
@@ -67,18 +67,19 @@ VALUES
 ('Premium', 'One year', 'Active', 'Annual premium membership with maximum benefits');
 
 -- Insert data into User table
-INSERT IGNORE INTO User (username, name, lastname, email, address, exact_address, password, role, membership_id)
+INSERT IGNORE INTO User (username, name, lastname, email, password, role, country_id, city_id, membership_id)
 VALUES 
-('john_doe', 'John', 'Doe', 'john.doe@example.com', '123 Main St', 'Apt 4', 'securepassword', 'beneficiary', 1),
-('janedoe', 'Jane', 'Doe', 'janedoe@example.com', '456 Elm St', 'Suite 101', 'anothersecurepassword', 'partner', 2),
-('admin1', 'Admin', 'One', 'admin1@example.com', '789 Oak St', 'Office 1', 'adminpassword', 'admin', 3),
-('mary_smith', 'Mary', 'Smith', 'mary.smith@example.com', '101 Pine St', 'Apt 8', 'marypassword', 'beneficiary', 4),
-('robert_brown', 'Robert', 'Brown', 'robert.brown@example.com', '202 Maple St', 'House 5', 'robertpassword', 'beneficiary', 5),
-('linda_jones', 'Linda', 'Jones', 'linda.jones@example.com', '303 Birch St', 'Flat 2', 'lindapassword', 'partner', 1),
-('william_davis', 'William', 'Davis', 'william.davis@example.com', '404 Cedar St', 'Unit 3B', 'williampassword', 'admin', 2),
-('barbara_miller', 'Barbara', 'Miller', 'barbara.miller@example.com', '505 Spruce St', 'Apt 6', 'barbarapassword', 'beneficiary', 3),
-('james_wilson', 'James', 'Wilson', 'james.wilson@example.com', '606 Redwood St', 'Suite 200', 'jamespassword', 'partner', 4),
-('patricia_taylor', 'Patricia', 'Taylor', 'patricia.taylor@example.com', '707 Cypress St', 'Bungalow 9', 'patriciapassword', 'admin', 5);
+('john_doe', 'John', 'Doe', 'john.doe@example.com', 'securepassword', 'beneficiary', 1, NULL, NULL),
+('janedoe', 'Jane', 'Doe', 'janedoe@example.com', 'anothersecurepassword', 'partner', 2, NULL, NULL),
+('admin1', 'Admin', 'One', 'admin1@example.com', 'adminpassword', 'admin', 3, NULL, NULL),
+('mary_smith', 'Mary', 'Smith', 'mary.smith@example.com', 'marypassword', 'beneficiary', 4, NULL, NULL),
+('robert_brown', 'Robert', 'Brown', 'robert.brown@example.com', 'robertpassword', 'beneficiary', 5, NULL, NULL),
+('linda_jones', 'Linda', 'Jones', 'linda.jones@example.com', 'lindapassword', 'partner', 1, NULL, NULL),
+('william_davis', 'William', 'Davis', 'william.davis@example.com', 'williampassword', 'admin', 2, NULL, NULL),
+('barbara_miller', 'Barbara', 'Miller', 'barbara.miller@example.com', 'barbarapassword', 'beneficiary', 3, NULL, NULL),
+('james_wilson', 'James', 'Wilson', 'james.wilson@example.com', 'jamespassword', 'partner', 4, NULL, NULL),
+('patricia_taylor', 'Patricia', 'Taylor', 'patricia.taylor@example.com', 'patriciapassword', 'admin', 5, NULL, NULL);
+
 
 -- Insert data into BusinessPartner table
 INSERT IGNORE INTO BusinessPartner (user_id, tax_code, registration_number)
@@ -97,16 +98,16 @@ VALUES
 -- Insert data into Business table
 INSERT IGNORE INTO Business (partner_id, business_name, business_type, location_id, advertisement_details, price)
 VALUES 
-(1, 'Doe Cafe', 'Food and Beverage', 1, 'Best coffee in town', 'Moderate'),
-(1, 'Doe Market', 'Market', 2, 'Fresh produce available', 'Moderate'),
-(2, 'Smith Bakery', 'Food and Beverage', 3, 'Freshly baked goods', 'Cheap'),
-(3, 'Jones Hotel', 'Hotels', 4, 'Luxury stay', 'Expensive'),
-(1, 'Brown Bar', 'Bars', 5, 'Great drinks and ambiance', 'Moderate'),
-(2, 'Miller Flea Market', 'Market', 6, 'Unique finds', 'Cheap'),
-(3, 'Wilson Restaurant', 'Food and Beverage', 7, 'Fine dining experience', 'Expensive'),
+(6, 'Doe Cafe', 'Food and Beverage', 1, 'Best coffee in town', 'Moderate'),
+(6, 'Doe Market', 'Market', 2, 'Fresh produce available', 'Moderate'),
+(1, 'Smith Bakery', 'Food and Beverage', 3, 'Freshly baked goods', 'Cheap'),
+(5, 'Jones Hotel', 'Hotels', 4, 'Luxury stay', 'Expensive'),
+(4, 'Brown Bar', 'Bars', 5, 'Great drinks and ambiance', 'Moderate'),
+(8, 'Miller Flea Market', 'Market', 6, 'Unique finds', 'Cheap'),
+(9, 'Wilson Restaurant', 'Food and Beverage', 7, 'Fine dining experience', 'Expensive'),
 (2, 'Davis Supermarket', 'Market', 8, 'All your daily needs', 'Moderate'),
-(1, 'Taylor Pub', 'Bars', 9, 'Friendly atmosphere', 'Moderate'),
-(3, 'Williams Fast Food', 'Food and Beverage', 10, 'Quick bites', 'Cheap');
+(10, 'Taylor Pub', 'Bars', 9, 'Friendly atmosphere', 'Moderate'),
+(NULL, 'Williams Fast Food', 'Food and Beverage', 10, 'Quick bites', 'Cheap');
 
 -- Insert data into Market table
 INSERT IGNORE INTO Market (business_id, market_type, market_specific_attribute)
@@ -123,30 +124,31 @@ VALUES
 (1, 'Cafe', 'Free Wi-Fi available');
 
 -- Insert data into Beneficiary table
-INSERT IGNORE INTO Beneficiary (user_id, beneficiary_type, date_of_birth, address, contact_number, location_id)
+INSERT IGNORE INTO Beneficiary (user_id, beneficiary_type, date_of_birth, address, contact_number)
 VALUES 
-(1, 'user', '1985-05-15', '123 Main St', '123-456-7890', 1),
-(2, 'service_provider', '1990-08-25', '456 Elm St', '987-654-3210', 2),
-(4, 'user', '1980-10-15', '122 Main St', '123-456-7854', 1),
-(5, 'user', '1990-09-18', '125 Main St', '123-456-7823', 1),
-(6, 'user', '2000-02-19', '15 Main St', '123-456-7843', 1),
-(7, 'user', '1981-07-14', '153 Main St', '123-456-7853', 1);
+(1, 'user', '1985-05-15', '123 Main St', '123-456-7890'),
+(4, 'service_provider', '1990-08-25', '456 Elm St', '987-654-3210'),
+(5, 'user', '1980-10-15', '101 Pine St', '123-456-7854'),
+(6, 'user', '1990-09-18', '202 Maple St', '123-456-7823'),
+(8, 'user', '2000-02-19', '303 Birch St', '123-456-7843'),
+(9, 'user', '1981-07-14', '404 Cedar St', '123-456-7853');
+
 
 -- Insert data into SimpleUser table
-INSERT IGNORE INTO SimpleUser (beneficiary_id, bistory, privacy_settings)
+INSERT IGNORE INTO SimpleUser (beneficiary_id, history, preferences)
 VALUES 
 (1, 'History of user', 'Private'),
-(2, 'Service provider history', 'Public');
+(4, 'Service provider history', 'Public');
 
 -- Insert data into ServiceProvider table
 INSERT IGNORE INTO ServiceProvider (beneficiary_id, languages_spoken, specialties, certifications)
 VALUES 
-(2, 'English, Spanish', 'IT Services', 'Certified IT Specialist');
+(4, 'English, German', 'Translating Services', 'GOETHE C2');
 
 -- Insert data into Service table
 INSERT IGNORE INTO Service (provider_id, description, service_name, location_id)
 VALUES 
-(1, 'IT support and services', 'IT Support', 1);
+(4, 'Translating Services', 'German Translator', 1);
 
 -- Insert data into Accommodation table
 INSERT IGNORE INTO Accommodation (service_id, num_rooms, facilities)
@@ -186,17 +188,17 @@ VALUES
 -- Insert data into Review table
 INSERT IGNORE INTO Review (reviewer_id, reviewee_id, rating, review_text)
 VALUES 
-(1, 2, 5, 'Excellent service and highly recommended!');
+(1, 4, 5, 'Excellent service and highly recommended!');
 
 -- Insert data into Response table
 INSERT IGNORE INTO Response (review_id, replier_id, reply_text)
 VALUES 
-(1, 2, 'Thank you for your feedback!');
+(1, 4, 'Thank you for your feedback!');
 
 -- Insert data into ChatMessage table
 INSERT IGNORE INTO ChatMessage (sender_id, receiver_id, message_text)
 VALUES 
-(1, 2, 'Hello, I need some help with my service.');
+(1, 4, 'Hello, I need some help with my service.');
 
 -- Insert data into SavedBusiness table
 INSERT IGNORE INTO SavedBusiness (beneficiary_id, business_id)
@@ -216,4 +218,4 @@ VALUES
 -- Insert data into FriendRequest table
 INSERT IGNORE INTO FriendRequest (user1_id, user2_id, status, accepted_at)
 VALUES 
-(1, 2, 'accepted', NOW());
+(1, 4, 'accepted', NOW());

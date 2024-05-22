@@ -34,6 +34,7 @@ CREATE TABLE Membership (
     membership_type ENUM('Basic', 'Premium', 'Professional'),
     duration ENUM('Monthly', '6-monthly', 'One year'),
     membership_status VARCHAR(255),
+    description TEXT,
     created_date DATE
 );
 CREATE TABLE User (
@@ -133,7 +134,7 @@ CREATE TABLE Beneficiary (
 CREATE TABLE SimpleUser (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     beneficiary_id INT UNIQUE,
-    bistory TEXT,
+    history TEXT,
     preferences TEXT, 
     FOREIGN KEY (beneficiary_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE
 );

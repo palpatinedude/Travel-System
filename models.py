@@ -500,6 +500,10 @@ class ReviewApp:
             return False
         return True
 
+    def validateReview(self):
+        self.checkLength()
+        self.checkStars()
+
     def create_review(self):
         # reviewer_id = self.reviewer_id_entry.get()
         reviewer_id= 1
@@ -512,8 +516,7 @@ class ReviewApp:
             messagebox.showerror("Error", "All fields are required")
             return
         else:
-            self.checkStars()
-            self.checkLength()
+            self.validateReview()
 
         try:
             review = Review(reviewer_id=int(reviewer_id), reviewee_id=int(reviewee_id), rating=int(rating), review_text=review_text)

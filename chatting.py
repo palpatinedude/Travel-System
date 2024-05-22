@@ -1,10 +1,10 @@
 import sys,os
 import mysql.connector
-from models import Review, Response, User, ChatMessage
+from models import Response, User, ChatMessage, ReviewApp
 
 def main():
     # Assuming user1 and user2 already exist in the database with their respective user IDs
-
+    
     # Retrieve user1 and user2 from the database based on their usernames
     user1 = User.get_by_username("john_doe")
     user2 = User.get_by_username("janedoe")

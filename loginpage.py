@@ -7,8 +7,9 @@ import sys
 sys.path.append('../functions/')
 from loginAuthentication import authenticate
 from mainPage import mainPage
-from models import DestinationGui
-import enter_destination_gui  # import the enter_destination_gui.py file
+# from mainPage import DestinationGui
+# from models import DestinationGui
+# import enter_destination_gui  # import the enter_destination_gui.py file
 
 
 def login():
@@ -24,7 +25,7 @@ def login():
          # call a function to open the main page 
         messagebox.showinfo("Login", "Login Successful!")
         root.destroy()
-        # enter_destination_gu()
+        # enter_destination_gui()
         # if __name__ == "__main__":
         #     root = tk.Tk()
         #     app = DestinationGui(root)

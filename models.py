@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from db_connector import create_connection, close_connection
 from mainPage import mainPage
+from tkinter import scrolledtext
 
 # class Review:
 #     def __init__(self, review_id=None, reviewer_id=None, reviewee_id=None, rating=None, review_text=None, review_date=None):
@@ -176,16 +177,16 @@ class Response:
 
 ############################# Chat Models ########################################
 class User:
-    def __init__(self, user_id=None, username=None, name=None, lastname=None, email=None, address=None, exact_address=None, password=None, role=None, membership_id=None):
+    def __init__(self, user_id=None, username=None, name=None, lastname=None, email=None, password=None, role=None, country_id=None, city_id=None, membership_id=None):
         self.user_id = user_id
         self.username = username
         self.name = name
         self.lastname = lastname
         self.email = email
-        self.address = address
-        self.exact_address = exact_address
         self.password = password
         self.role = role
+        self.country_id = country_id
+        self.city_id = city_id
         self.membership_id = membership_id
 
     def save(self):
@@ -212,9 +213,9 @@ class User:
             close_connection(connection)
 
     @classmethod
-    def get_by_username(cls, username): # changed from user_id to username
+    def get_by_username(username): # changed from user_id to username
         connection = create_connection()
-        cursor = connection.cursor()
+        cursor = connection.cursor(dictionary=True) 
         try:
             cursor.execute("SELECT * FROM User WHERE username=%s", (username,))
             row = cursor.fetchone()
@@ -487,15 +488,25 @@ class ReviewApp:
             else:
                 self.stars[i].config(fg="black")
 
+    def checkStars(self):
+        if self.rating_var.get() == 0:
+            messagebox.showerror("Error", "Please rate the service")
+            return False
+        return True
+
     def create_review(self):
-        reviewer_id = self.reviewer_id_entry.get()
-        reviewee_id = self.reviewee_id_entry.get()
+        # reviewer_id = self.reviewer_id_entry.get()
+        reviewer_id= 1
+        # reviewee_id = self.reviewee_id_entry.get()
+        reviewee_id = 2
         rating = self.rating_var.get()
         review_text = self.review_text.get("1.0", tk.END)
 
-        if not reviewer_id or not reviewee_id or not rating or not review_text:
+        if not reviewer_id or not reviewee_id or not review_text:
             messagebox.showerror("Error", "All fields are required")
             return
+        else:
+            self.checkStars()
 
         try:
             review = Review(reviewer_id=int(reviewer_id), reviewee_id=int(reviewee_id), rating=int(rating), review_text=review_text)
@@ -503,6 +514,7 @@ class ReviewApp:
             messagebox.showinfo("Success", "Review created successfully")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to create review: {e}")
+
 
 ########################################### ENTER DESTINATION ############################################################
 
@@ -578,4 +590,5 @@ class DestinationGui:
             cursor.close()
             connection.close()
 
-        
+############################################# CHAT #############################################################################
+

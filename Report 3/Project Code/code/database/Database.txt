@@ -196,11 +196,8 @@ CREATE TABLE Card (
     cardnumber VARCHAR(16) UNIQUE,
     barcode VARCHAR(50) NOT NULL,
     expiration_date DATE NOT NULL,
-    FOREIGN KEY (beneficiary_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE,
-    FOREIGN KEY (card_id) REFERENCES Membership(membership_id)
-
+    FOREIGN KEY (beneficiary_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE
 );
-
 
 CREATE TABLE Points (
     points_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -210,14 +207,20 @@ CREATE TABLE Points (
     FOREIGN KEY (card_id) REFERENCES Card(card_id) ON DELETE CASCADE
 );
 
+
+
 CREATE TABLE PointsHistory (
     transaction_id INT PRIMARY KEY AUTO_INCREMENT,
     points_id INT,
-    transaction_type ENUM('earn', 'spend') NOT NULL,
+    beneficiary_id INT,
+    business_id INT,
     points_change INT NOT NULL,
-    transaction_date DATETIME NOT NULL,
-    FOREIGN KEY (points_id) REFERENCES Points(points_id) ON DELETE CASCADE
+    scan_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (points_id) REFERENCES Points(points_id) ON DELETE CASCADE,
+    FOREIGN KEY (beneficiary_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE,
+    FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
 );
+
 
 
 

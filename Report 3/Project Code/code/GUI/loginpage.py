@@ -2,11 +2,11 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 from subprocess import Popen
-from registration import registrationWindow 
 import sys
 sys.path.append('../functions/')
 from loginAuthentication import authenticate
 from mainPage import mainPage
+from package import get_beneficiary_id
 
 def login():
     print("Login button clicked")
@@ -17,12 +17,12 @@ def login():
         messagebox.showerror("Login Error", "Please enter both username and password.")
         return
 
-    if authenticate(username, password):
-         # call a function to open the main page 
+    success, user_id = authenticate(username, password)
+    if success: 
+        beneficiary_id = get_beneficiary_id(user_id) 
         messagebox.showinfo("Login", "Login Successful!")
         root.destroy()
-        mainPage()
-
+        mainPage(beneficiary_id)
     else:
         messagebox.showerror("Login Error", "Invalid username or password.")
         return

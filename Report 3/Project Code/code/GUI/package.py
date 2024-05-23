@@ -7,14 +7,32 @@ from dbConnection import create_connection
 from continueRegist import continueRegistration
 from mainPage import mainPage
 
+# function to retrieve beneficiary_id associated with the given user_id
+def get_beneficiary_id(user_id):
+    connection = create_connection()
+    beneficiary_id = None
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT beneficiary_id FROM Beneficiary WHERE user_id = %s", (user_id,))
+                result = cursor.fetchone()
+                if result:
+                    beneficiary_id = result[0]
+        except Exception as e:
+            print(f"Error: {e}")
+        finally:
+            connection.close()
+    return beneficiary_id
+
+
 # function to handle registration continuation
-def continue_registration(window, user_id, selected_membership, duration):
+def continue_registration(window, user_id, selected_membership, duration,beneficiary_id):
     if selected_membership:
         # if a membership is selected, proceed with registration continuation
         success = continueRegistration(selected_membership, user_id, duration)
         if success:
             window.destroy()
-            mainPage()
+            mainPage(beneficiary_id)
     else:
         # if no membership is selected, show an error message
         messagebox.showinfo("Error", "Please select a membership.")
@@ -36,6 +54,8 @@ def packagesWindow(role, user_id):
     # Create a label to display role-specific message
     role_label = tk.Label(packages_window, text=f"Welcome {role}!", font=("Arial", 12), bg="#1e272e", fg="white")
     role_label.pack(pady=10)
+
+    beneficiary_id = get_beneficiary_id(user_id)
 
     # membership options based on the user's role
     if role == "Service Provider":
@@ -77,7 +97,7 @@ def packagesWindow(role, user_id):
 
     # function to handle registration continuation
     def on_continue_click():
-        continue_registration(packages_window, user_id, membership_options[0][0], selected_duration.get())
+        continue_registration(packages_window, user_id, membership_options[0][0], selected_duration.get(),beneficiary_id)
 
     # button to continue registration
     continue_button = tk.Button(packages_window, text="Continue", command=on_continue_click, bg="#4cd137", fg="white", font=("Arial", 14))

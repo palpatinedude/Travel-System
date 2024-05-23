@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from dbConnection import create_connection
 
-def save_partner_details(user_id, tax_code_entry, registration_number_entry, website_entry, description_entry, partner_window):
+def partnerDetails(user_id, tax_code_entry, registration_number_entry, website_entry, description_entry, partner_window):
     tax_code = tax_code_entry.get()
     registration_number = registration_number_entry.get()
     website = website_entry.get()
@@ -65,7 +65,7 @@ def partnerWindow(role, user_id):
     description_entry.grid(row=3, column=1, padx=10, pady=5)
 
 
-    save_button = tk.Button(partner_window, text="Save", command=lambda: save_partner_details(
+    save_button = tk.Button(partner_window, text="Save", command=lambda: partnerDetails(
         user_id, tax_code_entry, registration_number_entry, website_entry, description_entry, partner_window), 
         font=("Arial", 10), bg="green", fg="white")
     save_button.grid(row=4, columnspan=2, pady=10)

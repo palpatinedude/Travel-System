@@ -2,8 +2,9 @@ import tkinter as tk
 from tkinter import messagebox
 from dbConnection import create_connection
 from datetime import datetime
+import re
 
-def save_beneficiary_details(user_id, beneficiary_type, dob_entry, address_entry, contact_number_entry, additional_entries, window):
+def beneficiaryDetails(user_id, beneficiary_type, dob_entry, address_entry, contact_number_entry, additional_entries, window):
     dob = dob_entry.get()
     address = address_entry.get()
     contact_number = contact_number_entry.get()
@@ -122,7 +123,7 @@ def beneficiaryWindow(role, user_id):
     save_button = tk.Button(
         beneficiary_window, 
         text="Save", 
-        command=lambda: save_beneficiary_details(
+        command=lambda: beneficiaryDetails(
             user_id, role, dob_entry, address_entry, contact_number_entry, 
             [entry.get() for entry in additional_entries],
             beneficiary_window

@@ -790,9 +790,52 @@ class ChattingGUI:
 
 ########################################## SOCIAL BONDING ############################################
 
+
 class SocialBondingGUI:
-    def __init__(self,root):
+    def __init__(self, root):
         self.root = root
-        self.root.title("Social Bonding hi")
+        self.root.title("Social Bonding")
         self.root.geometry("360x640")
+        
+        self.connection = create_connection()  # Establish database connection
+
+        self.main_frame = tk.Frame(root)
+        self.main_frame.pack(expand=True, padx=20, pady=20)
+
+        # Top-right corner square for chat
+        self.chat_button = tk.Button(self.main_frame, text="Chat", bg="white", command=self.open_chat)
+        self.chat_button.place(x=300, y=0, width=50, height=50)
+
+        # Buttons
+        self.friends_button = tk.Button(self.main_frame, text="My Friends", bg="light blue", command=self.show_friends)
+        self.friends_button.pack(fill=tk.X, pady=10)
+
+        self.add_friends_button = tk.Button(self.main_frame, text="Add Friends", bg="light blue", command=self.add_friends)
+        self.add_friends_button.pack(fill=tk.X, pady=10)
+
+        self.people_near_me_button = tk.Button(self.main_frame, text="People Near Me", bg="light blue", command=self.show_people_near_me)
+        self.people_near_me_button.pack(fill=tk.X, pady=10)
+
+    def create_connection(self):
+        # Implement the method to create a connection to your database
+        pass
+
+    def open_chat(self):
+        # Implement the method to open chat
+        messagebox.showinfo("Chat", "Opening chat window...")
+
+    def show_friends(self):
+        # Implement the method to show friends
+        messagebox.showinfo("My Friends", "Showing list of friends...")
+
+    def add_friends(self):
+        # Implement the method to add friends
+        messagebox.showinfo("Add Friends", "Navigating to add friends...")
+
+    def show_people_near_me(self):
+        # Implement the method to show people near me
+        messagebox.showinfo("People Near Me", "Showing people near me...")
+
+
+
 

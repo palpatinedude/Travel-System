@@ -627,6 +627,9 @@ class FriendRequestGUI:
 
         self.showAddFriends_button = tk.Button(self.main_frame, text="Load Friends", command=self.showAddFriends)
         self.showAddFriends_button.grid(row=3, column=0, columnspan=2, pady=10)
+        
+        self.load_recommendations_button = tk.Button(self.main_frame, text="Load Recommended Friends", command=self.fetchRecommendedFriends)
+        self.load_recommendations_button.grid(row=4, column=0, columnspan=2, pady=10)
 
     def search_friend(self):
         username = self.search_entry.get()
@@ -684,18 +687,32 @@ class FriendRequestGUI:
         messagebox.showinfo("Friends List", "\n".join(friends_list) if friends_list else "You have no friends added yet.")
 
 
-    # def showAddFriends(self):
-    #     user_id = config.current_user['user_id']  # Use the current logged-in user's ID
-    #     cursor = self.connection.cursor()
-    #     query = """
-    #     SELECT u.username FROM FriendRequest fr
-    #     JOIN User u ON fr.user2_id = u.user_id
-    #     WHERE fr.user1_id = %s AND fr.status = 'accepted'
-    #     """
-    #     cursor.execute(query, (user_id,))
-    #     friends = cursor.fetchall()
-    #     cursor.close()
+    def fetchRecommendedFriends(self):
+        # Fetch recommended friends who are not already friends with the current user
+        user_id = config.current_user['user_id']
+        cursor = self.connection.cursor(dictionary=True)
 
-    #     friends_list = [friend['username'] for friend in friends]
-    #     messagebox.showinfo("Friends List", "\n".join(friends_list) if friends_list else "You have no friends added yet.")
+        # Query to select recommended friends who are not already friends with the current user
+        query = """
+        SELECT u.user_id, u.username 
+        FROM User u
+        WHERE u.user_id NOT IN (
+            SELECT user2_id 
+            FROM FriendRequest 
+            WHERE user1_id = %s
+        ) AND u.user_id != %s
+        LIMIT 2
+        """
+        cursor.execute(query, (user_id, user_id))
+
+        recommended_friends = cursor.fetchall()
+        cursor.close()
+
+        if recommended_friends:
+            for i, friend in enumerate(recommended_friends):
+                # Create buttons for recommended friends
+                friend_button = tk.Button(self.main_frame, text=friend['username'], command=lambda id=friend['user_id']: self.send_request(id))
+                friend_button.grid(row=5+i, column=0, columnspan=2, pady=5)
+        else:
+            messagebox.showinfo("Recommended Friends", "No recommended friends found.")
 

@@ -619,7 +619,7 @@ class FriendRequestGUI:
         self.search_entry = tk.Entry(self.main_frame, width=30)
         self.search_entry.grid(row=1, column=0, columnspan=2, pady=10)
 
-        self.search_button = tk.Button(self.main_frame, text="Search", command=self.search_friend)
+        self.search_button = tk.Button(self.main_frame, text="Search", command=self.searchByUsername)
         self.search_button.grid(row=2, column=0, pady=10)
 
         self.add_button = tk.Button(self.main_frame, text="Add Friend", command=self.send_request)
@@ -631,7 +631,7 @@ class FriendRequestGUI:
         self.load_recommendations_button = tk.Button(self.main_frame, text="Load Recommended Friends", command=self.fetchRecommendedFriends)
         self.load_recommendations_button.grid(row=4, column=0, columnspan=2, pady=10)
 
-    def search_friend(self):
+    def searchByUsername(self):
         username = self.search_entry.get()
         if not username:
             messagebox.showerror("Error", "Please enter a username")

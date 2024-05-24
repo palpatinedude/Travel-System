@@ -11,7 +11,8 @@ select * from review;
 SELECT * FROM Beneficiary;
 select * from friendrequest;
 
-
+SELECT u.username FROM FriendRequest fr JOIN User u ON fr.user2_id = u.user_id WHERE fr.user1_id = '4' AND fr.status = 'accepted';
+    
 -- INSERT IGNORE INTO Beneficiary (user_id, beneficiary_type, date_of_birth, address, contact_number, location_id)
 -- VALUES 
 -- (4, 'user', '1980-10-15', '122 Main St', '123-456-7854', 1),

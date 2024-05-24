@@ -625,8 +625,8 @@ class FriendRequestGUI:
         self.add_button = tk.Button(self.main_frame, text="Add Friend", command=self.send_request)
         self.add_button.grid(row=2, column=1, pady=10)
 
-        self.load_friends_button = tk.Button(self.main_frame, text="Load Friends", command=self.load_friends)
-        self.load_friends_button.grid(row=3, column=0, columnspan=2, pady=10)
+        self.showAddFriends_button = tk.Button(self.main_frame, text="Load Friends", command=self.showAddFriends)
+        self.showAddFriends_button.grid(row=3, column=0, columnspan=2, pady=10)
 
     def search_friend(self):
         username = self.search_entry.get()
@@ -668,7 +668,7 @@ class FriendRequestGUI:
         else:
             messagebox.showerror("Error", f"User {username} not found")
 
-    def load_friends(self):
+    def showAddFriends(self):
         user_id = config.current_user['user_id']  # Use the current logged-in user's ID
         cursor = self.connection.cursor()
         query = """
@@ -676,10 +676,26 @@ class FriendRequestGUI:
         JOIN User u ON fr.user2_id = u.user_id
         WHERE fr.user1_id = %s AND fr.status = 'accepted'
         """
-        cursor.execute(query, (user_id,))
+        cursor.execute(query, (config.current_user['user_id'],))
         friends = cursor.fetchall()
         cursor.close()
 
-        friends_list = [friend['username'] for friend in friends]
+        friends_list = [friend[0] for friend in friends]
         messagebox.showinfo("Friends List", "\n".join(friends_list) if friends_list else "You have no friends added yet.")
+
+
+    # def showAddFriends(self):
+    #     user_id = config.current_user['user_id']  # Use the current logged-in user's ID
+    #     cursor = self.connection.cursor()
+    #     query = """
+    #     SELECT u.username FROM FriendRequest fr
+    #     JOIN User u ON fr.user2_id = u.user_id
+    #     WHERE fr.user1_id = %s AND fr.status = 'accepted'
+    #     """
+    #     cursor.execute(query, (user_id,))
+    #     friends = cursor.fetchall()
+    #     cursor.close()
+
+    #     friends_list = [friend['username'] for friend in friends]
+    #     messagebox.showinfo("Friends List", "\n".join(friends_list) if friends_list else "You have no friends added yet.")
 

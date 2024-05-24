@@ -3,6 +3,7 @@ from tkinter import messagebox
 from db_connector import create_connection, close_connection
 from mainPage import mainPage
 from tkinter import scrolledtext
+import config
 
 # class Review:
 #     def __init__(self, review_id=None, reviewer_id=None, reviewee_id=None, rating=None, review_text=None, review_date=None):
@@ -600,5 +601,85 @@ class DestinationGui:
             cursor.close()
             connection.close()
 
-############################################# CHAT #############################################################################
+############################################# FRIEND REQUESTING #############################################################################
+
+class FriendRequestGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Friend Request System")
+        self.root.geometry("400x300")  # Set window size
+
+        self.connection = create_connection()  # Establish database connection
+
+        self.main_frame = tk.Frame(root)
+        self.main_frame.pack(expand=True, padx=20, pady=20)
+
+        tk.Label(self.main_frame, text="Add Friends", font=("Arial", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
+
+        self.search_entry = tk.Entry(self.main_frame, width=30)
+        self.search_entry.grid(row=1, column=0, columnspan=2, pady=10)
+
+        self.search_button = tk.Button(self.main_frame, text="Search", command=self.search_friend)
+        self.search_button.grid(row=2, column=0, pady=10)
+
+        self.add_button = tk.Button(self.main_frame, text="Add Friend", command=self.send_request)
+        self.add_button.grid(row=2, column=1, pady=10)
+
+        self.load_friends_button = tk.Button(self.main_frame, text="Load Friends", command=self.load_friends)
+        self.load_friends_button.grid(row=3, column=0, columnspan=2, pady=10)
+
+    def search_friend(self):
+        username = self.search_entry.get()
+        if not username:
+            messagebox.showerror("Error", "Please enter a username")
+        else:
+            cursor = self.connection.cursor()
+            query = "SELECT * FROM User WHERE username = %s"
+            cursor.execute(query, (username,))
+            user = cursor.fetchone()  # Fetch the results
+            cursor.close()  # Close the cursor after fetching results
+
+            if user:
+                messagebox.showinfo("Info", f"User {username} found")
+            else:
+                messagebox.showerror("Error", f"User {username} not found")
+
+    def send_request(self):
+        username = self.search_entry.get()
+        if not username:
+            messagebox.showerror("Error", "Please enter a username")
+            return
+
+        cursor = self.connection.cursor()
+        query = "SELECT user_id FROM User WHERE username = %s"
+        cursor.execute(query, (username,))
+        recipient = cursor.fetchone()
+        cursor.close()
+
+        if recipient:
+            recipient_id = recipient[0]
+            sender_id = config.current_user['user_id']  # Use the current logged-in user's ID
+            cursor = self.connection.cursor()
+            query = "INSERT INTO FriendRequest (user1_id, user2_id) VALUES (%s, %s)"
+            cursor.execute(query, (sender_id, recipient_id))
+            self.connection.commit()
+            cursor.close()
+            messagebox.showinfo("Info", f"Friend request sent to {username}")
+        else:
+            messagebox.showerror("Error", f"User {username} not found")
+
+    def load_friends(self):
+        user_id = config.current_user['user_id']  # Use the current logged-in user's ID
+        cursor = self.connection.cursor()
+        query = """
+        SELECT u.username FROM FriendRequest fr
+        JOIN User u ON fr.user2_id = u.user_id
+        WHERE fr.user1_id = %s AND fr.status = 'accepted'
+        """
+        cursor.execute(query, (user_id,))
+        friends = cursor.fetchall()
+        cursor.close()
+
+        friends_list = [friend['username'] for friend in friends]
+        messagebox.showinfo("Friends List", "\n".join(friends_list) if friends_list else "You have no friends added yet.")
 

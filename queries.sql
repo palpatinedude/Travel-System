@@ -9,6 +9,8 @@ select * from Friendrequest;
 -- SELECT * FROM Beneficiary;
 select * from review;
 SELECT * FROM Beneficiary;
+select * from friendrequest;
+
 
 -- INSERT IGNORE INTO Beneficiary (user_id, beneficiary_type, date_of_birth, address, contact_number, location_id)
 -- VALUES 

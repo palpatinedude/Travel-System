@@ -218,4 +218,9 @@ VALUES
 -- Insert data into FriendRequest table
 INSERT IGNORE INTO FriendRequest (user1_id, user2_id, status, accepted_at)
 VALUES 
-(1, 4, 'accepted', NOW());
+(1, 4, 'accepted', NOW()),  -- John Doe and Mary Smith
+(1, 5, 'pending', NULL),    -- John Doe and Robert Brown
+(2, 7, 'pending', NULL),    -- Jane Doe and Linda Jones
+(4, 6, 'accepted', NOW()),  -- Mary Smith and Linda Jones
+(3, 9, 'pending', NULL),    -- Admin1 and Patricia Taylor
+(8, 10, 'pending', NULL);   -- Barbara Miller and James Wilson

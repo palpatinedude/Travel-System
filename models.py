@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from db_connector import create_connection, close_connection
-from mainPage import mainPage
-from tkinter import scrolledtext
+# from mainPage import mainPage
+from tkinter import scrolledtext, Toplevel, Listbox, Button, Scrollbar
 import config
 
 # class Review:
@@ -647,7 +647,7 @@ class FriendRequestGUI:
             else:
                 messagebox.showerror("Error", f"User {username} not found")
 
-    def send_request(self):
+    def send_request(self):    #kanonika prepei prwta na mpoume sto profil tou kathe xrhsth kai meta na kanoume to request
         username = self.search_entry.get()
         if not username:
             messagebox.showerror("Error", "Please enter a username")
@@ -715,4 +715,84 @@ class FriendRequestGUI:
                 friend_button.grid(row=5+i, column=0, columnspan=2, pady=5)
         else:
             messagebox.showinfo("Recommended Friends", "No recommended friends found.")
+
+############################### CHATTING GUI ##########################################
+
+class ChattingGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Chatting")
+        self.root.geometry("400x300")  # Set window size
+
+        self.connection = create_connection()  # Establish database connection
+
+        self.main_frame = tk.Frame(root)
+        self.main_frame.pack(expand=True, padx=20, pady=20)
+
+        tk.Label(self.main_frame, text="Chat with Friends", font=("Arial", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
+
+
+        # Load friends of the current user
+        self.friends = self.showFriends()
+
+        if self.friends:
+            self.showFriendsPage()
+        else:
+            self.noFriendsMsg()
+
+    def areFriends(self, friend_id):
+        # Function to check if selected user is a friend of the current user
+        # You can implement this function based on your database schema
+        pass
+
+    def showFriends(self):
+        # Function to display the list of friends of the current user
+        # You can implement this function based on your database schema
+        pass
+
+    def noFriendsMsg(self):
+        # Function to display a message if the user has no friends yet
+        messagebox.showinfo("No Friends", "You haven't added any friends yet.")
+
+    def loadChat(self, friend_id):
+        # Function to load chat history between current user and selected friend
+        # You can implement this function based on your database schema
+        pass
+
+    def returnMessages(self, friend_id):
+        # Function to return messages exchanged with the selected friend
+        # You can implement this function based on your database schema
+        pass
+
+    def createChat(self, friend_id):
+        # Function to create a chat window with the selected friend
+        # You can implement this function based on your GUI requirements
+        pass
+
+    def sendMessages(self, friend_id, message):
+        # Function to send a message to the selected friend
+        # You can implement this function based on your database schema
+        pass
+
+    def updateChat(self, friend_id, message):
+        # Function to update chat history after sending a message
+        # You can implement this function based on your database schema
+        pass
+
+    def emptyMsg(self, message):
+        # Function to check if the message is empty
+        return not message.strip()
+
+    def showFriendsPage(self):
+        # Function to display the friends page
+        # Implement the GUI layout and functionality here
+        pass
+
+########################################## SOCIAL BONDING ############################################
+
+class SocialBondingGUI:
+    def __init__(self,root):
+        self.root = root
+        self.root.title("Social Bonding hi")
+        self.root.geometry("360x640")
 

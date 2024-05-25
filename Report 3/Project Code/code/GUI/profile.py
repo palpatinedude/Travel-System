@@ -1,12 +1,14 @@
 import tkinter as tk
 
-def edit_profile():
-    print("edit profile button")
 
-def view_friends():
+def editProfile(window):
+    print("edit profile button")
+    window.destroy()
+
+def viewFriends():
     print("view friends button")
 
-def view_friend_requests():
+def friendRequests():
     print("view friend requests button")
 
 def displayProfile():
@@ -34,11 +36,11 @@ def displayProfile():
     button_frame.place(x=220, y=90) 
 
     # buttons
-    edit_button = tk.Button(button_frame, text="Edit", command=edit_profile, font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
+    edit_button = tk.Button(button_frame, text="Edit", command=editProfile(profile_window), font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
     edit_button.pack(pady=5)  
-    friends_button = tk.Button(button_frame, text="Friends", command=view_friends, font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
+    friends_button = tk.Button(button_frame, text="Friends", command=viewFriends, font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
     friends_button.pack(pady=5) 
-    friend_requests_button = tk.Button(button_frame, text="Friend Requests", command=view_friend_requests, font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
+    friend_requests_button = tk.Button(button_frame, text="Friend Requests", command=friendRequests, font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
     friend_requests_button.pack(pady=5) 
 
     button_frame2 = tk.Frame(profile_window, bg="#7171C6")

@@ -1,15 +1,16 @@
 import sys
 sys.path.append('../database/')
 sys.path.append('../functions/')
+sys.path.append('../classes/')
 import tkinter as tk
 from tkinter import messagebox
 from package import packagesWindow
 from PIL import Image, ImageTk
 from registAuthentication import registerUser
-from registAuthentication import check_username_existence, check_email_existence
 from dbConnection import create_connection
-from beneficiary import beneficiaryWindow
+from beneficiaryGUI import beneficiaryWindow
 from partner import partnerWindow
+from user import User
 
 def register(username_entry, name_entry, lastname_entry, email_entry, password_entry, repeat_password_entry, role_var, location_entry, registration_window):
     connection = create_connection()
@@ -31,11 +32,11 @@ def register(username_entry, name_entry, lastname_entry, email_entry, password_e
         messagebox.showerror("Registration Error", "Passwords do not match.")
         return
 
-    if check_username_existence(username):
+    if User.check_username_existence(username):
         messagebox.showerror("Registration Error", "Username already exists. Please choose a different one.")
         return
 
-    if check_email_existence(email):
+    if User.check_email_existence(email):
         messagebox.showerror("Registration Error", "Email already exists. Please use a different one.")
         return
 
@@ -43,8 +44,8 @@ def register(username_entry, name_entry, lastname_entry, email_entry, password_e
 
    # print(location)
     success, user_id = registerUser(username, name, lastname, email, password, role, location)
-    print(success)
-    print(user_id)
+    print(success, user_id)
+    print("eimai edw2")
     if success:
         messagebox.showinfo("Registration", "Registration Successful!")
         registration_window.destroy()

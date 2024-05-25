@@ -5,6 +5,7 @@ from subprocess import Popen
 import sys
 sys.path.append('../functions/')
 from loginAuthentication import authenticate
+from registration import registrationWindow
 from mainPage import mainPage
 from package import get_beneficiary_id
 
@@ -17,8 +18,10 @@ def login():
         messagebox.showerror("Login Error", "Please enter both username and password.")
         return
 
+#SEPARATION MUST BE DONE BETWEEN THE BUSINESS PARTNER AND BENEFICIARIES 
+
     success, user_id = authenticate(username, password)
-    if success: 
+    if success: # ONLY BENEFICIARIES FOR NOW 
         beneficiary_id = get_beneficiary_id(user_id) 
         messagebox.showinfo("Login", "Login Successful!")
         root.destroy()

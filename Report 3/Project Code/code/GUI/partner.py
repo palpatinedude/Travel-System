@@ -1,37 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from dbConnection import create_connection
-
-def partnerDetails(user_id, tax_code_entry, registration_number_entry, website_entry, description_entry, partner_window):
-    tax_code = tax_code_entry.get()
-    registration_number = registration_number_entry.get()
-    website = website_entry.get()
-    description = description_entry.get("1.0", "end-1c")  
-
-    if not all([tax_code, registration_number, website, description]):
-        messagebox.showerror("Input Error", "Please fill in all fields.")
-        return
-
-    connection = create_connection()
-    cursor = connection.cursor()
-
-    try:
-        partner_query = """
-        UPDATE BusinessPartner 
-        SET tax_code = %s, registration_number = %s, website = %s, description = %s
-        WHERE user_id = %s
-        """
-        cursor.execute(partner_query, (tax_code, registration_number, website, description, user_id))
-        connection.commit()
-        messagebox.showinfo("Success", "Partner details updated successfully.")
-    except Exception as e:
-        messagebox.showerror("Database Error", f"An error occurred: {e}")
-        connection.rollback()
-    finally:
-        cursor.close()
-        connection.close()
-
-    partner_window.destroy()
+from partnerDetails import partnerDetails
 
 def partnerWindow(role, user_id):
     partner_window = tk.Tk()

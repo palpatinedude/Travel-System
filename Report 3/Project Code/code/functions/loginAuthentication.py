@@ -1,6 +1,8 @@
 import sys
 sys.path.append('../database/')
+sys.path.append('../classes/')
 from dbConnection import create_connection
+from user import User
 
 # function to authenticate user login
 def authenticate(username, password):
@@ -12,11 +14,12 @@ def authenticate(username, password):
                 cursor.execute("SELECT user_id FROM User WHERE username = %s AND password = %s", (username, password))
                 result = cursor.fetchone()
                 if result:
-                    user_id = result[0]
+                   user_id = result[0]
+                   user = User(user_id=user_id)
         except Exception as e:
             print(f"Error: {e}")
         finally:
             connection.close()
     
-    # Return authentication result and user_id
+
     return user_id is not None, user_id

@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../classes/')
+sys.path.append('../database/')
 import tkinter as tk
 from tkinter import messagebox
 from dbConnection import create_connection
@@ -6,6 +9,9 @@ import random
 import string
 import barcode
 from barcode.writer import ImageWriter
+from membership import Membership
+from card import Card
+from points import Points
 
 def generate_isbn13_barcode():
     # generate a random 12-digit number exclude the check digit
@@ -47,18 +53,26 @@ def continueRegistration(selected_membership, user_id, duration):
     if connection:
         try:
             with connection.cursor() as cursor:
-                # insert membership
-                cursor.execute("INSERT INTO Membership (membership_type, duration, membership_status, created_date) VALUES (%s, %s, %s, %s)", (selected_membership, duration, "Active", datetime.date.today()))
-                membership_id = cursor.lastrowid
+                # create a membership instance
+                membership = Membership(
+                    membership_type=selected_membership,
+                    duration=duration,
+                    membership_status="Active",
+                    created_date=datetime.date.today()
+                )
+
+                # insert membership details into the database
+                membership.save()
+                membership_id = membership.membership_id
 
                 # assign membership to user
                 cursor.execute("UPDATE User SET membership_id = %s WHERE user_id = %s", (membership_id, user_id))
 
-                # find beneficiary_id associated with user_id
+                # beneficiary_id associated with user_id
                 cursor.execute("SELECT beneficiary_id FROM Beneficiary WHERE user_id = %s", (user_id,))
-                beneficiary_id = cursor.fetchone()[0] 
+                beneficiary_id = cursor.fetchone()[0]
 
-                # generate and insert card details only for Basic and Premium memberships
+                # generate and insert card details only for basic and premium memberships
                 if selected_membership in ['Basic', 'Premium']:
                     # generate unique card number and barcode
                     card_number = generate_unique_card_number(cursor)
@@ -66,16 +80,22 @@ def continueRegistration(selected_membership, user_id, duration):
 
                     # calculate expiration date
                     expiration_date = calculate_expiration_date(duration)
+                    print("edw einai h karta")
+                    # card instance
+                    card = Card(beneficiary_id=beneficiary_id, cardnumber=card_number, barcode=isbn13_number, expiration_date=expiration_date)
 
-                    # insert card
-                    cursor.execute("INSERT INTO Card (beneficiary_id, cardnumber, barcode, expiration_date) VALUES (%s, %s, %s, %s)", (beneficiary_id, card_number, isbn13_number, expiration_date))
+                    # insert card details into the database
+                    card.save()
 
                     # fetch card_id after inserting the card record
-                    card_id = cursor.lastrowid 
+                    card_id = card.card_id
 
-                    # insert initial points entry
+                    # points instance for initial points entry
                     initial_points = 0
-                    cursor.execute("INSERT INTO Points (card_id, points, available_coupons) VALUES (%s, %s, %s)", (card_id, initial_points, ''))
+                    points = Points(card_id=card_id, points=initial_points, available_coupons='')
+
+                    # insert initial points entry into the database
+                    points.save()
 
                 connection.commit()
                 messagebox.showinfo("Membership Assigned", f"{selected_membership} membership has been assigned to the user.")
@@ -89,4 +109,3 @@ def continueRegistration(selected_membership, user_id, duration):
     else:
         messagebox.showerror("Database Error", "Failed to connect to the database.")
         return False
-

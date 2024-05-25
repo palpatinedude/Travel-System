@@ -1,22 +1,9 @@
+import sys
+sys.path.append("../functions/")
+sys.path.append("../classes/")
 import tkinter as tk
-from dbConnection import create_connection
 from tkinter import PhotoImage
-
-# function to retrieve points for a beneficiary from the database
-def getPoints(beneficiary_id):
-    connection = create_connection()  
-    points = None
-    if connection:
-        try:
-            with connection.cursor() as cursor:
-                # Query to retrieve points for the beneficiary
-                cursor.execute("SELECT points FROM Points WHERE card_id IN (SELECT card_id FROM Card WHERE beneficiary_id = %s)", (beneficiary_id,))
-                points = cursor.fetchone()  # Fetch the points
-        except Exception as e:
-            print(f"Error: {e}")
-        finally:
-            connection.close()  
-    return points
+from points import Points
 
 def displayPoints(beneficiary_id):
     points_window = tk.Tk()
@@ -35,7 +22,8 @@ def displayPoints(beneficiary_id):
     my_points_label = tk.Label(points_window, text="My Points", font=("Arial", 16), bg="#33A1C9", fg="black")
     my_points_label.pack(pady=20)
 
-    points = getPoints(beneficiary_id)
+    points_instance = Points()
+    points = points_instance.getPoints(beneficiary_id)
     
     points_value = points[0] if points else 0
     points_info_label = tk.Label(points_window, text=f"{points_value}", font=("Arial", 14), bg="#33A1C9", fg="black")

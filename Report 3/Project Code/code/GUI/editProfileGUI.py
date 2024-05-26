@@ -25,7 +25,6 @@ def saveInfo(window, username_entry, password_entry, user_type, beneficiary_id, 
      certifications = certifications_entry.get()
      specialities = specialities_entry.get()
      languages_spoken = languages_entry.get()
-     # Update ServiceProvider record
      ServiceProvider.update(user_id, certifications=certifications, specialities=specialities, languages_spoken=languages_spoken)
 
     user = User.get_by_id(user_id)

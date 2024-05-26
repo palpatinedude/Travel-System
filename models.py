@@ -603,6 +603,119 @@ class DestinationGui:
 
 ############################################# FRIEND REQUESTING #############################################################################
 
+# class FriendRequestGUI:
+#     def __init__(self, root):
+#         self.root = root
+#         self.root.title("Friend Request System")
+#         self.root.geometry("400x300")  # Set window size
+
+#         self.connection = create_connection()  # Establish database connection
+
+#         self.main_frame = tk.Frame(root)
+#         self.main_frame.pack(expand=True, padx=20, pady=20)
+
+#         tk.Label(self.main_frame, text="Add Friends", font=("Arial", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
+
+#         self.search_entry = tk.Entry(self.main_frame, width=30)
+#         self.search_entry.grid(row=1, column=0, columnspan=2, pady=10)
+
+#         self.search_button = tk.Button(self.main_frame, text="Search", command=self.searchByUsername)
+#         self.search_button.grid(row=2, column=0, pady=10)
+
+#         self.add_button = tk.Button(self.main_frame, text="Add Friend", command=self.send_request)
+#         self.add_button.grid(row=2, column=1, pady=10)
+
+#         self.showAddFriends_button = tk.Button(self.main_frame, text="Load Friends", command=self.showAddFriends)
+#         self.showAddFriends_button.grid(row=3, column=0, columnspan=2, pady=10)
+        
+#         self.load_recommendations_button = tk.Button(self.main_frame, text="Load Recommended Friends", command=self.fetchRecommendedFriends)
+#         self.load_recommendations_button.grid(row=4, column=0, columnspan=2, pady=10)
+
+#     def searchByUsername(self):
+#         username = self.search_entry.get()
+#         if not username:
+#             messagebox.showerror("Error", "Please enter a username")
+#         else:
+#             cursor = self.connection.cursor()
+#             query = "SELECT * FROM User WHERE username = %s"
+#             cursor.execute(query, (username,))
+#             user = cursor.fetchone()  # Fetch the results
+#             cursor.close()  # Close the cursor after fetching results
+
+#             if user:
+#                 messagebox.showinfo("Info", f"User {username} found")
+#             else:
+#                 messagebox.showerror("Error", f"User {username} not found")
+
+#     def sendFriendRequest(self):    #kanonika prepei prwta na mpoume sto profil tou kathe xrhsth kai meta na kanoume to request
+#         username = self.search_entry.get()
+#         if not username:
+#             messagebox.showerror("Error", "Please enter a username")
+#             return
+
+#         cursor = self.connection.cursor()
+#         query = "SELECT user_id FROM User WHERE username = %s"
+#         cursor.execute(query, (username,))
+#         recipient = cursor.fetchone()
+#         cursor.close()
+
+#         if recipient:
+#             recipient_id = recipient[0]
+#             sender_id = config.current_user['user_id']  # Use the current logged-in user's ID
+#             cursor = self.connection.cursor()
+#             query = "INSERT INTO FriendRequest (user1_id, user2_id) VALUES (%s, %s)"
+#             cursor.execute(query, (sender_id, recipient_id))
+#             self.connection.commit()
+#             cursor.close()
+#             messagebox.showinfo("Info", f"Friend request sent to {username}")
+#         else:
+#             messagebox.showerror("Error", f"User {username} not found")
+
+#     def showAddFriends(self):
+#         user_id = config.current_user['user_id']  # Use the current logged-in user's ID
+#         cursor = self.connection.cursor()
+#         query = """
+#         SELECT u.username FROM FriendRequest fr
+#         JOIN User u ON fr.user2_id = u.user_id
+#         WHERE fr.user1_id = %s AND fr.status = 'accepted'
+#         """
+#         cursor.execute(query, (config.current_user['user_id'],))
+#         friends = cursor.fetchall()
+#         cursor.close()
+
+#         friends_list = [friend[0] for friend in friends]
+#         messagebox.showinfo("Friends List", "\n".join(friends_list) if friends_list else "You have no friends added yet.")
+
+
+#     def fetchRecommendedFriends(self):
+#         # Fetch recommended friends who are not already friends with the current user
+#         user_id = config.current_user['user_id']
+#         cursor = self.connection.cursor(dictionary=True)
+
+#         # Query to select recommended friends who are not already friends with the current user
+#         query = """
+#         SELECT u.user_id, u.username 
+#         FROM User u
+#         WHERE u.user_id NOT IN (
+#             SELECT user2_id 
+#             FROM FriendRequest 
+#             WHERE user1_id = %s
+#         ) AND u.user_id != %s
+#         LIMIT 2
+#         """
+#         cursor.execute(query, (user_id, user_id))
+
+#         recommended_friends = cursor.fetchall()
+#         cursor.close()
+
+#         if recommended_friends:
+#             for i, friend in enumerate(recommended_friends):
+#                 # Create buttons for recommended friends
+#                 friend_button = tk.Button(self.main_frame, text=friend['username'], command=lambda id=friend['user_id']: self.sendFriendRequest(id))
+#                 friend_button.grid(row=5+i, column=0, columnspan=2, pady=5)
+#         else:
+#             messagebox.showinfo("Recommended Friends", "No recommended friends found.")
+
 class FriendRequestGUI:
     def __init__(self, root):
         self.root = root
@@ -622,7 +735,7 @@ class FriendRequestGUI:
         self.search_button = tk.Button(self.main_frame, text="Search", command=self.searchByUsername)
         self.search_button.grid(row=2, column=0, pady=10)
 
-        self.add_button = tk.Button(self.main_frame, text="Add Friend", command=self.send_request)
+        self.add_button = tk.Button(self.main_frame, text="Add Friend", command=self.displayConfirmationDialog)
         self.add_button.grid(row=2, column=1, pady=10)
 
         self.showAddFriends_button = tk.Button(self.main_frame, text="Load Friends", command=self.showAddFriends)
@@ -634,58 +747,67 @@ class FriendRequestGUI:
     def searchByUsername(self):
         username = self.search_entry.get()
         if not username:
-            messagebox.showerror("Error", "Please enter a username")
-        else:
-            cursor = self.connection.cursor()
-            query = "SELECT * FROM User WHERE username = %s"
-            cursor.execute(query, (username,))
-            user = cursor.fetchone()  # Fetch the results
-            cursor.close()  # Close the cursor after fetching results
-
-            if user:
-                messagebox.showinfo("Info", f"User {username} found")
-            else:
-                messagebox.showerror("Error", f"User {username} not found")
-
-    def send_request(self):    #kanonika prepei prwta na mpoume sto profil tou kathe xrhsth kai meta na kanoume to request
-        username = self.search_entry.get()
-        if not username:
-            messagebox.showerror("Error", "Please enter a username")
+            messagebox.showerror("Error", "You haven't typed anything, please write a username.")
             return
 
-        cursor = self.connection.cursor()
-        query = "SELECT user_id FROM User WHERE username = %s"
+        cursor = self.connection.cursor(dictionary=True)
+        query = "SELECT * FROM User WHERE username = %s"
         cursor.execute(query, (username,))
-        recipient = cursor.fetchone()
+        user = cursor.fetchone()  # Fetch the results
+        cursor.close()  # Close the cursor after fetching results
+
+        if user:
+            self.displayUserProfile(user)
+        else:
+            messagebox.showerror("Error", "There isn't a user with such a username!")
+
+    def displayUserProfile(self, user):
+        profile_window = tk.Toplevel(self.root)
+        profile_window.title(f"{user['username']}'s Profile")
+        profile_window.geometry("300x200")
+
+        tk.Label(profile_window, text=f"Username: {user['username']}").pack(pady=10)
+        tk.Button(profile_window, text="Send Friend Request", command=lambda: self.sendFriendRequest(user)).pack(pady=10)
+
+    def sendFriendRequest(self, user):
+        sender_id = config.current_user['user_id']  # Use the current logged-in user's ID
+        recipient_id = user['user_id']
+        cursor = self.connection.cursor()
+        query = "INSERT INTO FriendRequest (user1_id, user2_id, status) VALUES (%s, %s, 'pending')"
+        cursor.execute(query, (sender_id, recipient_id))
+        self.connection.commit()
         cursor.close()
 
-        if recipient:
-            recipient_id = recipient[0]
-            sender_id = config.current_user['user_id']  # Use the current logged-in user's ID
-            cursor = self.connection.cursor()
-            query = "INSERT INTO FriendRequest (user1_id, user2_id) VALUES (%s, %s)"
-            cursor.execute(query, (sender_id, recipient_id))
-            self.connection.commit()
-            cursor.close()
-            messagebox.showinfo("Info", f"Friend request sent to {username}")
-        else:
-            messagebox.showerror("Error", f"User {username} not found")
+        self.displayConfirmationDialog()
 
+    def displayConfirmationDialog(self):
+        confirmation = messagebox.askyesno("Confirmation", "Do you want to send a friend request?")
+        if confirmation:
+            self.confirmFriendRequest()
+        else:
+            self.cancelFriendRequest()
+
+    def confirmFriendRequest(self):
+        messagebox.showinfo("Info", "Your friend request has been sent.")
+        
+    def cancelFriendRequest(self):
+        messagebox.showinfo("Info", "Friend request cancelled.")
+        
     def showAddFriends(self):
         user_id = config.current_user['user_id']  # Use the current logged-in user's ID
-        cursor = self.connection.cursor()
+        cursor = self.connection.cursor(dictionary=True)
         query = """
-        SELECT u.username FROM FriendRequest fr
+        SELECT u.username 
+        FROM FriendRequest fr
         JOIN User u ON fr.user2_id = u.user_id
         WHERE fr.user1_id = %s AND fr.status = 'accepted'
         """
-        cursor.execute(query, (config.current_user['user_id'],))
+        cursor.execute(query, (user_id,))
         friends = cursor.fetchall()
         cursor.close()
 
-        friends_list = [friend[0] for friend in friends]
+        friends_list = [friend['username'] for friend in friends]
         messagebox.showinfo("Friends List", "\n".join(friends_list) if friends_list else "You have no friends added yet.")
-
 
     def fetchRecommendedFriends(self):
         # Fetch recommended friends who are not already friends with the current user
@@ -711,7 +833,7 @@ class FriendRequestGUI:
         if recommended_friends:
             for i, friend in enumerate(recommended_friends):
                 # Create buttons for recommended friends
-                friend_button = tk.Button(self.main_frame, text=friend['username'], command=lambda id=friend['user_id']: self.send_request(id))
+                friend_button = tk.Button(self.main_frame, text=friend['username'], command=lambda id=friend['user_id']: self.displayUserProfile(friend))
                 friend_button.grid(row=5+i, column=0, columnspan=2, pady=5)
         else:
             messagebox.showinfo("Recommended Friends", "No recommended friends found.")

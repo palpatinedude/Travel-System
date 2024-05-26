@@ -43,4 +43,5 @@ Membership
 >>> Files:(σημειώσεις) (φαίνονται και στο github)
 
 >>> Comments:
+στο registration.py στο entry location σωστό format country(space) ,(space) city .
 

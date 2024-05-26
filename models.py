@@ -716,80 +716,129 @@ class FriendRequestGUI:
         else:
             messagebox.showinfo("Recommended Friends", "No recommended friends found.")
 
-############################### CHATTING GUI ##########################################
+# ############################### CHATTING GUI ##########################################
 
-class ChattingGUI:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Chatting")
-        self.root.geometry("400x300")  # Set window size
+# class ChattingGUI:
+#     def __init__(self, root):
+#         self.root = root
+#         self.root.title("Chatting")
+#         self.root.geometry("400x300")  # Set window size
 
-        self.connection = create_connection()  # Establish database connection
+#         self.connection = create_connection()  # Establish database connection
 
-        self.main_frame = tk.Frame(root)
-        self.main_frame.pack(expand=True, padx=20, pady=20)
+#         self.main_frame = tk.Frame(root)
+#         self.main_frame.pack(expand=True, padx=20, pady=20)
 
-        tk.Label(self.main_frame, text="Chat with Friends", font=("Arial", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
+#         tk.Label(self.main_frame, text="Chat with Friends", font=("Arial", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
 
 
-        # Load friends of the current user
-        self.friends = self.showFriends()
+#         # Load friends of the current user
+#         self.friends = self.showFriends()
 
-        if self.friends:
-            self.showFriendsPage()
-        else:
-            self.noFriendsMsg()
+#         if self.friends:
+#             self.showFriendsPage()
+#         else:
+#             self.noFriendsMsg()
 
-    def areFriends(self, friend_id):
-        # Function to check if selected user is a friend of the current user
-        # You can implement this function based on your database schema
-        pass
+#     def areFriends(self, friend_id):
+#         # Function to check if selected user is a friend of the current user
+#         # You can implement this function based on your database schema
+#         pass
 
-    def showFriends(self):
-        # Function to display the list of friends of the current user
-        # You can implement this function based on your database schema
-        pass
+#     def showFriends(self):
+#         # Function to display the list of friends of the current user
+#         # You can implement this function based on your database schema
+#         pass
 
-    def noFriendsMsg(self):
-        # Function to display a message if the user has no friends yet
-        messagebox.showinfo("No Friends", "You haven't added any friends yet.")
+#     def noFriendsMsg(self):
+#         # Function to display a message if the user has no friends yet
+#         messagebox.showinfo("No Friends", "You haven't added any friends yet.")
 
-    def loadChat(self, friend_id):
-        # Function to load chat history between current user and selected friend
-        # You can implement this function based on your database schema
-        pass
+#     def loadChat(self, friend_id):
+#         # Function to load chat history between current user and selected friend
+#         # You can implement this function based on your database schema
+#         pass
 
-    def returnMessages(self, friend_id):
-        # Function to return messages exchanged with the selected friend
-        # You can implement this function based on your database schema
-        pass
+#     def returnMessages(self, friend_id):
+#         # Function to return messages exchanged with the selected friend
+#         # You can implement this function based on your database schema
+#         pass
 
-    def createChat(self, friend_id):
-        # Function to create a chat window with the selected friend
-        # You can implement this function based on your GUI requirements
-        pass
+#     def createChat(self, friend_id):
+#         # Function to create a chat window with the selected friend
+#         # You can implement this function based on your GUI requirements
+#         pass
 
-    def sendMessages(self, friend_id, message):
-        # Function to send a message to the selected friend
-        # You can implement this function based on your database schema
-        pass
+#     def sendMessages(self, friend_id, message):
+#         # Function to send a message to the selected friend
+#         # You can implement this function based on your database schema
+#         pass
 
-    def updateChat(self, friend_id, message):
-        # Function to update chat history after sending a message
-        # You can implement this function based on your database schema
-        pass
+#     def updateChat(self, friend_id, message):
+#         # Function to update chat history after sending a message
+#         # You can implement this function based on your database schema
+#         pass
 
-    def emptyMsg(self, message):
-        # Function to check if the message is empty
-        return not message.strip()
+#     def emptyMsg(self, message):
+#         # Function to check if the message is empty
+#         return not message.strip()
 
-    def showFriendsPage(self):
-        # Function to display the friends page
-        # Implement the GUI layout and functionality here
-        pass
+#     def showFriendsPage(self):
+#         # Function to display the friends page
+#         # Implement the GUI layout and functionality here
+#         pass
 
-########################################## SOCIAL BONDING ############################################
+# ########################################## SOCIAL BONDING ############################################
 
+
+# class SocialBondingGUI:
+#     def __init__(self, root):
+#         self.root = root
+#         self.root.title("Social Bonding")
+#         self.root.geometry("360x640")
+        
+#         self.connection = create_connection()  # Establish database connection
+
+#         self.main_frame = tk.Frame(root)
+#         self.main_frame.pack(expand=True, padx=20, pady=20)
+
+#         # Top-right corner square for chat
+#         self.chat_button = tk.Button(self.main_frame, text="Chat", bg="white", command=self.open_chat)
+#         self.chat_button.place(x=300, y=0, width=50, height=50)
+
+#         # Buttons
+#         self.friends_button = tk.Button(self.main_frame, text="My Friends", bg="light blue", command=self.show_friends)
+#         self.friends_button.pack(fill=tk.X, pady=10)
+
+#         self.add_friends_button = tk.Button(self.main_frame, text="Add Friends", bg="light blue", command=self.add_friends)
+#         self.add_friends_button.pack(fill=tk.X, pady=10)
+
+#         self.people_near_me_button = tk.Button(self.main_frame, text="People Near Me", bg="light blue", command=self.show_people_near_me)
+#         self.people_near_me_button.pack(fill=tk.X, pady=10)
+
+#     def create_connection(self):
+#         # Implement the method to create a connection to your database
+#         pass
+
+#     def open_chat(self):
+#         # Implement the method to open chat
+#         messagebox.showinfo("Chat", "Opening chat window...")
+
+#     def show_friends(self):
+#         # Implement the method to show friends
+#         messagebox.showinfo("My Friends", "Showing list of friends...")
+
+#     def add_friends(self):
+#         # Implement the method to add friends
+#         messagebox.showinfo("Add Friends", "Navigating to add friends...")
+
+#     def show_people_near_me(self):
+#         # Implement the method to show people near me
+#         messagebox.showinfo("People Near Me", "Showing people near me...")
+
+
+
+################
 
 class SocialBondingGUI:
     def __init__(self, root):
@@ -816,17 +865,40 @@ class SocialBondingGUI:
         self.people_near_me_button = tk.Button(self.main_frame, text="People Near Me", bg="light blue", command=self.show_people_near_me)
         self.people_near_me_button.pack(fill=tk.X, pady=10)
 
-    def create_connection(self):
-        # Implement the method to create a connection to your database
-        pass
-
     def open_chat(self):
         # Implement the method to open chat
-        messagebox.showinfo("Chat", "Opening chat window...")
+        root = tk.Toplevel(self.root)
+        chat_app = ChattingGUI(root)
+        root.mainloop()
 
     def show_friends(self):
-        # Implement the method to show friends
-        messagebox.showinfo("My Friends", "Showing list of friends...")
+        user_id = config.current_user['user_id']  # Use the current logged-in user's ID
+        cursor = self.connection.cursor(dictionary=True)
+        query = """
+        SELECT u.user_id, u.username 
+        FROM User u
+        JOIN FriendRequest fr ON fr.user2_id = u.user_id
+        WHERE fr.user1_id = %s AND fr.status = 'accepted'
+        """
+        cursor.execute(query, (user_id,))
+        friends = cursor.fetchall()
+        cursor.close()
+
+        if friends:
+            friends_window = tk.Toplevel(self.root)
+            friends_window.title("My Friends")
+            friends_window.geometry("300x400")
+
+            for i, friend in enumerate(friends):
+                friend_button = tk.Button(friends_window, text=friend['username'], command=lambda id=friend['user_id']: self.open_chat_with_friend(id))
+                friend_button.pack(fill=tk.X, pady=5)
+        else:
+            messagebox.showinfo("No Friends", "You haven't added any friends yet.")
+
+    def open_chat_with_friend(self, friend_id):
+        root = tk.Toplevel(self.root)
+        chat_app = ChattingGUI(root, friend_id)
+        root.mainloop()
 
     def add_friends(self):
         # Implement the method to add friends
@@ -836,6 +908,126 @@ class SocialBondingGUI:
         # Implement the method to show people near me
         messagebox.showinfo("People Near Me", "Showing people near me...")
 
+class ChattingGUI:
+    def __init__(self, root, friend_id=None):
+        self.root = root
+        self.root.title("Chatting")
+        self.root.geometry("400x300")  # Set window size
 
+        self.connection = create_connection()  # Establish database connection
+        self.friend_id = friend_id
 
+        self.main_frame = tk.Frame(root)
+        self.main_frame.pack(expand=True, padx=20, pady=20)
 
+        tk.Label(self.main_frame, text="Chat with Friends", font=("Arial", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
+
+        # Load friends of the current user
+        self.friends = self.showFriends()
+
+        if self.friends:
+            self.showFriendsPage()
+        else:
+            self.noFriendsMsg()
+
+    def areFriends(self, friend_id):
+        # Function to check if selected user is a friend of the current user
+        user_id = config.current_user['user_id']
+        cursor = self.connection.cursor()
+        query = "SELECT * FROM FriendRequest WHERE user1_id = %s AND user2_id = %s AND status = 'accepted'"
+        cursor.execute(query, (user_id, friend_id))
+        result = cursor.fetchone()
+        cursor.close()
+        return result is not None
+
+    def showFriends(self):
+        user_id = config.current_user['user_id']
+        cursor = self.connection.cursor(dictionary=True)
+        query = """
+        SELECT u.user_id, u.username 
+        FROM User u
+        JOIN FriendRequest fr ON fr.user2_id = u.user_id
+        WHERE fr.user1_id = %s AND fr.status = 'accepted'
+        """
+        cursor.execute(query, (user_id,))
+        friends = cursor.fetchall()
+        cursor.close()
+        return friends
+
+    def noFriendsMsg(self):
+        # Function to display a message if the user has no friends yet
+        messagebox.showinfo("No Friends", "You haven't added any friends yet.")
+
+    def loadChat(self, friend_id):
+        # Function to load chat history between current user and selected friend
+        user_id = config.current_user['user_id']
+        cursor = self.connection.cursor(dictionary=True)
+        query = "SELECT * FROM ChatMessage WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY timestamp"
+        cursor.execute(query, (user_id, friend_id, friend_id, user_id))
+        messages = cursor.fetchall()
+        cursor.close()
+        return messages
+
+    def returnMessages(self, friend_id):
+        # Function to return messages exchanged with the selected friend
+        messages = self.loadChat(friend_id)
+        return messages
+
+    def createChat(self, friend_id):
+        # Function to create a chat window with the selected friend
+        if not self.areFriends(friend_id):
+            messagebox.showerror("Error", "You are not friends with this user.")
+            return
+
+        chat_window = tk.Toplevel(self.root)
+        chat_window.title(f"Chat with {friend_id}")
+
+        chat_frame = tk.Frame(chat_window)
+        chat_frame.pack(expand=True, fill=tk.BOTH)
+
+        self.chat_text = tk.Text(chat_frame, state=tk.DISABLED)
+        self.chat_text.pack(expand=True, fill=tk.BOTH)
+
+        entry_frame = tk.Frame(chat_window)
+        entry_frame.pack(fill=tk.X)
+
+        self.message_entry = tk.Entry(entry_frame)
+        self.message_entry.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5, pady=5)
+
+        send_button = tk.Button(entry_frame, text="Send", command=lambda: self.sendMessages(friend_id))
+        send_button.pack(side=tk.RIGHT, padx=5, pady=5)
+
+        self.loadChat(friend_id)
+
+    def sendMessages(self, friend_id):
+        # Function to send a message to the selected friend
+        message = self.message_entry.get()
+        if self.emptyMsg(message):
+            messagebox.showerror("Error", "The message can't be empty.")
+            return
+
+        user_id = config.current_user['user_id']
+        cursor = self.connection.cursor()
+        query = "INSERT INTO ChatMessage (sender_id, receiver_id, message) VALUES (%s, %s, %s)"
+        cursor.execute(query, (user_id, friend_id, message))
+        self.connection.commit()
+        cursor.close()
+
+        self.message_entry.delete(0, tk.END)
+        self.updateChat(friend_id, message)
+
+    def updateChat(self, friend_id, message):
+        # Function to update chat history after sending a message
+        self.chat_text.config(state=tk.NORMAL)
+        self.chat_text.insert(tk.END, f"You: {message}\n")
+        self.chat_text.config(state=tk.DISABLED)
+
+    def emptyMsg(self, message):
+        # Function to check if the message is empty
+        return not message.strip()
+
+    def showFriendsPage(self):
+        # Function to display the friends page
+        for i, friend in enumerate(self.friends):
+            friend_button = tk.Button(self.main_frame, text=friend['username'], command=lambda id=friend['user_id']: self.createChat(id))
+            friend_button.grid(row=1+i, column=0, columnspan=2, pady=5)

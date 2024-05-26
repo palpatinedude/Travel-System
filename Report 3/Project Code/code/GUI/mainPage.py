@@ -18,10 +18,10 @@ def exploreDestinationAction(window):
 
 def socialBondingAction(window):
     print("Social Bonding action")
-        if config.current_user:
-        root = tk.Tk()
-        app = SocialBondingGUI(root)
-        root.mainloop()
+    if config.current_user:
+     root = tk.Tk()
+     app = SocialBondingGUI(root)
+     root.mainloop()
 
 def entertainmentAction(window):
     print("Entertainment action")

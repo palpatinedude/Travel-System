@@ -1,22 +1,12 @@
 project_directory/
 │
-├── gui/
-|   ├── images/  
-│   ├── login.py
-│   ├── registration.py
+├── GUI/
 │   
-│
 ├── classes/
-│   ├── user.py
-│   
 │  
-│
 ├── functions/
-│   ├── loginAuthentication.py
 │
 ├── database/
-│   ├── db_connection.py
-│   ├── create_tables.sql
-│   └── other_database_files.py
-│
-└── main.py
+│   
+├── images/
+│ 

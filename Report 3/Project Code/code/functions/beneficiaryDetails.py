@@ -6,7 +6,7 @@ from datetime import datetime
 from tkinter import messagebox
 from simpleUser import SimpleUser
 from serviceProvider import ServiceProvider
-from simpleUser import SimpleUser
+
 
 def beneficiaryDetails(user_id, beneficiary_type, dob_entry, address_entry, contact_number_entry, additional_entries, window):
     dob = dob_entry.get()

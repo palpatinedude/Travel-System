@@ -1,7 +1,7 @@
 import tkinter as tk
-from card import displayCard
-from points import displayPoints
-from profile import displayProfile
+from cardGUI import displayCard
+from pointsGUI import displayPoints
+from profileGUI import showProfile
 
 def exploreDestinationAction(window):
     print("Explore Destination action")
@@ -15,10 +15,10 @@ def entertainmentAction(window):
 def mapAction(window):
     print("Map action")
 
-def profileAction(window):
+def profileAction(window,beneficiary_id):
     print("Profile action")
     window.destroy() 
-    displayProfile()
+    showProfile(beneficiary_id)
 
 def destinationAction(window):
     print("Destination action")
@@ -53,7 +53,7 @@ def mainPage(beneficiary_id):
     destination_button = tk.Button(top_frame, text="Destination", command=lambda: destinationAction(main_window), width=10, height=2, bg="#848484", fg="white")
     destination_button.grid(row=0, column=1, padx=10, pady=10)
 
-    profile_button = tk.Button(top_frame, text="Profile", command=lambda: profileAction(main_window), width=10, height=2, bg="#848484", fg="white")
+    profile_button = tk.Button(top_frame, text="Profile", command=lambda: profileAction(main_window,beneficiary_id), width=10, height=2, bg="#848484", fg="white")
     profile_button.grid(row=0, column=2, padx=50, pady=10)
 
 

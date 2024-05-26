@@ -46,13 +46,25 @@ class User:
     @classmethod
     def get_by_id(cls, user_id):
         connection = create_connection()
-        cursor = connection.cursor(dictionary=True)
+        cursor = connection.cursor()
         query = "SELECT * FROM User WHERE user_id = %s"
         cursor.execute(query, (user_id,))
         row = cursor.fetchone()
         cursor.close()
         if row:
-            return cls(**row)
+          user_data = {
+            'user_id': row[0],
+            'username': row[1],
+            'name': row[2],
+            'lastname': row[3],
+            'email': row[4],
+            'password': row[5],
+            'role': row[6],
+            'country_id': row[7],
+            'city_id': row[8],
+            'membership_id': row[9]
+        }
+          return cls(**user_data)
         return None
 
     @staticmethod
@@ -96,4 +108,16 @@ class User:
                 connection.close()
         else:
             print("Connection to the database failed.")
-            return True     
+            return True    
+
+
+    def update(self):
+        if self.user_id is not None:
+            connection = create_connection()
+            cursor = connection.cursor()
+            query = """UPDATE User SET username=%s, name=%s, lastname=%s, email=%s, password=%s, role=%s, country_id=%s, city_id=%s, membership_id=%s 
+                       WHERE user_id=%s"""
+            values = (self.username, self.name, self.lastname, self.email, self.password, self.role, self.country_id, self.city_id, self.membership_id, self.user_id)
+            cursor.execute(query, values)
+            connection.commit()
+            cursor.close()         

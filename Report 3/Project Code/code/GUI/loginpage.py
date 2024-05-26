@@ -7,6 +7,7 @@ sys.path.append('../functions/')
 from loginAuthentication import authenticate
 from registration import registrationWindow
 from mainPage import mainPage
+import config
 from package import get_beneficiary_id
 
 def login():
@@ -16,6 +17,15 @@ def login():
 
     if not username or not password:
         messagebox.showerror("Login Error", "Please enter both username and password.")
+        return
+
+    if authenticate(username, password):
+        messagebox.showinfo("Login", "Login Successful!")
+        print("Logged in user:", config.current_user)  # print logged in user info
+        root.destroy()
+        mainPage()
+    else:
+        messagebox.showerror("Login Error", "Invalid username or password.")
         return
 
 #SEPARATION MUST BE DONE BETWEEN THE BUSINESS PARTNER AND BENEFICIARIES 

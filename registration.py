@@ -8,8 +8,8 @@ from PIL import Image, ImageTk
 from registAuthentication import registerUser
 from registAuthentication import check_username_existence, check_email_existence
 from db_connector import create_connection
-from beneficiary import beneficiaryWindow
-from partner import partnerWindow
+# from beneficiaryGUI import beneficiaryWindow
+# from partner import partnerWindow
 
 def register(username_entry, name_entry, lastname_entry, email_entry, password_entry, repeat_password_entry, role_var, location_entry, registration_window):
     connection = create_connection()

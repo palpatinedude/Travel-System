@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import messagebox
 import config
 from loginpage import root as login_root
-from models import Response, User, ReviewApp, ChattingGUI, SocialBondingGUI
+from models import  ReviewApp, ChattingGUI, SocialBondingGUI
 
 # ########################################################################################################
 

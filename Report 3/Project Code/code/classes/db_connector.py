@@ -8,7 +8,7 @@ def create_connection():
             host='localhost',
             user='root',
             password='4655',
-            database='od'
+            database='odyssey'
         )
         if connection.is_connected():
             print("Connected to the database")

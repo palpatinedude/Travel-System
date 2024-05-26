@@ -9,7 +9,6 @@ CREATE TABLE Country (
     currency VARCHAR(255)
 );
 
-
 CREATE TABLE City (
     city_id INT PRIMARY KEY AUTO_INCREMENT,
     city_name VARCHAR(255) NOT NULL,
@@ -35,6 +34,7 @@ CREATE TABLE Membership (
     membership_type ENUM('Basic', 'Premium', 'Professional'),
     duration ENUM('Monthly', '6-monthly', 'One year'),
     membership_status VARCHAR(255),
+    description TEXT,
     created_date DATE
 );
 CREATE TABLE User (
@@ -47,7 +47,8 @@ CREATE TABLE User (
     role ENUM('admin', 'beneficiary', 'partner') NOT NULL,
     country_id INT,
     city_id INT,
-    FOREIGN KEY (membership_id) REFERENCES Membership(membership_id)
+    membership_id INT,
+    FOREIGN KEY (membership_id) REFERENCES Membership(membership_id),
     FOREIGN KEY (country_id) REFERENCES Country(country_id),
     FOREIGN KEY (city_id) REFERENCES City(city_id)
 );
@@ -126,15 +127,14 @@ CREATE TABLE Beneficiary (
     date_of_birth DATE,
     address VARCHAR(255),
     contact_number VARCHAR(20),
-    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
-    
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
 );
 
 
 CREATE TABLE SimpleUser (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     beneficiary_id INT UNIQUE,
-    bistory TEXT,
+    history TEXT,
     preferences TEXT, 
     FOREIGN KEY (beneficiary_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE
 );
@@ -158,8 +158,6 @@ CREATE TABLE Service (
     FOREIGN KEY (location_id) REFERENCES Location(location_id) ON DELETE SET NULL,
     FOREIGN KEY (provider_id) REFERENCES ServiceProvider(provider_id) ON DELETE CASCADE
  );
-
-
 
 
 CREATE TABLE Accommodation (
@@ -196,8 +194,11 @@ CREATE TABLE Card (
     cardnumber VARCHAR(16) UNIQUE,
     barcode VARCHAR(50) NOT NULL,
     expiration_date DATE NOT NULL,
-    FOREIGN KEY (beneficiary_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE
+    FOREIGN KEY (beneficiary_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE,
+    FOREIGN KEY (card_id) REFERENCES Membership(membership_id)
+
 );
+
 
 CREATE TABLE Points (
     points_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -207,20 +208,14 @@ CREATE TABLE Points (
     FOREIGN KEY (card_id) REFERENCES Card(card_id) ON DELETE CASCADE
 );
 
-
-
 CREATE TABLE PointsHistory (
     transaction_id INT PRIMARY KEY AUTO_INCREMENT,
     points_id INT,
-    beneficiary_id INT,
-    business_id INT,
+    transaction_type ENUM('earn', 'spend') NOT NULL,
     points_change INT NOT NULL,
-    scan_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (points_id) REFERENCES Points(points_id) ON DELETE CASCADE,
-    FOREIGN KEY (beneficiary_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE,
-    FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
+    transaction_date DATETIME NOT NULL,
+    FOREIGN KEY (points_id) REFERENCES Points(points_id) ON DELETE CASCADE
 );
-
 
 
 

@@ -2,12 +2,22 @@ import tkinter as tk
 from card import displayCard
 from points import displayPoints
 from profile import displayProfile
+import config
+from models import SocialBondingGUI, ReviewApp
 
 def exploreDestinationAction(window):
     print("Explore Destination action")
+    if config.current_user:
+        root = tk.Tk()
+        app = ReviewApp(root)
+        root.mainloop()
 
 def socialBondingAction(window):
     print("Social Bonding action")
+        if config.current_user:
+        root = tk.Tk()
+        app = SocialBondingGUI(root)
+        root.mainloop()
 
 def entertainmentAction(window):
     print("Entertainment action")

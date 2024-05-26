@@ -1,6 +1,6 @@
 import sys,os
 import mysql.connector
-from models import Response, User, ChatMessage, ReviewApp, ChattingGUI, SocialBondingGUI
+from models import ReviewApp, ChattingGUI, SocialBondingGUI
 import config
 from loginpage import root as login_root
 import tkinter as tk

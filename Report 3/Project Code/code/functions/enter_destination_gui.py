@@ -1,6 +1,6 @@
 import sys,os
 import mysql.connector
-from models import ReviewApp, User, ChatMessage, FriendRequest, Beneficiary, DestinationGui
+from models import DestinationGui
 import tkinter as tk
 from tkinter import messagebox
 import config

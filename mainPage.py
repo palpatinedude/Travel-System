@@ -1,9 +1,13 @@
 import tkinter as tk
 import config
-from models import SocialBondingGUI
+from models import SocialBondingGUI, ReviewApp
 
 def exploreDestinationAction():
     print("Explore Destination action")
+    if config.current_user:
+        root = tk.Tk()
+        app = ReviewApp(root)
+        root.mainloop()
 
 def socialBondingAction():
     print("Social Bonding action")

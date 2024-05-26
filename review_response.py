@@ -3,30 +3,20 @@ import os
 import mysql.connector
 import tkinter as tk
 from tkinter import messagebox
-from models import Response, User, ReviewApp
-
-# # #connect to MySQL
-# # mydb = mysql.connector.connect(
-# # host="localhost",
-# # user="root",
-# # passwd="4655",
-# # database="od"
-# # )
-
-# # #check if connection is established         #testing 
-# # if (mydb):
-# #     print("Connection Successful")
-# # else:
-# #     print("Connection Unsuccessful")
-
-# # #creating a cursor object using the cursor() method
-# # mycursor = mydb.cursor() #cursor object which is used to interact with the database
+import config
+from loginpage import root as login_root
+from models import Response, User, ReviewApp, ChattingGUI, SocialBondingGUI
 
 # ########################################################################################################
 
-#user login before accessing the review page
+def main():
+    login_root.mainloop()  # Run the login window
+    user_id = config.current_user
+
+    if config.current_user:
+        root = tk.Tk()
+        app = ReviewApp(root, user_id)
+        root.mainloop()
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = ReviewApp(root)
-    root.mainloop()
+    main()

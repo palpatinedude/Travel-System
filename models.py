@@ -1,9 +1,12 @@
 import tkinter as tk
-from tkinter import messagebox
+import os
+from tkinter import messagebox, ttk
 from db_connector import create_connection, close_connection
 # from mainPage import mainPage
 from tkinter import scrolledtext, Toplevel, Listbox, Button, Scrollbar
 import config
+import mysql.connector
+from mysql.connector import Error
 
 # class Review:
 #     def __init__(self, review_id=None, reviewer_id=None, reviewee_id=None, rating=None, review_text=None, review_date=None):
@@ -441,8 +444,9 @@ class Beneficiary:
 ########################################################## REVIEW GUI ##########################################################
 
 class ReviewApp:
-    def __init__(self, root):
+    def __init__(self, root, user_id):
         self.root = root
+        self.user_id = user_id  # Logged in user's ID
         self.root.title("Review Publication System")
         self.root.geometry("360x640")  # Set window size to simulate a phone screen
 
@@ -453,29 +457,46 @@ class ReviewApp:
         for i in range(5):
             self.review_frame.grid_rowconfigure(i, minsize=10)
 
-        tk.Label(self.review_frame,text="Please let us know about your experience!", bg='#118599', fg='white',font=('Arial',22,'bold'),wraplength=360,anchor='w',justify='left').grid(row=0, column=0, columnspan=6, padx=5, pady=5, sticky="ew")
-        tk.Label(self.review_frame,text="Leave your feedback and help us improve our services", bg='#118599', fg='white',font=('Arial',16),wraplength=360,anchor='w',justify='left').grid(row=1, column=0, columnspan=6, padx=5, pady=5, sticky="ew")
-
+        tk.Label(self.review_frame, text="Please let us know about your experience!", bg='#118599', fg='white',
+                 font=('Arial', 22, 'bold'), wraplength=360, anchor='w', justify='left').grid(row=0, column=0, columnspan=6,
+                                                                                             padx=5, pady=5, sticky="ew")
+        tk.Label(self.review_frame, text="Leave your feedback and help us improve our services", bg='#118599', fg='white',
+                 font=('Arial', 16), wraplength=360, anchor='w', justify='left').grid(row=1, column=0, columnspan=6, padx=5,
+                                                                                    pady=5, sticky="ew")
 
         # Add empty rows at the top to lower the content
         for i in range(5):
             self.review_frame.grid_rowconfigure(i, minsize=20)
 
-        tk.Label(self.review_frame, text="Rate Service:", bg='#118599', fg='white',font=('Arial',14,'bold')).grid(row=5, column=0, padx=5, pady=5, sticky='w')
+        tk.Label(self.review_frame, text="Select Business:", bg='#118599', fg='white', font=('Arial', 14, 'bold')).grid(row=5,
+                                                                                                                       column=0,
+                                                                                                                       padx=5, pady=5,
+                                                                                                                       sticky='w')
+        self.businesses = self.fetch_businesses()
+        self.business_var = tk.StringVar()
+        self.business_combobox = ttk.Combobox(self.review_frame, textvariable=self.business_var, values=self.businesses)
+        self.business_combobox.grid(row=5, column=1, columnspan=5, padx=5, pady=5, sticky='ew')
+
+        tk.Label(self.review_frame, text="Rate Service:", bg='#118599', fg='white', font=('Arial', 14, 'bold')).grid(row=6, column=0,
+                                                                                                                     padx=5, pady=5,
+                                                                                                                     sticky='w')
         self.rating_var = tk.IntVar()
         self.rating_var.set(0)  # Default rating to 0 stars
 
         self.stars = []
         for i in range(5):
-            star = tk.Button(self.review_frame, text="★", font=("Arial", 8), command=lambda i=i: self.set_rating(i+1))
-            star.grid(row=6, column=i+1, padx=1, pady=1)
+            star = tk.Button(self.review_frame, text="★", font=("Arial", 8), command=lambda i=i: self.set_rating(i + 1))
+            star.grid(row=7, column=i + 1, padx=1, pady=1)
             self.stars.append(star)
 
-        tk.Label(self.review_frame, text="Write a Review:", bg='#118599', fg='white',font=('Arial',14,'bold')).grid(row=7, column=0, padx=5, pady=5, sticky='nw')
+        tk.Label(self.review_frame, text="Write a Review:", bg='#118599', fg='white', font=('Arial', 14, 'bold')).grid(row=8,
+                                                                                                                      column=0,
+                                                                                                                      padx=5, pady=5,
+                                                                                                                      sticky='nw')
         self.review_text = tk.Text(self.review_frame, width=30, height=8)
-        self.review_text.grid(row=8, column=0, columnspan=6, padx=5, pady=5, sticky='w')
+        self.review_text.grid(row=9, column=0, columnspan=6, padx=5, pady=5, sticky='w')
 
-        self.submit_button = tk.Button(self.review_frame, text="Submit", command=self.create_review, bg="green", fg="white")
+        self.submit_button = tk.Button(self.review_frame, text="Submit", command=self.addReview, bg="green", fg="white")
         self.submit_button.grid(row=10, column=0, columnspan=3, padx=5, pady=10, sticky='e')
 
         self.cancel_button = tk.Button(self.review_frame, text="Cancel", command=self.root.destroy, bg="red", fg="white")
@@ -495,40 +516,93 @@ class ReviewApp:
             return False
         return True
 
-    def checkLength(self): #check if length surpasses 100 characters 
+    def checkLength(self):  # check if length surpasses 100 characters
         if len(self.review_text.get("1.0", tk.END)) > 100:
             messagebox.showerror("Error", "Review text should not exceed 100 characters")
             return False
         return True
 
     def validateReview(self):
-        self.checkLength()
-        self.checkStars()
+        if self.checkStars() and self.checkLength():
+            return True
+        return False
 
-    def create_review(self):
-        # reviewer_id = self.reviewer_id_entry.get()
-        reviewer_id= 1
-        # reviewee_id = self.reviewee_id_entry.get()
-        reviewee_id = 2
-        rating = self.rating_var.get()
-        review_text = self.review_text.get("1.0", tk.END)
+    def refValidation(self):
+        messagebox.showinfo("Success", "Review created successfully")
 
-        if not reviewer_id or not reviewee_id or not review_text:
-            messagebox.showerror("Error", "All fields are required")
+    def showReject(self):
+        messagebox.showerror("Error", "Failed to create review")
+
+    def rejectMessage(self, message):
+        messagebox.showerror("Error", message)
+
+    def fetch_businesses(self):
+        businesses = []
+        try:
+            connection = create_connection()
+            cursor = connection.cursor()
+            query = "SELECT business_name FROM Business"
+            cursor.execute(query)
+            for row in cursor.fetchall():
+                businesses.append(row[0])
+            cursor.close()
+            connection.close()
+        except Error as e:
+            self.rejectMessage(f"Failed to fetch businesses: {e}")
+        return businesses
+
+    def addReview(self):
+        if not self.validateReview():
             return
-        else:
-            self.validateReview()
+
+        reviewer_id = self.user_id
+        selected_business_name = self.business_var.get()
+
+        if not selected_business_name:
+            self.rejectMessage("Please select a business")
+            return
 
         try:
-            review = Review(reviewer_id=int(reviewer_id), reviewee_id=int(reviewee_id), rating=int(rating), review_text=review_text)
-            review.save()
-            messagebox.showinfo("Success", "Review created successfully")
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to create review: {e}")
+            connection = create_connection()
+            cursor = connection.cursor()
+            
+            # Fetch the provider_id for the selected business_name
+            query = "SELECT business_id FROM Business WHERE business_name = %s"
+            cursor.execute(query, (selected_business_name,))
+            result = cursor.fetchone()
+            
+            if result:
+                reviewee_id = result[0]
+            else:
+                self.rejectMessage("Invalid business selected")
+                return
+
+            # convert reviewee_id to string
+            reviewee_id = str(reviewee_id)
+
+            rating = self.rating_var.get()
+            review_text = self.review_text.get("1.0", tk.END).strip()
+
+            if not reviewer_id or not reviewee_id or not review_text:
+                self.rejectMessage("All fields are required")
+                return
+
+            # Insert the review into the database
+            print(reviewer_id, reviewee_id, rating, review_text)
+            query = "INSERT INTO Review (reviewer_id, reviewee_id, rating, review_text) VALUES (%s, %s, %s, %s)"
+            cursor.execute(query, (reviewer_id, reviewee_id, rating, review_text))
+            connection.commit()
+            
+            cursor.close()
+            connection.close()
+            
+            self.refValidation()
+        except Error as e:
+            self.showReject()
+            self.rejectMessage(f"Failed to create review: {e}")
 
 
-########################################### ENTER DESTINATION ############################################################
-
+########################################### ENTER DESTINATION GUI ############################################################
 
 class DestinationGui:
     def __init__(self, root):
@@ -603,124 +677,11 @@ class DestinationGui:
 
 ############################################# FRIEND REQUESTING #############################################################################
 
-# class FriendRequestGUI:
-#     def __init__(self, root):
-#         self.root = root
-#         self.root.title("Friend Request System")
-#         self.root.geometry("400x300")  # Set window size
-
-#         self.connection = create_connection()  # Establish database connection
-
-#         self.main_frame = tk.Frame(root)
-#         self.main_frame.pack(expand=True, padx=20, pady=20)
-
-#         tk.Label(self.main_frame, text="Add Friends", font=("Arial", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
-
-#         self.search_entry = tk.Entry(self.main_frame, width=30)
-#         self.search_entry.grid(row=1, column=0, columnspan=2, pady=10)
-
-#         self.search_button = tk.Button(self.main_frame, text="Search", command=self.searchByUsername)
-#         self.search_button.grid(row=2, column=0, pady=10)
-
-#         self.add_button = tk.Button(self.main_frame, text="Add Friend", command=self.send_request)
-#         self.add_button.grid(row=2, column=1, pady=10)
-
-#         self.showAddFriends_button = tk.Button(self.main_frame, text="Load Friends", command=self.showAddFriends)
-#         self.showAddFriends_button.grid(row=3, column=0, columnspan=2, pady=10)
-        
-#         self.load_recommendations_button = tk.Button(self.main_frame, text="Load Recommended Friends", command=self.fetchRecommendedFriends)
-#         self.load_recommendations_button.grid(row=4, column=0, columnspan=2, pady=10)
-
-#     def searchByUsername(self):
-#         username = self.search_entry.get()
-#         if not username:
-#             messagebox.showerror("Error", "Please enter a username")
-#         else:
-#             cursor = self.connection.cursor()
-#             query = "SELECT * FROM User WHERE username = %s"
-#             cursor.execute(query, (username,))
-#             user = cursor.fetchone()  # Fetch the results
-#             cursor.close()  # Close the cursor after fetching results
-
-#             if user:
-#                 messagebox.showinfo("Info", f"User {username} found")
-#             else:
-#                 messagebox.showerror("Error", f"User {username} not found")
-
-#     def sendFriendRequest(self):    #kanonika prepei prwta na mpoume sto profil tou kathe xrhsth kai meta na kanoume to request
-#         username = self.search_entry.get()
-#         if not username:
-#             messagebox.showerror("Error", "Please enter a username")
-#             return
-
-#         cursor = self.connection.cursor()
-#         query = "SELECT user_id FROM User WHERE username = %s"
-#         cursor.execute(query, (username,))
-#         recipient = cursor.fetchone()
-#         cursor.close()
-
-#         if recipient:
-#             recipient_id = recipient[0]
-#             sender_id = config.current_user['user_id']  # Use the current logged-in user's ID
-#             cursor = self.connection.cursor()
-#             query = "INSERT INTO FriendRequest (user1_id, user2_id) VALUES (%s, %s)"
-#             cursor.execute(query, (sender_id, recipient_id))
-#             self.connection.commit()
-#             cursor.close()
-#             messagebox.showinfo("Info", f"Friend request sent to {username}")
-#         else:
-#             messagebox.showerror("Error", f"User {username} not found")
-
-#     def showAddFriends(self):
-#         user_id = config.current_user['user_id']  # Use the current logged-in user's ID
-#         cursor = self.connection.cursor()
-#         query = """
-#         SELECT u.username FROM FriendRequest fr
-#         JOIN User u ON fr.user2_id = u.user_id
-#         WHERE fr.user1_id = %s AND fr.status = 'accepted'
-#         """
-#         cursor.execute(query, (config.current_user['user_id'],))
-#         friends = cursor.fetchall()
-#         cursor.close()
-
-#         friends_list = [friend[0] for friend in friends]
-#         messagebox.showinfo("Friends List", "\n".join(friends_list) if friends_list else "You have no friends added yet.")
-
-
-#     def fetchRecommendedFriends(self):
-#         # Fetch recommended friends who are not already friends with the current user
-#         user_id = config.current_user['user_id']
-#         cursor = self.connection.cursor(dictionary=True)
-
-#         # Query to select recommended friends who are not already friends with the current user
-#         query = """
-#         SELECT u.user_id, u.username 
-#         FROM User u
-#         WHERE u.user_id NOT IN (
-#             SELECT user2_id 
-#             FROM FriendRequest 
-#             WHERE user1_id = %s
-#         ) AND u.user_id != %s
-#         LIMIT 2
-#         """
-#         cursor.execute(query, (user_id, user_id))
-
-#         recommended_friends = cursor.fetchall()
-#         cursor.close()
-
-#         if recommended_friends:
-#             for i, friend in enumerate(recommended_friends):
-#                 # Create buttons for recommended friends
-#                 friend_button = tk.Button(self.main_frame, text=friend['username'], command=lambda id=friend['user_id']: self.sendFriendRequest(id))
-#                 friend_button.grid(row=5+i, column=0, columnspan=2, pady=5)
-#         else:
-#             messagebox.showinfo("Recommended Friends", "No recommended friends found.")
-
 class FriendRequestGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Friend Request System")
-        self.root.geometry("400x300")  # Set window size
+        self.root.geometry("360x640")  # Set window size
 
         self.connection = create_connection()  # Establish database connection
 
@@ -908,11 +869,13 @@ class SocialBondingGUI:
         # Implement the method to show people near me
         messagebox.showinfo("People Near Me", "Showing people near me...")
 
+################################# CHATTING GUI ##########################################
+
 class ChattingGUI:
     def __init__(self, root, friend_id=None):
         self.root = root
         self.root.title("Chatting")
-        self.root.geometry("400x300")  # Set window size
+        self.root.geometry("360x640")  # Set window size
 
         self.connection = create_connection()  # Establish database connection
         self.friend_id = friend_id

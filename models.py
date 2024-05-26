@@ -373,73 +373,6 @@ from mysql.connector import Error
 #             cursor.close()
 #             close_connection(connection)
 
-# # beneficiary #########################################################################################
-
-# class Beneficiary:
-#     def __init__(self, beneficiary_id=None, user_id=None, beneficiary_type=None, date_of_birth=None, address=None, contact_number=None, location_id=None):
-#         self.beneficiary_id = beneficiary_id
-#         self.user_id = user_id
-#         self.beneficiary_type = beneficiary_type
-#         self.date_of_birth = date_of_birth
-#         self.address = address
-#         self.contact_number = contact_number
-#         self.location_id = location_id
-
-#     @classmethod
-#     def get_all(cls):
-#         connection = create_connection()
-#         cursor = connection.cursor()
-#         try:
-#             cursor.execute("SELECT * FROM Beneficiary")
-#             beneficiaries = cursor.fetchall()
-#             return [cls(*row) for row in beneficiaries]
-#         except Exception as e:
-#             print(f"Error: {e}")
-#             return []
-#         finally:
-#             cursor.close()
-#             close_connection(connection)
-
-
-#     def save(self):
-#         connection = create_connection()
-#         cursor = connection.cursor()
-#         try:
-#             if self.beneficiary_id is None:
-#                 cursor.execute(
-#                     "INSERT INTO Beneficiary (user_id, beneficiary_type, date_of_birth, address, contact_number, location_id) VALUES (%s, %s, %s, %s, %s, %s)",
-#                     (self.user_id, self.beneficiary_type, self.date_of_birth, self.address, self.contact_number, self.location_id)
-#                 )
-#             else:
-#                 cursor.execute(
-#                     "UPDATE Beneficiary SET user_id=%s, beneficiary_type=%s, date_of_birth=%s, address=%s, contact_number=%s, location_id=%s WHERE beneficiary_id=%s",
-#                     (self.user_id, self.beneficiary_type, self.date_of_birth, self.address, self.contact_number, self.location_id, self.beneficiary_id)
-#                 )
-#             connection.commit()
-#             print("Beneficiary saved successfully")
-#         except Exception as e:
-#             print(f"Error: {e}")
-#             connection.rollback()
-#         finally:
-#             cursor.close()
-#             close_connection(connection)
-
-#     @classmethod
-#     def get_by_user_id(cls, user_id):
-#         connection = create_connection()
-#         cursor = connection.cursor()
-#         try:
-#             cursor.execute("SELECT * FROM Beneficiary WHERE user_id=%s", (user_id,))
-#             row = cursor.fetchone()
-#             if row:
-#                 return cls(*row)
-#             return None
-#         except Exception as e:
-#             print(f"Error: {e}")
-#             return None
-#         finally:
-#             cursor.close()
-#             close_connection(connection)
 
 ########################################################## REVIEW GUI ##########################################################
 
@@ -1057,3 +990,206 @@ class ChattingGUI:
         for i, friend in enumerate(self.friends):
             friend_button = tk.Button(self.main_frame, text=friend['username'], command=lambda id=friend['user_id']: self.createChat(id))
             friend_button.grid(row=1+i, column=0, columnspan=2, pady=5)
+
+######################################################   classes marianthi
+######################################################################
+#####################################################    gia merge 
+
+############################ BENEFICIARY ##########################################
+
+class Beneficiary:
+    def __init__(self, user_id, beneficiary_type, date_of_birth=None, address=None, contact_number=None):
+        self.user_id = user_id
+        self.beneficiary_type = beneficiary_type
+        self.date_of_birth = date_of_birth
+        self.address = address
+        self.contact_number = contact_number
+
+    def save(self):
+        connection = create_connection()
+        if connection:
+            try:
+                with connection.cursor() as cursor:
+                    query = """
+                    INSERT INTO Beneficiary (user_id, beneficiary_type, date_of_birth, address, contact_number)
+                    VALUES (%s, %s, %s, %s, %s)
+                    """
+                    cursor.execute(query, (self.user_id, self.beneficiary_type, self.date_of_birth, self.address, self.contact_number))
+                    connection.commit()
+                    return True
+            except Exception as e:
+                print(f"Database error: {e}")
+                return False
+            finally:
+                connection.close()
+        else:
+            print("Connection to the database failed.")
+            return False
+
+############################ BUSINESS PARTNER ##########################################
+
+class BusinessPartner:
+    def __init__(self, user_id, tax_code, registration_number, website, description):
+        self.user_id = user_id
+        self.tax_code = tax_code
+        self.registration_number = registration_number
+        self.website = website
+        self.description = description
+
+    def save(self):
+        connection = create_connection()
+        cursor = connection.cursor()
+        try:
+            query = """
+            INSERT INTO BusinessPartner (user_id, tax_code, registration_number, website, description)
+            VALUES (%s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (self.user_id, self.tax_code, self.registration_number, self.website, self.description))
+            connection.commit()
+            return cursor.lastrowid
+        except Exception as e:
+            print(f"Database Error: {e}")
+            connection.rollback()
+            return None
+        finally:
+            cursor.close()
+            connection.close()
+
+############################ CARD ##########################################
+
+class Card:
+    def __init__(self, card_id=None, beneficiary_id=None, cardnumber=None, barcode=None, expiration_date=None):
+        self.card_id = card_id
+        self.beneficiary_id = beneficiary_id
+        self.cardnumber = cardnumber
+        self.barcode = barcode
+        self.expiration_date = expiration_date
+
+    def save(self):
+        connection = create_connection()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO Card (beneficiary_id, cardnumber, barcode, expiration_date) VALUES (%s, %s, %s, %s)",
+                               (self.beneficiary_id, self.cardnumber, self.barcode, self.expiration_date))
+                self.card_id = cursor.lastrowid
+                connection.commit()
+        except Exception as e:
+            print(f"Database error: {e}")
+            connection.rollback()
+        finally:
+            connection.close()
+
+############################ CITY ##########################################
+
+class City:
+    def __init__(self, city_id=None, city_name=None, country_id=None, latitude=None, longitude=None):
+        self.city_id = city_id
+        self.city_name = city_name
+        self.country_id = country_id
+        self.latitude = latitude
+        self.longitude = longitude
+
+    def save(self):
+        connection = create_connection()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO City (city_name, country_id, latitude, longitude) VALUES (%s, %s, %s, %s)",
+                               (self.city_name, self.country_id, self.latitude, self.longitude))
+                self.city_id = cursor.lastrowid
+                connection.commit()
+        except Exception as e:
+            print(f"Database error: {e}")
+            connection.rollback()
+        finally:
+            connection.close()
+
+    def update(self):
+        connection = create_connection()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("UPDATE City SET city_name=%s, country_id=%s, latitude=%s, longitude=%s WHERE city_id=%s",
+                               (self.city_name, self.country_id, self.latitude, self.longitude, self.city_id))
+                connection.commit()
+        except Exception as e:
+            print(f"Database error: {e}")
+            connection.rollback()
+        finally:
+            connection.close()
+
+############################ CITY ##########################################
+
+class Country:
+    def __init__(self, country_id=None, country_name=None, continent=None, currency=None):
+        self.country_id = country_id
+        self.country_name = country_name
+        self.continent = continent
+        self.currency = currency
+
+    def save(self):
+        connection = create_connection()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO Country (country_name, continent, currency) VALUES (%s, %s, %s)",
+                               (self.country_name, self.continent, self.currency))
+                self.country_id = cursor.lastrowid
+                connection.commit()
+        except Exception as e:
+            print(f"Database error: {e}")
+            connection.rollback()
+        finally:
+            connection.close()
+
+    def update(self):
+        connection = create_connection()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("UPDATE Country SET country_name=%s, continent=%s, currency=%s WHERE country_id=%s",
+                               (self.country_name, self.continent, self.currency, self.country_id))
+                connection.commit()
+        except Exception as e:
+            print(f"Database error: {e}")
+            connection.rollback()
+        finally:
+            connection.close()
+
+############################ MEMBERSHIP ##########################################
+
+class Membership:
+    def __init__(self, membership_id=None, membership_type=None, duration=None, membership_status=None, created_date=None):
+        self.membership_id = membership_id
+        self.membership_type = membership_type
+        self.duration = duration
+        self.membership_status = membership_status
+        self.created_date = created_date
+
+    def save(self):
+        connection = create_connection()
+        try:
+            with connection.cursor() as cursor:
+                if self.membership_id is None:
+                    cursor.execute("INSERT INTO Membership (membership_type, duration, membership_status, created_date) VALUES (%s, %s, %s, %s)",
+                                   (self.membership_type, self.duration, self.membership_status, self.created_date))
+                    self.membership_id = cursor.lastrowid
+                else:
+                    cursor.execute("UPDATE Membership SET membership_type = %s, duration = %s, membership_status = %s, created_date = %s WHERE membership_id = %s",
+                                   (self.membership_type, self.duration, self.membership_status, self.created_date, self.membership_id))
+                connection.commit()
+        except Exception as e:
+            print(f"Database error: {e}")
+            connection.rollback()
+        finally:
+            connection.close()
+
+    def update(self, membership_type=None, duration=None, membership_status=None, created_date=None):
+        if membership_type is not None:
+            self.membership_type = membership_type
+        if duration is not None:
+            self.duration = duration
+        if status is not None:
+            self.membership_status = membership_status
+        if created_date is not None:
+            self.created_date = created_date
+
+        self.save()
+
+############################ POINTS ##########################################

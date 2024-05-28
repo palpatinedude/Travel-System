@@ -6,38 +6,65 @@ from beneficiary import Beneficiary
 from simpleUser import SimpleUser
 from serviceProvider import ServiceProvider
 
-
 def saveInfo(window, username_entry, password_entry, user_type, beneficiary_id, bistory_entry=None, preferences_entry=None, certifications_entry=None, specialities_entry=None, languages_entry=None):
     print("Profile saved")
-    # retrieve the values entered in the entry fields
     username = username_entry.get()
     password = password_entry.get()
     
     # retrieve user_id using beneficiary_id
     user_id = Beneficiary.get_id_by_beneficiary_id(beneficiary_id)
+    print(user_id)
 
-
-    if user_type == "Simple User":
-     bistory = bistory_entry.get()
-     preferences = preferences_entry.get()
-     # Update SimpleUser record
-     SimpleUser.update(user_id, bistory=bistory, preferences=preferences)
-
-    elif user_type == "Service Provider":
-     certifications = certifications_entry.get()
-     specialities = specialities_entry.get()
-     languages_spoken = languages_entry.get()
-     ServiceProvider.update(user_id, certifications=certifications, specialities=specialities, languages_spoken=languages_spoken)
-
+  
     user = User.get_by_id(user_id)
     if user:
-        user.username = username
-        user.password = password
-        user.update()  # Save changes to the database
+        # Update username and password if they are provided and not empty
+        if username:
+            user.username = username
+        if password:
+            user.password = password
+        
+        # update user information
+        user.update(username=user.username, password=user.password)  # save changes to the database
+    else:
+        print("User with the given user_id not found.")
+        return
 
-    # Print message and destroy the window after saving changes
-    print("Profile saved")
-    window.destroy()
+    # update additional attributes based on the user_type
+    if user_type == "Simple User":
+        bistory = bistory_entry.get()
+        preferences = preferences_entry.get()
+        simple_user = SimpleUser.get_by_id(beneficiary_id)
+        if simple_user:
+            # update bistory and preferences if they are provided and not empty
+            if bistory:
+                simple_user.bistory = bistory
+            if preferences:
+                simple_user.preferences = preferences
+            print(simple_user.bistory, simple_user.preferences)    
+            simple_user.update(beneficiary_id=beneficiary_id,bistory=simple_user.bistory, preferences=simple_user.preferences)
+            print("SimpleUser updated successfully!")
+        else:
+            print("SimpleUser with the given beneficiary_id not found.")
+
+    elif user_type == "Service Provider":
+        certifications = certifications_entry.get()
+        specialities = specialities_entry.get()
+        languages_spoken = languages_entry.get()
+        service_provider = ServiceProvider.get_by_id(beneficiary_id)
+        if service_provider:
+            # θpdate certifications, specialities, and languages_spoken if they are provided and not empty
+            if certifications:
+                service_provider.certifications = certifications
+            if specialities:
+                service_provider.specialities = specialities
+            if languages_spoken:
+                service_provider.languages_spoken = languages_spoken
+            service_provider.update(certifications=service_provider.certifications, specialities=service_provider.specialities, languages_spoken=service_provider.languages_spoken)
+            print("ServiceProvider updated successfully!")
+        else:
+            print("ServiceProvider with the given beneficiary_id not found.")    
+
 
 def changeMyInfo(beneficiary_id, user_type):
     edit_window = tk.Tk()
@@ -69,7 +96,7 @@ def changeMyInfo(beneficiary_id, user_type):
 
     if user_type == "Simple User":
 
-        bistory_label = tk.Label(form_frame, text="History:", font=("Arial", 12), bg="#D3D3D3", fg="black")
+        bistory_label = tk.Label(form_frame, text="Bistory:", font=("Arial", 12), bg="#D3D3D3", fg="black")
         bistory_label.grid(row=2, column=0, padx=10, pady=10, sticky="e")
         bistory_entry = tk.Entry(form_frame, font=("Arial", 12))
         bistory_entry.grid(row=2, column=1, padx=10, pady=10)

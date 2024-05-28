@@ -1,13 +1,17 @@
+import sys
+sys.path.append('GUI')
+sys.path.append('functions')
+sys.path.append('classes')
 import tkinter as tk
 import config
 from models import SocialBondingGUI, ReviewApp
+from profileGUI import showProfile
+from cardGUI import displayCard
+from pointsGUI import displayPoints
+from functools import partial
 
 def exploreDestinationAction():
     print("Explore Destination action")
-    if config.current_user:
-        root = tk.Tk()
-        app = ReviewApp(root)
-        root.mainloop()
 
 def socialBondingAction():
     print("Social Bonding action")
@@ -22,8 +26,11 @@ def entertainmentAction():
 def mapAction():
     print("Map action")
 
-def profileAction():
+def profileAction(window, beneficiary_id):
     print("Profile action")
+    if config.current_user:
+        # window.destroy() 
+        showProfile(beneficiary_id)
 
 def destinationAction():
     print("Destination action")
@@ -54,7 +61,7 @@ def mainPage():
     destination_button = tk.Button(top_frame, text="Destination", command=destinationAction, width=10, height=2, bg="pink", fg="white")
     destination_button.grid(row=0, column=1, padx=10, pady=10)
 
-    profile_button = tk.Button(top_frame, text="Profile", command=profileAction, width=10, height=2, bg="pink", fg="white")
+    profile_button = tk.Button(top_frame, text="Profile", command=profileAction(main_window,beneficiary_id=config.current_user['user_id']), width=10, height=2, bg="pink", fg="white")
     profile_button.grid(row=0, column=2, padx=50, pady=10)
 
 

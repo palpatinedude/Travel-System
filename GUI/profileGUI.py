@@ -3,6 +3,7 @@ sys.path.append('classes')
 import tkinter as tk
 from beneficiary import Beneficiary
 from editProfileGUI import changeMyInfo
+import config
 
 def viewEditProfile(window, beneficiary_id):
     print("edit profile button")
@@ -35,11 +36,11 @@ def showProfile(beneficiary_id):
     profile_label = tk.Label(profile_window, text="My Profile", font=("Arial", 20), bg="#836FFF", fg="black")
     profile_label.pack(pady=20)
 
-    img = tk.PhotoImage(file="../images/profile.png")
-    img = img.subsample(2)
-    img_label = tk.Label(profile_window, image=img, bg="#33A1C9")
-    img_label.image = img
-    img_label.place(x=50, y=90)
+    # img = tk.PhotoImage(file='GUI/profile.png')
+    # img = img.subsample(2)
+    # img_label = tk.Label(profile_window, image=img, bg="#33A1C9")
+    # img_label.image = img
+    # img_label.place(x=50, y=90)
 
     #  frame for the buttons
     button_frame = tk.Frame(profile_window, bg="#7171C6")

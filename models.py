@@ -378,7 +378,7 @@ class DestinationGui:
                 city_name, latitude, longitude = city_result
                 messagebox.showinfo("Destination Found", f"City: {city_name}\nLatitude: {latitude}\nLongitude: {longitude}")
                 self.root.destroy()   #close current window 
-                mainPage()
+                # mainPage()
             else:
                 messagebox.showerror("Error", "City not found in the specified country")
         except mysql.connector.Error as err:

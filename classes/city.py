@@ -1,6 +1,7 @@
 import sys
-sys.path.append('../database/')
-from dbConnection import create_connection
+sys.path.append('GUI')
+sys.path.append('database')
+from db_connector import create_connection
 
 class City:
     def __init__(self, city_id=None, city_name=None, country_id=None, latitude=None, longitude=None):

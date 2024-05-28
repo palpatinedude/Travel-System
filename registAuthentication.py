@@ -1,12 +1,15 @@
 import sys
+sys.path.append('classes')
+sys.path.append('GUI')
+sys.path.append('functions')
 from db_connector import create_connection
 import mysql.connector
 from mysql.connector import Error
-# from user import User
-# from beneficiary import Beneficiary
-# from businessPartner import BusinessPartner
-# from country import Country
-# from city import City
+from user import User
+from beneficiary import Beneficiary
+from businessPartner import BusinessPartner
+from country import Country
+from city import City
 
 # def check_location_existence(location):
 #     try:

@@ -441,6 +441,8 @@ class FriendRequestGUI:
 
         tk.Label(profile_window, text=f"Username: {user['username']}").pack(pady=10)
         tk.Button(profile_window, text="Send Friend Request", command=lambda: self.sendFriendRequest(user)).pack(pady=10)
+        # friend_button = tk.Button(self.main_frame, text=friend['username'], command=lambda friend=friend: self.displayUserProfile(friend))
+
 
     def sendFriendRequest(self, user):
         sender_id = config.current_user['user_id']  # Use the current logged-in user's ID

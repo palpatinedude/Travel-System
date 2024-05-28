@@ -8,6 +8,7 @@ sys.path.append('../functions/')
 from loginAuthentication import authenticate
 import config  # import the config module
 from mainPage import mainPage 
+from models import DestinationGui
 
 def login():
     print("Login button clicked")
@@ -22,10 +23,17 @@ def login():
         messagebox.showinfo("Login", "Login Successful!")
         print("Logged in user:", config.current_user)  # print logged in user info
         root.destroy()
+        show_destination_gui()
         mainPage()
     else:
         messagebox.showerror("Login Error", "Invalid username or password.")
         return
+
+
+def show_destination_gui():
+    dest_root = tk.Tk()
+    app = DestinationGui(dest_root)
+    dest_root.mainloop()
 
 def registrationPage():
     root.destroy()

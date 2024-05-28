@@ -1,5 +1,5 @@
 import sys
-# sys.path.append('../classes/')
+sys.path.append('classes')
 # sys.path.append('../database/')
 import tkinter as tk
 from tkinter import messagebox
@@ -7,11 +7,11 @@ from db_connector import create_connection
 import datetime
 import random
 import string
-# import barcode
-# from barcode.writer import ImageWriter
-# from membership import Membership
-# from card import Card
-# from points import Points
+import barcode
+from barcode.writer import ImageWriter
+from membership import Membership
+from card import Card
+from points import Points
 
 def generate_isbn13_barcode():
     # generate a random 12-digit number exclude the check digit

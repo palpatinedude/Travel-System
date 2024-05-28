@@ -1,11 +1,12 @@
 import sys
-# sys.path.append('../classes/')
+import os 
+sys.path.append('classes')
 import re 
 from db_connector import create_connection
 from datetime import datetime
 from tkinter import messagebox
-# from simpleUser import SimpleUser
-# from serviceProvider import ServiceProvider
+from simpleUser import SimpleUser
+from serviceProvider import ServiceProvider
 
 
 def beneficiaryDetails(user_id, beneficiary_type, dob_entry, address_entry, contact_number_entry, additional_entries, window):

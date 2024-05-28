@@ -1,7 +1,7 @@
 import sys
-# sys.path.append('../database/')
+sys.path.append('../database/')
 # sys.path.append('../functions/')
-# sys.path.append('../classes/')
+sys.path.append('../classes/')
 import tkinter as tk
 from tkinter import messagebox
 from package import packagesWindow

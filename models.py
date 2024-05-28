@@ -576,6 +576,10 @@ class SocialBondingGUI:
     def add_friends(self):
         # Implement the method to add friends
         messagebox.showinfo("Add Friends", "Navigating to add friends...")
+        root = tk.Tk()
+        app = FriendRequestGUI(root)
+        root.mainloop()
+
 
     def show_people_near_me(self):
         # Implement the method to show people near me

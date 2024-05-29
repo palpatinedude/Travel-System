@@ -19,16 +19,6 @@ CREATE TABLE City (
 );
 
 
-CREATE TABLE Location (
-    location_id INT PRIMARY KEY AUTO_INCREMENT,
-    location_name VARCHAR(255) NOT NULL,
-    latitude DECIMAL(9, 6),
-    longitude DECIMAL(9, 6),
-    country_id INT,
-    city_id INT,
-    FOREIGN KEY (city_id) REFERENCES City(city_id) ON DELETE SET NULL
-);
-
 CREATE TABLE Membership (
     membership_id INT PRIMARY KEY AUTO_INCREMENT,
     membership_type ENUM('Basic', 'Premium', 'Professional'),
@@ -51,15 +41,7 @@ CREATE TABLE User (
 );
     
 
-CREATE TABLE BusinessPartner (
-    partner_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT UNIQUE,
-    tax_code VARCHAR(255),
-    registration_number VARCHAR(255),
-    website VARCHAR(255),
-    description TEXT,
-    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
-);
+
 
 CREATE TABLE Admin (
     admin_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -74,17 +56,28 @@ CREATE TABLE Admin (
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
 );
 
+CREATE TABLE BusinessPartner (
+    partner_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT UNIQUE,
+    tax_code VARCHAR(255),
+    registration_number VARCHAR(255),
+    website VARCHAR(255),
+    description TEXT,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
+);
 
 CREATE TABLE Business (
     business_id INT PRIMARY KEY AUTO_INCREMENT,
     partner_id INT,
     business_name VARCHAR(255) NOT NULL,
     business_type ENUM('Food and Beverage', 'Market', 'Bars', 'Hotels') NOT NULL,
-    location_id INT,
     advertisement_details TEXT,
     price ENUM('Cheap', 'Moderate', 'Expensive'),
+    country_id INT, 
+    city_id INT, 
     FOREIGN KEY (partner_id) REFERENCES BusinessPartner(partner_id) ON DELETE CASCADE,
-    FOREIGN KEY (location_id) REFERENCES Location(location_id) ON DELETE SET NULL
+    FOREIGN KEY (country_id) REFERENCES Country(country_id), 
+    FOREIGN KEY (city_id) REFERENCES City(city_id) 
 );
 
 CREATE TABLE Market (
@@ -102,11 +95,10 @@ CREATE TABLE FoodAndBeverage (
 
 CREATE TABLE Hotels (
     business_id INT PRIMARY KEY,
-    hotel_filters TEXT, -- Add attributes for hotel filters
-    hotel_stars INT, -- Add attributes for hotel stars
-    hotel_floors INT, -- Add attributes for hotel floors
-    hotel_specific_attribute VARCHAR(255), -- Add other specific attributes for hotels
-    FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
+    hotel_filters TEXT,
+    hotel_stars INT,
+    hotel_floors INT, s
+    hotel_specific_attribute VARCHAR(255),     FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Bars (
@@ -154,11 +146,12 @@ CREATE TABLE Service (
     provider_id INT,
     description VARCHAR(255),
     service_name VARCHAR(255),
-    location_id INT,
-    FOREIGN KEY (location_id) REFERENCES Location(location_id) ON DELETE SET NULL,
+    country_id INT,
+    city_id INT,
+    FOREIGN KEY (country_id) REFERENCES Country(country_id),
+    FOREIGN KEY (city_id) REFERENCES City(city_id),
     FOREIGN KEY (provider_id) REFERENCES ServiceProvider(provider_id) ON DELETE CASCADE
- );
-
+);
 
 CREATE TABLE Accommodation (
     service_id INT PRIMARY KEY,

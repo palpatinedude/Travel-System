@@ -648,3 +648,584 @@ class City:
                 connection.commit()
         except Exception as e:
             print(f"Error: {e}")          
+
+class Business:
+    def __init__(self, partner_id, business_name, business_type, advertisement_details, price, country_id, city_id):
+        self.partner_id = partner_id
+        self.business_name = business_name
+        self.business_type = business_type
+        self.advertisement_details = advertisement_details
+        self.price = price
+        self.country_id = country_id
+        self.city_id = city_id
+
+    def save(self):
+        try:
+            conn = create_connection()
+            cursor = conn.cursor()
+
+            sql = "INSERT INTO Business (partner_id, business_name, business_type, advertisement_details, price, country_id, city_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            val = (self.partner_id, self.business_name, self.business_type, self.advertisement_details, self.price, self.country_id, self.city_id)
+            cursor.execute(sql, val)
+
+            conn.commit()
+            print("Business saved successfully")
+
+        except mysql.connector.Error as error:
+            print("Failed to save business: {}".format(error))
+
+        finally:
+            if conn.is_connected():
+                cursor.close()
+                conn.close()
+
+class Market(Business):
+    def __init__(self, partner_id, business_name, advertisement_details, price, country_id, city_id, market_type, market_specific_attribute):
+        super().__init__(partner_id, business_name, 'Market', advertisement_details, price, country_id, city_id)
+        self.market_type = market_type
+        self.market_specific_attribute = market_specific_attribute
+
+    def save(self):
+        #super().save()
+        try:
+            conn = create_connection()
+            cursor = conn.cursor()
+
+            sql = "INSERT INTO Market (business_id, market_type, market_specific_attribute) VALUES (%s, %s, %s)"
+            val = (self.business_id, self.market_type, self.market_specific_attribute)
+            cursor.execute(sql, val)
+
+            conn.commit()
+            print("Market saved successfully")
+
+        except mysql.connector.Error as error:
+            print("Failed to save market: {}".format(error))
+
+        finally:
+            if conn.is_connected():
+                cursor.close()
+                conn.close()
+
+        
+    def display_attributes(self):
+        return f"Market Type: {self.market_type}\nMarket Specific Attribute: {self.market_specific_attribute}"
+        
+
+
+    @staticmethod
+    def get_all():
+        markets = []
+        try:
+            conn = create_connection()
+            cursor = conn.cursor(dictionary=True)
+
+            sql = "SELECT * FROM Market INNER JOIN Business ON Market.business_id = Business.business_id"
+            cursor.execute(sql)
+
+            for row in cursor.fetchall():
+                markets.append(Market(
+                    partner_id=row['partner_id'],
+                    business_name=row['business_name'],
+                    advertisement_details=row['advertisement_details'],
+                    price=row['price'],
+                    country_id=row['country_id'],
+                    city_id=row['city_id'],
+                    market_type=row['market_type'],
+                    market_specific_attribute=row['market_specific_attribute']
+                ))
+
+        except mysql.connector.Error as error:
+            print("Failed to retrieve markets: {}".format(error))
+
+        finally:
+            if conn.is_connected():
+                cursor.close()
+                conn.close()
+
+        return markets
+
+class FoodAndBeverage(Business):
+    def __init__(self, partner_id, business_name, advertisement_details, price, country_id, city_id, food_type, food_beverage_specific_attribute):
+        super().__init__(partner_id, business_name, 'Food and Beverage', advertisement_details, price, country_id, city_id)
+        self.food_type = food_type
+        self.food_beverage_specific_attribute = food_beverage_specific_attribute
+
+    def save(self):
+        #super().save()
+        try:
+            conn = create_connection()
+            cursor = conn.cursor()
+
+            sql = "INSERT INTO FoodAndBeverage (business_id, food_type, food_beverage_specific_attribute) VALUES (%s, %s, %s)"
+            val = (self.business_id, self.food_type, self.food_beverage_specific_attribute)
+            cursor.execute(sql, val)
+
+            conn.commit()
+            print("Food and Beverage saved successfully")
+
+        except mysql.connector.Error as error:
+            print("Failed to save Food and Beverage: {}".format(error))
+
+        finally:
+            if conn.is_connected():
+                cursor.close()
+                conn.close()
+
+    def display_attributes(self):
+        return f"Food Type: {self.food_type}\nFood and Beverage Specific Attribute: {self.food_beverage_specific_attribute}"
+
+    @staticmethod
+    def get_all():
+        food_and_beverages = []
+        try:
+            conn = create_connection()
+            cursor = conn.cursor(dictionary=True)
+
+            sql = "SELECT * FROM FoodAndBeverage INNER JOIN Business ON FoodAndBeverage.business_id = Business.business_id"
+            cursor.execute(sql)
+
+            for row in cursor.fetchall():
+                food_and_beverages.append(FoodAndBeverage(
+                    partner_id=row['partner_id'],
+                    business_name=row['business_name'],
+                    advertisement_details=row['advertisement_details'],
+                    price=row['price'],
+                    country_id=row['country_id'],
+                    city_id=row['city_id'],
+                    food_type=row['food_type'],
+                    food_beverage_specific_attribute=row['food_beverage_specific_attribute']
+                ))
+
+        except mysql.connector.Error as error:
+            print("Failed to retrieve food and beverages: {}".format(error))
+
+        finally:
+            if conn.is_connected():
+                cursor.close()
+                conn.close()
+
+        return food_and_beverages
+
+class Hotels(Business):
+    def __init__(self, partner_id, business_name, advertisement_details, price, country_id, city_id, hotel_filters, hotel_stars, hotel_floors, hotel_specific_attribute):
+        super().__init__(partner_id, business_name, 'Hotels', advertisement_details, price, country_id, city_id)
+        self.hotel_filters = hotel_filters
+        self.hotel_stars = hotel_stars
+        self.hotel_floors = hotel_floors
+        self.hotel_specific_attribute = hotel_specific_attribute
+
+    def save(self):
+       # super().save()
+        try:
+            conn = create_connection()
+            cursor = conn.cursor()
+
+            sql = "INSERT INTO Hotels (business_id, hotel_filters, hotel_stars, hotel_floors, hotel_specific_attribute) VALUES (%s, %s, %s, %s, %s)"
+            val = (self.business_id, self.hotel_filters, self.hotel_stars, self.hotel_floors, self.hotel_specific_attribute)
+            cursor.execute(sql, val)
+
+            conn.commit()
+            print("Hotels saved successfully")
+
+        except mysql.connector.Error as error:
+            print("Failed to save Hotels: {}".format(error))
+
+        finally:
+            if conn.is_connected():
+                cursor.close()
+                conn.close()
+
+    def display_attributes(self):
+        return f"Hotel Filters: {self.hotel_filters}\nHotel Stars: {self.hotel_stars}\nHotel Floors: {self.hotel_floors}\nHotel Specific Attribute: {self.hotel_specific_attribute}"
+
+    @staticmethod
+    def get_all():
+        hotels = []
+        try:
+            conn = create_connection()
+            cursor = conn.cursor(dictionary=True)
+
+            sql = "SELECT * FROM Hotels INNER JOIN Business ON Hotels.business_id = Business.business_id"
+            cursor.execute(sql)
+
+            for row in cursor.fetchall():
+                hotels.append(Hotels(
+                    partner_id=row['partner_id'],
+                    business_name=row['business_name'],
+                    advertisement_details=row['advertisement_details'],
+                    price=row['price'],
+                    country_id=row['country_id'],
+                    city_id=row['city_id'],
+                    hotel_filters=row['hotel_filters'],
+                    hotel_stars=row['hotel_stars'],
+                    hotel_floors=row['hotel_floors'],
+                    hotel_specific_attribute=row['hotel_specific_attribute']
+                ))
+
+        except mysql.connector.Error as error:
+            print("Failed to retrieve hotels: {}".format(error))
+
+        finally:
+            if conn.is_connected():
+                cursor.close()
+                conn.close()
+
+        return hotels
+
+class Bars(Business):
+    def __init__(self, partner_id, business_name, advertisement_details, price, country_id, city_id, age_boundary, bar_type, bar_specific_attribute):
+        super().__init__(partner_id, business_name, 'Bars', advertisement_details, price, country_id, city_id)
+        self.age_boundary = age_boundary
+        self.bar_type = bar_type
+        self.bar_specific_attribute = bar_specific_attribute
+
+    def save(self):
+       # super().save()
+        try:
+            conn = create_connection()
+            cursor = conn.cursor()
+
+            sql = "INSERT INTO Bars (business_id, age_boundary, bar_type, bar_specific_attribute) VALUES (%s, %s, %s, %s)"
+            val = (self.business_id, self.age_boundary, self.bar_type, self.bar_specific_attribute)
+            cursor.execute(sql, val)
+
+            conn.commit()
+            print("Bars saved successfully")
+
+        except mysql.connector.Error as error:
+            print("Failed to save Bars: {}".format(error))
+
+        finally:
+            if conn.is_connected():
+                cursor.close()
+                conn.close()    
+
+    def display_attributes(self):
+        return f"Age Boundary: {self.age_boundary}\nBar Type: {self.bar_type}\nBar Specific Attribute: {self.bar_specific_attribute}"                    
+
+    @staticmethod
+    def get_all():
+        bars = []
+        try:
+            conn = create_connection()
+            cursor = conn.cursor(dictionary=True)
+
+            sql = "SELECT * FROM Bars INNER JOIN Business ON Bars.business_id = Business.business_id"
+            cursor.execute(sql)
+
+            for row in cursor.fetchall():
+                bars.append(Bars(
+                    partner_id=row['partner_id'],
+                    business_name=row['business_name'],
+                    advertisement_details=row['advertisement_details'],
+                    price=row['price'],
+                    country_id=row['country_id'],
+                    city_id=row['city_id'],
+                    age_boundary=row['age_boundary'],
+                    bar_type=row['bar_type'],
+                    bar_specific_attribute=row['bar_specific_attribute']
+                ))
+
+        except mysql.connector.Error as error:
+            print("Failed to retrieve bars: {}".format(error))
+
+        finally:
+            if conn.is_connected():
+                cursor.close()
+                conn.close()
+
+        return bars
+
+class Service:
+    def __init__(self, provider_id, description, service_name, country_id, city_id):
+        self.provider_id = provider_id
+        self.description = description
+        self.service_name = service_name
+        self.country_id = country_id
+        self.city_id = city_id
+
+    def save(self):
+        try:
+            with create_connection() as connection:
+                cursor = connection.cursor()
+                query = """
+                INSERT INTO Service (provider_id, description, service_name, country_id, city_id)
+                VALUES (%s, %s, %s, %s, %s)
+                """
+                values = (self.provider_id, self.description, self.service_name, self.country_id, self.city_id)
+                cursor.execute(query, values)
+                connection.commit()
+                self.service_id = cursor.lastrowid
+                print("Service saved successfully!")
+        except Exception as e:
+            print(f"Error: {e}")
+
+class Accommodation(Service):
+    def __init__(self, provider_id, description, service_name, country_id, city_id, num_rooms, facilities):
+        super().__init__(provider_id, description, service_name, country_id, city_id)
+        self.num_rooms = num_rooms
+        self.facilities = facilities
+
+    def save(self):
+       # super().save()
+        try:
+            with create_connection() as connection:
+                cursor = connection.cursor()
+                query = """
+                INSERT INTO Accommodation (service_id, num_rooms, facilities)
+                VALUES (%s, %s, %s)
+                """
+                values = (self.service_id, self.num_rooms, self.facilities)
+                cursor.execute(query, values)
+                connection.commit()
+                print("Accommodation saved successfully!")
+        except Exception as e:
+            print(f"Error: {e}")
+
+class Car(Service):
+    def __init__(self, provider_id, description, service_name, country_id, city_id, car_model, year_of_manufacture, car_type, rental_rate):
+        super().__init__(provider_id, description, service_name, country_id, city_id)
+        self.car_model = car_model
+        self.year_of_manufacture = year_of_manufacture
+        self.car_type = car_type
+        self.rental_rate = rental_rate
+
+    def save(self):
+        #super().save()
+        try:
+            with create_connection() as connection:
+                cursor = connection.cursor()
+                query = """
+                INSERT INTO Car (service_id, car_model, year_of_manufacture, car_type, rental_rate)
+                VALUES (%s, %s, %s, %s, %s)
+                """
+                values = (self.service_id, self.car_model, self.year_of_manufacture, self.car_type, self.rental_rate)
+                cursor.execute(query, values)
+                connection.commit()
+                print("Car saved successfully!")
+        except Exception as e:
+            print(f"Error: {e}")
+
+class Activity(Service):
+    def __init__(self, provider_id, description, service_name, country_id, city_id, activity_name, age_requirement, duration_hours, activity_description):
+        super().__init__(provider_id, description, service_name, country_id, city_id)
+        self.activity_name = activity_name
+        self.age_requirement = age_requirement
+        self.duration_hours = duration_hours
+        self.activity_description = activity_description
+
+    def save(self):
+      #  super().save()
+        try:
+            with create_connection() as connection:
+                cursor = connection.cursor()
+                query = """
+                INSERT INTO Activity (service_id, activity_name, age_requirement, duration_hours, activity_description)
+                VALUES (%s, %s, %s, %s, %s)
+                """
+                values = (self.service_id, self.activity_name, self.age_requirement, self.duration_hours, self.activity_description)
+                cursor.execute(query, values)
+                connection.commit()
+                print("Activity saved successfully!")
+        except Exception as e:
+            print(f"Error: {e}")                
+
+class Service:
+    def __init__(self, provider_id, description, service_name, country_id, city_id):
+        self.provider_id = provider_id
+        self.description = description
+        self.service_name = service_name
+        self.country_id = country_id
+        self.city_id = city_id
+
+    def save(self):
+        try:
+            with create_connection() as conn:
+                cursor = conn.cursor()
+
+                sql = "INSERT INTO Service (provider_id, description, service_name, country_id, city_id) VALUES (%s, %s, %s, %s, %s)"
+                val = (self.provider_id, self.description, self.service_name, self.country_id, self.city_id)
+                cursor.execute(sql, val)
+                self.service_id = cursor.lastrowid  
+
+                conn.commit()
+                print(f"{self.service_name} saved successfully")
+
+        except mysql.connector.Error as error:
+            print(f"Failed to save {self.service_name}: {error}")
+
+    @staticmethod
+    def get_all():
+        services = []
+        try:
+            with create_connection() as conn:
+                cursor = conn.cursor(dictionary=True)
+
+                sql = "SELECT * FROM Service"
+                cursor.execute(sql)
+
+                for row in cursor.fetchall():
+                    services.append(Service(
+                        provider_id=row['provider_id'],
+                        description=row['description'],
+                        service_name=row['service_name'],
+                        country_id=row['country_id'],
+                        city_id=row['city_id']
+                    ))
+
+        except mysql.connector.Error as error:
+            print(f"Failed to retrieve services: {error}")
+
+        return services
+
+class Accommodation(Service):
+    def __init__(self, provider_id, description, service_name, country_id, city_id, num_rooms, facilities):
+        super().__init__(provider_id, description, service_name, country_id, city_id)
+        self.num_rooms = num_rooms
+        self.facilities = facilities
+
+    def save(self):
+       # super().save()
+        try:
+            with create_connection() as conn:
+                cursor = conn.cursor()
+
+                sql = "INSERT INTO Accommodation (service_id, num_rooms, facilities) VALUES (%s, %s, %s)"
+                val = (self.service_id, self.num_rooms, self.facilities)
+                cursor.execute(sql, val)
+
+                conn.commit()
+                print("Accommodation saved successfully")
+
+        except mysql.connector.Error as error:
+            print(f"Failed to save accommodation: {error}")
+
+    @staticmethod
+    def get_all():
+        accommodations = []
+        try:
+            with create_connection() as conn:
+                cursor = conn.cursor(dictionary=True)
+
+                sql = "SELECT * FROM Accommodation INNER JOIN Service ON Accommodation.service_id = Service.provider_service_id"
+                cursor.execute(sql)
+
+                for row in cursor.fetchall():
+                    accommodations.append(Accommodation(
+                        provider_id=row['provider_id'],
+                        description=row['description'],
+                        service_name=row['service_name'],
+                        country_id=row['country_id'],
+                        city_id=row['city_id'],
+                        num_rooms=row['num_rooms'],
+                        facilities=row['facilities']
+                    ))
+
+        except mysql.connector.Error as error:
+            print(f"Failed to retrieve accommodations: {error}")
+
+        return accommodations
+
+class Car(Service):
+    def __init__(self, provider_id, description, service_name, country_id, city_id, car_model, year_of_manufacture, car_type, rental_rate):
+        super().__init__(provider_id, description, service_name, country_id, city_id)
+        self.car_model = car_model
+        self.year_of_manufacture = year_of_manufacture
+        self.car_type = car_type
+        self.rental_rate = rental_rate
+
+    def save(self):
+       # super().save()
+        try:
+            with create_connection() as conn:
+                cursor = conn.cursor()
+
+                sql = "INSERT INTO Car (service_id, car_model, year_of_manufacture, car_type, rental_rate) VALUES (%s, %s, %s, %s, %s)"
+                val = (self.service_id, self.car_model, self.year_of_manufacture, self.car_type, self.rental_rate)
+                cursor.execute(sql, val)
+
+                conn.commit()
+                print("Car saved successfully")
+
+        except mysql.connector.Error as error:
+            print(f"Failed to save car: {error}")
+
+    @staticmethod
+    def get_all():
+        cars = []
+        try:
+            with create_connection() as conn:
+                cursor = conn.cursor(dictionary=True)
+
+                sql = "SELECT * FROM Car INNER JOIN Service ON Car.service_id = Service.provider_service_id"
+                cursor.execute(sql)
+
+                for row in cursor.fetchall():
+                    cars.append(Car(
+                        provider_id=row['provider_id'],
+                        description=row['description'],
+                        service_name=row['service_name'],
+                        country_id=row['country_id'],
+                        city_id=row['city_id'],
+                        car_model=row['car_model'],
+                        year_of_manufacture=row['year_of_manufacture'],
+                        car_type=row['car_type'],
+                        rental_rate=row['rental_rate']
+                    ))
+
+        except mysql.connector.Error as error:
+            print(f"Failed to retrieve cars: {error}")
+
+        return cars
+
+class Activity(Service):
+    def __init__(self, provider_id, description, service_name, country_id, city_id, activity_name, age_requirement, duration_hours, activity_description):
+        super().__init__(provider_id, description, service_name, country_id, city_id)
+        self.activity_name = activity_name
+        self.age_requirement = age_requirement
+        self.duration_hours = duration_hours
+        self.activity_description = activity_description
+
+    def save(self):
+      #  super().save()
+        try:
+            with create_connection() as conn:
+                cursor = conn.cursor()
+
+                sql = "INSERT INTO Activity (service_id, activity_name, age_requirement, duration_hours, activity_description) VALUES (%s, %s, %s, %s, %s)"
+                val = (self.service_id, self.activity_name, self.age_requirement, self.duration_hours, self.activity_description)
+                cursor.execute(sql, val)
+
+                conn.commit()
+                print("Activity saved successfully")
+
+        except mysql.connector.Error as error:
+            print(f"Failed to save activity: {error}")
+
+    @staticmethod
+    def get_all():
+        activities = []
+        try:
+            with create_connection() as conn:
+                cursor = conn.cursor(dictionary=True)
+
+                sql = "SELECT * FROM Activity INNER JOIN Service ON Activity.service_id = Service.provider_service_id"
+                cursor.execute(sql)
+
+                for row in cursor.fetchall():
+                    activities.append(Activity(
+                        provider_id=row['provider_id'],
+                        description=row['description'],
+                        service_name=row['service_name'],
+                        country_id=row['country_id'],
+                        city_id=row['city_id'],
+                        activity_name=row['activity_name'],
+                        age_requirement=row['age_requirement'],
+                        duration_hours=row['duration_hours'],
+                        activity_description=row['activity_description']
+                    ))
+
+        except mysql.connector.Error as error:
+            print(f"Failed to retrieve activities: {error}")
+
+        return activities            

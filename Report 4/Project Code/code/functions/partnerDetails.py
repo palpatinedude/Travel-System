@@ -3,7 +3,7 @@ sys.path.append('../classes/')
 sys.path.append('../database/')
 from dbConnection import create_connection
 from tkinter import messagebox
-from businessPartner import BusinessPartner
+from allClasses import BusinessPartner
 
 def partnerDetails(user_id, tax_code_entry, registration_number_entry, website_entry, description_entry, window):
     tax_code = tax_code_entry.get()

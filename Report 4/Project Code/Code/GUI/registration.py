@@ -5,7 +5,6 @@ sys.path.append('classes')
 sys.path.append('GUI')
 import tkinter as tk
 from tkinter import messagebox
-# from package import packagesWindow
 from PIL import Image, ImageTk
 from registAuthentication import registerUser
 from db_connector import create_connection

@@ -9,9 +9,7 @@ import random
 import string
 import barcode
 from barcode.writer import ImageWriter
-from membership import Membership
-from card import Card
-from points import Points
+from allClasses import Membership, Card, Points, Beneficiary
 
 def generate_isbn13_barcode():
     # generate a random 12-digit number exclude the check digit
@@ -54,23 +52,30 @@ def continueRegistration(selected_membership, user_id, duration):
         try:
             with connection.cursor() as cursor:
                 # create a membership instance
-                membership = Membership(
-                    membership_type=selected_membership,
-                    duration=duration,
-                    membership_status="Active",
-                    created_date=datetime.date.today()
-                )
-
-                # insert membership details into the database
+                membership = Membership()
+                membership.membership_type = selected_membership
+                membership.duration = duration
+                membership.membership_status = "Active"
+                membership.created_date = datetime.date.today()
+                
+                # save object to the database
                 membership.save()
-                membership_id = membership.membership_id
 
-                # assign membership to user
-                cursor.execute("UPDATE User SET membership_id = %s WHERE user_id = %s", (membership_id, user_id))
+                # retrieve the membership_id
+                membership_id = membership.membership_id
+                print("Membership ID:", membership_id)
+
+
+                # update membership_id in beneficiary table
+                beneficiary = Beneficiary.get_by_id(user_id)
+                print("MPAINW EDW ?")
+                if beneficiary:
+                    print("mpainoue")
+                    beneficiary.updateMemberID(membership_id=membership.membership_id)
 
                 # beneficiary_id associated with user_id
-                cursor.execute("SELECT beneficiary_id FROM Beneficiary WHERE user_id = %s", (user_id,))
-                beneficiary_id = cursor.fetchone()[0]
+                beneficiary_id = beneficiary.beneficiary_id if beneficiary else None
+                print(beneficiary_id)
 
                 # generate and insert card details only for basic and premium memberships
                 if selected_membership in ['Basic', 'Premium']:
@@ -85,10 +90,10 @@ def continueRegistration(selected_membership, user_id, duration):
                     card = Card(beneficiary_id=beneficiary_id, cardnumber=card_number, barcode=isbn13_number, expiration_date=expiration_date)
 
                     # insert card details into the database
-                    card.save()
-
                     # fetch card_id after inserting the card record
+                    card.save()
                     card_id = card.card_id
+                    print("Card ID:", card_id)
 
                     # points instance for initial points entry
                     initial_points = 0

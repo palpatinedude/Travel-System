@@ -1,3 +1,6 @@
+import sys
+sys.path.append('classes')
+sys.path.append('functions')
 import tkinter as tk
 from tkinter import messagebox
 from partnerDetails import partnerDetails

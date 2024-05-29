@@ -19,22 +19,11 @@ CREATE TABLE City (
 );
 
 
-CREATE TABLE Location (
-    location_id INT PRIMARY KEY AUTO_INCREMENT,
-    location_name VARCHAR(255) NOT NULL,
-    latitude DECIMAL(9, 6),
-    longitude DECIMAL(9, 6),
-    country_id INT,
-    city_id INT,
-    FOREIGN KEY (city_id) REFERENCES City(city_id) ON DELETE SET NULL
-);
-
 CREATE TABLE Membership (
     membership_id INT PRIMARY KEY AUTO_INCREMENT,
     membership_type ENUM('Basic', 'Premium', 'Professional'),
     duration ENUM('Monthly', '6-monthly', 'One year'),
     membership_status VARCHAR(255),
-    description TEXT,
     created_date DATE
 );
 CREATE TABLE User (
@@ -47,22 +36,12 @@ CREATE TABLE User (
     role ENUM('admin', 'beneficiary', 'partner') NOT NULL,
     country_id INT,
     city_id INT,
-    membership_id INT,
-    FOREIGN KEY (membership_id) REFERENCES Membership(membership_id),
     FOREIGN KEY (country_id) REFERENCES Country(country_id),
     FOREIGN KEY (city_id) REFERENCES City(city_id)
 );
     
 
-CREATE TABLE BusinessPartner (
-    partner_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT UNIQUE,
-    tax_code VARCHAR(255),
-    registration_number VARCHAR(255),
-    website VARCHAR(255),
-    description TEXT,
-    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
-);
+
 
 CREATE TABLE Admin (
     admin_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -77,17 +56,28 @@ CREATE TABLE Admin (
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
 );
 
+CREATE TABLE BusinessPartner (
+    partner_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT UNIQUE,
+    tax_code VARCHAR(255),
+    registration_number VARCHAR(255),
+    website VARCHAR(255),
+    description TEXT,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
+);
 
 CREATE TABLE Business (
     business_id INT PRIMARY KEY AUTO_INCREMENT,
     partner_id INT,
     business_name VARCHAR(255) NOT NULL,
     business_type ENUM('Food and Beverage', 'Market', 'Bars', 'Hotels') NOT NULL,
-    location_id INT,
     advertisement_details TEXT,
     price ENUM('Cheap', 'Moderate', 'Expensive'),
+    country_id INT, 
+    city_id INT, 
     FOREIGN KEY (partner_id) REFERENCES BusinessPartner(partner_id) ON DELETE CASCADE,
-    FOREIGN KEY (location_id) REFERENCES Location(location_id) ON DELETE SET NULL
+    FOREIGN KEY (country_id) REFERENCES Country(country_id), 
+    FOREIGN KEY (city_id) REFERENCES City(city_id) 
 );
 
 CREATE TABLE Market (
@@ -105,10 +95,10 @@ CREATE TABLE FoodAndBeverage (
 
 CREATE TABLE Hotels (
     business_id INT PRIMARY KEY,
-    hotel_filters TEXT, -- Add attributes for hotel filters
-    hotel_stars INT, -- Add attributes for hotel stars
-    hotel_floors INT, -- Add attributes for hotel floors
-    hotel_specific_attribute VARCHAR(255), -- Add other specific attributes for hotels
+    hotel_filters TEXT,
+    hotel_stars INT,
+    hotel_floors INT, 
+    hotel_specific_attribute VARCHAR(255),   
     FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
 );
 
@@ -127,14 +117,17 @@ CREATE TABLE Beneficiary (
     date_of_birth DATE,
     address VARCHAR(255),
     contact_number VARCHAR(20),
-    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
+    location_status ENUM('Active', 'Inactive') DEFAULT 'Inactive',
+    membership_id INT,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (membership_id) REFERENCES Membership(membership_id) ON DELETE SET NULL
 );
 
 
 CREATE TABLE SimpleUser (
-    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    simpleuser_id INT PRIMARY KEY AUTO_INCREMENT,
     beneficiary_id INT UNIQUE,
-    history TEXT,
+    bistory TEXT,
     preferences TEXT, 
     FOREIGN KEY (beneficiary_id) REFERENCES Beneficiary(beneficiary_id) ON DELETE CASCADE
 );
@@ -154,13 +147,12 @@ CREATE TABLE Service (
     provider_id INT,
     description VARCHAR(255),
     service_name VARCHAR(255),
-    location_id INT,
-    FOREIGN KEY (location_id) REFERENCES Location(location_id) ON DELETE SET NULL,
+    country_id INT,
+    city_id INT,
+    FOREIGN KEY (country_id) REFERENCES Country(country_id),
+    FOREIGN KEY (city_id) REFERENCES City(city_id),
     FOREIGN KEY (provider_id) REFERENCES ServiceProvider(provider_id) ON DELETE CASCADE
- );
-
-
-
+);
 
 CREATE TABLE Accommodation (
     service_id INT PRIMARY KEY,
@@ -216,10 +208,10 @@ CREATE TABLE PointsHistory (
     transaction_type ENUM('earn', 'spend') NOT NULL,
     points_change INT NOT NULL,
     transaction_date DATETIME NOT NULL,
-    FOREIGN KEY (points_id) REFERENCES Points(points_id) ON DELETE CASCADE
+    business_id INT,
+    FOREIGN KEY (points_id) REFERENCES Points(points_id) ON DELETE CASCADE,
+    FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE SET NULL
 );
-
-
 
 CREATE TABLE Booking (
     booking_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -288,9 +280,8 @@ CREATE TABLE Application (
     status ENUM('pending', 'accepted', 'rejected') NOT NULL DEFAULT 'pending',
     additional_info TEXT,
     admin_notes TEXT,
-    FOREIGN KEY (user_id) REFERENCES SimpleUser(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES SimpleUser(simpleuser_id) ON DELETE CASCADE
 );
-
 
 CREATE TABLE FriendRequest (
     friendship_id INT PRIMARY KEY AUTO_INCREMENT,

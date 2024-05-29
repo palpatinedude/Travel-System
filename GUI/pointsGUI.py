@@ -3,7 +3,7 @@ sys.path.append('functions')
 sys.path.append('classes')
 import tkinter as tk
 from tkinter import PhotoImage
-from points import Points
+from allClasses import Points
 
 def displayPoints(beneficiary_id):
     points_window = tk.Tk()

@@ -5,6 +5,8 @@ import tkinter as tk
 from allClasses import Accommodation, Booking
 from availableServices import areAvailableServices, getAvailableDates, getAvailableHours, getServiceIdByStartDate, updateService
 from PIL import Image, ImageTk
+from models import ReviewApp
+import config
 
 
 # global variables
@@ -128,12 +130,12 @@ def displayAccommodation(accommodation,beneficiary_id):
     canvas = tk.Canvas(accommodation_window, width=window_width, height=window_height//2)
     canvas.pack()
 
-    background_image = Image.open("../images/accomodation.jpg")
-    background_image = background_image.resize((window_width, window_height//2))
-    background_photo = ImageTk.PhotoImage(background_image)
+    # background_image = Image.open("../images/accomodation.jpg")
+    # background_image = background_image.resize((window_width, window_height//2))
+    # background_photo = ImageTk.PhotoImage(background_image)
 
 
-    canvas.create_image(0, 0, anchor="nw", image=background_photo)
+    # canvas.create_image(0, 0, anchor="nw", image=background_photo)
 
     # drame for the lower half of the window
     lower_frame = tk.Frame(accommodation_window, bg="#CD3278")
@@ -153,4 +155,18 @@ def displayAccommodation(accommodation,beneficiary_id):
     reservation_button = tk.Button(lower_frame, text="Make Reservation", command=lambda: makeReservation(service_id,beneficiary_id), font=("Arial", 12, "bold"), bg="#7A8B8B", fg="white", padx=10, pady=10)
     reservation_button.pack(pady=20)
 
+    review_button = tk.Button(lower_frame, text="Leave a Review", command=lambda: writeReview(accommodation.service_name), font=("Arial", 12, "bold"), bg="#7A8B8B", fg="white", padx=10, pady=10)
+    review_button.pack(pady=20)
+
     accommodation_window.mainloop()
+
+def writeReview(service_name):
+    print("Write a review")
+    user_id = config.current_user.user_id
+    if config.current_user:
+        root = tk.Tk()
+        app = ReviewApp(root,user_id, service_name)
+        root.mainloop()
+    else:
+        messagebox.showerror("Login Error", "You must be logged in to leave a review.")
+        print("You must be logged in to leave a review.")

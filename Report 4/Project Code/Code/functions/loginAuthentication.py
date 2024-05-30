@@ -1,29 +1,12 @@
 import sys
-# sys.path.append('../database/')
-sys.path.append('classes')
+sys.path.append('Report 4/Project Code/Code/functions')
+sys.path.append('Report 4/Project Code/Code/classes')
+sys.path.append('Report 4/Project Code/CodeGUI')
 from db_connector import create_connection
 import config
 from allClasses import User
 
-
-# def authenticate(username, password):
-#     connection = create_connection()
-#     if connection:
-#         cursor = connection.cursor(dictionary=True)
-#         query = "SELECT * FROM User WHERE username = %s AND password = %s"
-#         cursor.execute(query, (username, password))
-#         user = cursor.fetchone()
-#         cursor.close()
-#         if user:
-#             config.current_user = user  # save the user information
-#             return True
-#         else:
-#             print("No user found with the provided credentials.")
-#             return False
-#     return False
-
-
-    # function to authenticate user login
+# function to authenticate user login
 def authenticate(username, password):
     connection = create_connection()
     user_id = None

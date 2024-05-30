@@ -3,6 +3,7 @@
 import tkinter as tk
 from packagesGUI import showPackages
 from exploreDestinationGUI import showServices
+from PIL import Image, ImageTk
 
 def chooseBudget():
     budget_amount = budget_entry.get()
@@ -49,14 +50,14 @@ def showBudget(filter_parameters, beneficiary_id):
     budget_window.geometry(f"{window_width}x{window_height}")
 
     # load and set the background image
-    background_image = Image.open("../images/budget.jpg")
-    background_image = background_image.resize((window_width, window_height))
-    background_photo = ImageTk.PhotoImage(background_image)
+    # background_image = Image.open("../images/budget.jpg")
+    # background_image = background_image.resize((window_width, window_height))
+    # background_photo = ImageTk.PhotoImage(background_image)
     
     # create a canvas to display the background image
     canvas = tk.Canvas(budget_window, width=window_width, height=window_height)
     canvas.pack(fill="both", expand=True)
-    canvas.create_image(0, 0, anchor="nw", image=background_photo)
+    # canvas.create_image(0, 0, anchor="nw", image=background_photo)
 
     # title label
     title_label = tk.Label(canvas, text="Budget Planner", font=("Arial", 20, "bold"), bg="#FA8072", fg="white")

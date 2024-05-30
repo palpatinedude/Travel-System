@@ -1,22 +1,23 @@
+import sys
 import tkinter as tk
 import os
+sys.path.append('Report 4/Project Code/Code/functions')
+sys.path.append('Report 4/Project Code/Code/classes')
+sys.path.append('Report 4/Project Code/CodeGUI')
 from tkinter import messagebox, ttk
 from db_connector import create_connection, close_connection
 from tkinter import scrolledtext, Toplevel, Listbox, Button, Scrollbar
 import config
 import mysql.connector
 from mysql.connector import Error
-import sys
-sys.path.append('Report 4/Project Code/Code/functions')
-sys.path.append('Report 4/Project Code/Code/classes')
-sys.path.append('Report 4/Project Code/CodeGUI')
 
 ########################################################## REVIEW GUI ##########################################################
 
 class ReviewApp:
-    def __init__(self, root, user_id):
+    def __init__(self, root, user_id, business_name):
         self.root = root
         self.user_id = user_id  # Logged in user's ID
+        self.business_name = business_name  # Business name passed to the constructor
         self.root.title("Review Publication System")
         self.root.geometry("360x640")  # Set window size to simulate a phone screen
 
@@ -38,14 +39,12 @@ class ReviewApp:
         for i in range(5):
             self.review_frame.grid_rowconfigure(i, minsize=20)
 
-        tk.Label(self.review_frame, text="Select Business:", bg='#118599', fg='white', font=('Arial', 14, 'bold')).grid(row=5,
-                                                                                                                       column=0,
-                                                                                                                       padx=5, pady=5,
-                                                                                                                       sticky='w')
-        self.businesses = self.fetch_businesses()
-        self.business_var = tk.StringVar()
-        self.business_combobox = ttk.Combobox(self.review_frame, textvariable=self.business_var, values=self.businesses)
-        self.business_combobox.grid(row=5, column=1, columnspan=5, padx=5, pady=5, sticky='ew')
+        tk.Label(self.review_frame, text="Business:", bg='#118599', fg='white', font=('Arial', 14, 'bold')).grid(row=5, column=0,
+                                                                                                                padx=5, pady=5,
+                                                                                                                sticky='w')
+        # Display the business name directly
+        tk.Label(self.review_frame, text=self.business_name, bg='#118599', fg='white', font=('Arial', 14)).grid(row=5, column=1,
+                                                                                                                columnspan=5, padx=5, pady=5, sticky='ew')
 
         tk.Label(self.review_frame, text="Rate Service:", bg='#118599', fg='white', font=('Arial', 14, 'bold')).grid(row=6, column=0,
                                                                                                                      padx=5, pady=5,
@@ -126,29 +125,26 @@ class ReviewApp:
             return
 
         reviewer_id = self.user_id
-        selected_business_name = self.business_var.get()
-
-        if not selected_business_name:
-            self.rejectMessage("Please select a business")
-            return
+        selected_business_name = self.business_name
+        # print(selected_business_name, reviewer_id)
 
         try:
             connection = create_connection()
             cursor = connection.cursor()
             
             # Fetch the provider_id for the selected business_name
-            query = "SELECT business_id FROM Business WHERE business_name = %s"
+            query = "SELECT provider_service_id FROM service WHERE service_name = %s"
             cursor.execute(query, (selected_business_name,))
             result = cursor.fetchone()
+            # print(result)
+            print(reviewer_id, selected_business_name)
             
             if result:
                 reviewee_id = result[0]
+                print(reviewee_id)
             else:
                 self.rejectMessage("Invalid business selected")
-                return
-
-            # # convert reviewee_id to string
-            # reviewee_id = str(reviewee_id)
+            # return
 
             rating = self.rating_var.get()
             review_text = self.review_text.get("1.0", tk.END).strip()
@@ -158,14 +154,12 @@ class ReviewApp:
                 return
 
             # Insert the review into the database
-            print(reviewer_id, reviewee_id, rating, review_text)
             query = "INSERT INTO Review (reviewer_id, reviewee_id, rating, review_text) VALUES (%s, %s, %s, %s)"
             cursor.execute(query, (reviewer_id, reviewee_id, rating, review_text))
             connection.commit()
             
             cursor.close()
             connection.close()
-            
             self.refValidation()
         except Error as e:
             self.showReject()

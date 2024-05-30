@@ -9,14 +9,14 @@ from models import  ReviewApp, ChattingGUI, SocialBondingGUI
 
 # ########################################################################################################
 
-def main():
-    login_root.mainloop()  # Run the login window
-    user_id = config.current_user
+# def main():
+#     login_root.mainloop()  # Run the login window
+#     user_id = config.current_user
 
-    if config.current_user:
-        root = tk.Tk()
-        app = ReviewApp(root, user_id)
-        root.mainloop()
+#     if config.current_user:
+#         root = tk.Tk()
+#         app = ReviewApp(root, user_id)
+#         root.mainloop()
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

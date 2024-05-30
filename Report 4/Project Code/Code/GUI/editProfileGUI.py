@@ -1,8 +1,10 @@
 import sys
-sys.path.append('classes')
+sys.path.append('Report 4/Project Code/Code/functions')
+sys.path.append('Report 4/Project Code/Code/classes')
+sys.path.append('Report 4/Project Code/GUI')
 import tkinter as tk
 from allClasses import Beneficiary, SimpleUser, ServiceProvider, User
-
+import config
 
 def saveInfo(window, username_entry, password_entry, user_type, beneficiary_id, bistory_entry=None, preferences_entry=None, certifications_entry=None, specialities_entry=None, languages_entry=None):
     print("Profile saved")

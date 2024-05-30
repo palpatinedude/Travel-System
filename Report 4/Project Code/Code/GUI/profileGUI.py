@@ -1,9 +1,13 @@
 import sys
-sys.path.append('classes')
+sys.path.append('Report 4/Project Code/Code/functions')
+sys.path.append('Report 4/Project Code/Code/classes')
+sys.path.append('Report 4/Project Code/GUI')
 import tkinter as tk
 import config
 from allClasses import Beneficiary
 from editProfileGUI import changeMyInfo
+from db_connector import create_connection
+from makefriendsGUI import viewFriendRequests, friendRequests
 
 def viewEditProfile(window, beneficiary_id):
     print("edit profile button")
@@ -19,8 +23,11 @@ def viewEditProfile(window, beneficiary_id):
 def viewFriends():
     print("view friends button")
 
-def friendRequests():
+def friendRequests(window,beneficiary_id):
     print("view friend requests button")
+    friendRequests(window,beneficiary_id)
+
+    ####################
 
 def showProfile(beneficiary_id):
     profile_window = tk.Tk()
@@ -50,7 +57,7 @@ def showProfile(beneficiary_id):
     edit_button.pack(pady=5)
     friends_button = tk.Button(button_frame, text="Friends", command=viewFriends, font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
     friends_button.pack(pady=5)
-    friend_requests_button = tk.Button(button_frame, text="Friend Requests", command=friendRequests, font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
+    friend_requests_button = tk.Button(button_frame, text="Friend Requests", command=friendRequests(profile_window,beneficiary_id), font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
     friend_requests_button.pack(pady=5)
 
     button_frame2 = tk.Frame(profile_window, bg="#7171C6")

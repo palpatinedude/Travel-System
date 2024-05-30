@@ -1,8 +1,8 @@
 import sys
 sys.path.append('database')
-sys.path.append('functions')
-sys.path.append('classes')
-sys.path.append('GUI')
+sys.path.append('Report 4/Project Code/Code/functions')
+sys.path.append('Report 4/Project Code/Code/classes')
+sys.path.append('Report 4/Project Code/CodeGUI')
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk

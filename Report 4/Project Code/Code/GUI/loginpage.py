@@ -4,9 +4,9 @@ from PIL import Image, ImageTk
 from subprocess import Popen
 from registration import registrationWindow
 import sys
-sys.path.append('functions')
-sys.path.append('classes')
-sys.path.append('GUI')
+sys.path.append('Report 4/Project Code/Code/functions')
+sys.path.append('Report 4/Project Code/Code/classes')
+sys.path.append('Report 4/Project Code/CodeGUI')
 from loginAuthentication import authenticate
 import config  # import the config module
 from mainPage import mainPage 

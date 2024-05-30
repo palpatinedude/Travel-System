@@ -1,7 +1,7 @@
 import sys
-sys.path.append('GUI')
-sys.path.append('functions')
-sys.path.append('classes')
+sys.path.append('Report 4/Project Code/Code/functions')
+sys.path.append('Report 4/Project Code/Code/classes')
+sys.path.append('Report 4/Project Code/CodeGUI')
 import tkinter as tk
 import config
 from models import SocialBondingGUI, ReviewApp
@@ -11,22 +11,22 @@ from pointsGUI import displayPoints
 from functools import partial
 from filtersGUI import chooseFilters
 
-def exploreDestinationAction(window):
+def exploreDestinationAction(window,beneficiary_id):
     print("Explore Destination action")
     window.destroy()
-    chooseFilters()
+    chooseFilters(beneficiary_id)
 
-def socialBondingAction():
+def socialBondingAction(window):
     print("Social Bonding action")
     if config.current_user:
-        root = tk.Tk()
-        app = SocialBondingGUI(root)
-        root.mainloop()
+     root = tk.Tk()
+     app = SocialBondingGUI(root)
+     root.mainloop()
 
-def entertainmentAction():
+def entertainmentAction(window):
     print("Entertainment action")
 
-def mapAction():
+def mapAction(window):
     print("Map action")
 
 def profileAction(window, beneficiary_id):
@@ -35,7 +35,7 @@ def profileAction(window, beneficiary_id):
         # window.destroy() 
         showProfile(beneficiary_id)
 
-def destinationAction():
+def destinationAction(window):
     print("Destination action")
 
 def cardAction(window):
@@ -76,7 +76,7 @@ def mainPage(beneficiary_id):
     button_frame = tk.Frame(main_window)
     button_frame.pack(pady=50)
 
-    explore_button = tk.Button(button_frame, text="Explore Destination", command=lambda: exploreDestinationAction(main_window), width=20, height=3, bg="#71C671", fg="white")
+    explore_button = tk.Button(button_frame, text="Explore Destination", command=lambda: exploreDestinationAction(main_window,beneficiary_id), width=20, height=3, bg="#71C671", fg="white")
     explore_button.grid(row=0, column=0, padx=10, pady=40)
 
     social_button = tk.Button(button_frame, text="Social Bonding", command=lambda: socialBondingAction(main_window), width=20, height=3, bg="#71C671", fg="white")

@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../classes/')
 sys.path.append('../database/')
-from dbConnection import create_connection
+from db_connector import create_connection
 from tkinter import messagebox
 from allClasses import BusinessPartner
 

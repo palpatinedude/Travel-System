@@ -3,7 +3,7 @@ sys.path.append('../classes/')
 sys.path.append('../database/')
 import tkinter as tk
 from tkinter import messagebox
-from dbConnection import create_connection
+from db_connector import create_connection
 import datetime
 import random
 import string

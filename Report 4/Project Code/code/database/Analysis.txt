@@ -1,0 +1,58 @@
+One-to-One Relationships:
+
+    User and Admin:
+        Each user can have one admin role, and each admin corresponds to one user.
+
+    Beneficiary and Membership:
+        Each membership is associated with only one beneficiary, and each beneficiary has only one membership.
+
+    Membership and Card:
+        Each membership is associated with only one card, and each card is uniquely linked to one membership.
+
+    SimpleUser and Beneficiary:
+        Each simple user corresponds to one beneficiary.
+
+    ServiceProvider and Beneficiary:
+        Each service provider corresponds to one beneficiary.
+
+    Service Types (Activity, Accommodation, Car):
+        Each service type (Activity, Accommodation, Car) corresponds to one specific service.
+
+    Business Types (Market, FoodAndBeverage, Hotels, Bars):
+        Each business type (Market, FoodAndBeverage, Hotels, Bars) corresponds to one specific business.
+
+One-to-Many Relationships:
+
+    ServiceProvider and Service:
+        One service provider can offer multiple services, but each service is associated with only one service provider.
+    Service and ServiceAvailability:
+        Each service can have availability on multiple dates, but each availability instance is linked to only one service.
+    ServiceAvailability and AvailableHours:
+        Each service availability can have multiple available hours, but each available hour is associated with only one service availability.
+    SimpleUser and Application:
+        One simple user can submit multiple applications, but each application is associated with only one simple user.
+    City and Country:
+        Many cities belong to one country.
+    Business and BusinessPartner:
+        Many businesses belong to one business partner.
+    Service and ServiceProvider:
+        Many services are provided by one service provider.
+    Points and PointsHistory:
+        Many point transactions can be recorded in PointsHistory for one card, but each point transaction is associated with only one card.
+
+Many-to-Many Relationships:
+
+    Points and Card:
+        Many points can be associated with one card, and one card can have many points.
+    Review and Beneficiary:
+        Many reviews can be written by one user, and one review can be written for many users (reviewers).
+    Response and Review:
+        Many responses can be associated with one review, and one review can have many responses.
+    ChatMessage and Beneficiary:
+        Many chat messages can be sent by one user, and one chat message can be received by many users (receivers).
+    SavedBusiness and Beneficiary:
+        Many businesses can be saved by one beneficiary, and one business can be saved by many beneficiaries.
+    SavedService and Beneficiary:
+        Many services can be saved by one beneficiary, and one service can be saved by many beneficiaries.
+    FriendRequest and Beneficiary:
+        Many friend requests can be sent by one beneficiary, and one beneficiary can receive many friend requests.

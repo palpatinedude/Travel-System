@@ -1,5 +1,4 @@
 import sys
-sys.path.append('../database/')
 sys.path.append('../functions/')
 sys.path.append('../classes/')
 import tkinter as tk
@@ -7,7 +6,6 @@ from tkinter import messagebox
 from selectMembershipGUI import packagesWindow
 from PIL import Image, ImageTk
 from registAuthentication import registerUser
-from dbConnection import create_connection
 from beneficiaryGUI import beneficiaryWindow
 from partner import partnerWindow
 from allClasses import User

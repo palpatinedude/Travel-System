@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../database/')
 import tkinter as tk
-from dbConnection import create_connection
+from db_connector import create_connection
 from datetime import datetime
 
 def areAvailableServices(service_id):

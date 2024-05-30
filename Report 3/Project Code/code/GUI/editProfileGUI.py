@@ -1,8 +1,13 @@
+import sys
+sys.path.append('classes')
 import tkinter as tk
 from user import User
+'''
 from beneficiary import Beneficiary
 from simpleUser import SimpleUser
 from serviceProvider import ServiceProvider
+'''
+from allCLasses import Beneficiary, SimpleUser, ServiceProvider
 
 
 def saveInfo(window, username_entry, password_entry, user_type, beneficiary_id, bistory_entry=None, preferences_entry=None, certifications_entry=None, specialities_entry=None, languages_entry=None):

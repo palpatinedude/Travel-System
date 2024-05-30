@@ -9,9 +9,7 @@ import random
 import string
 import barcode
 from barcode.writer import ImageWriter
-from membership import Membership
-from card import Card
-from points import Points
+from allClasses import Membership, Card, Points
 
 def generate_isbn13_barcode():
     # generate a random 12-digit number exclude the check digit

@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../classes/')
 import tkinter as tk
-from beneficiary import Beneficiary
+from allClasses import Beneficiary
 from editProfileGUI import changeMyInfo
 
 def viewEditProfile(window, beneficiary_id):

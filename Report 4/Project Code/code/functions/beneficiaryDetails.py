@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../classes/')
 import re
-from dbConnection import create_connection
+from db_connector import create_connection
 from datetime import datetime
 from tkinter import messagebox
 from allClasses import SimpleUser, ServiceProvider, Beneficiary

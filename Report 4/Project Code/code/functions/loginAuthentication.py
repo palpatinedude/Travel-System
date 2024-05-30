@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../database/')
 sys.path.append('../classes/')
-from dbConnection import create_connection
+from db_connector import create_connection
 from allClasses import User
 
 # function to authenticate user login

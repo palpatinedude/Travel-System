@@ -10,7 +10,7 @@ from registAuthentication import registerUser
 from db_connector import create_connection
 from beneficiaryGUI import beneficiaryWindow
 from partner import partnerWindow
-from user import User
+from allClasses import User
 
 def register(username_entry, name_entry, lastname_entry, email_entry, password_entry, repeat_password_entry, role_var, location_entry, registration_window):
     connection = create_connection()

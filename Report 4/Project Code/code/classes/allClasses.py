@@ -1,6 +1,6 @@
 import sys
 sys.path.append('../database/')
-from dbConnection import create_connection
+from db_connector import create_connection
 
 
 

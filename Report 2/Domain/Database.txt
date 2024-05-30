@@ -38,20 +38,19 @@ CREATE TABLE Membership (
     description VARCHAR(255)
 );
 
+
 CREATE TABLE User (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    exact_address VARCHAR(255),
     password VARCHAR(255) NOT NULL,
     role ENUM('admin', 'beneficiary', 'partner') NOT NULL,
-    country_id INT,
-    city_id INT,
     membership_id INT UNIQUE,
-    FOREIGN KEY (membership_id) REFERENCES Membership(membership_id),
-    FOREIGN KEY (country_id) REFERENCES Country(country_id),
-    FOREIGN KEY (city_id) REFERENCES City(city_id)
+    FOREIGN KEY (membership_id) REFERENCES Membership(membership_id)
 );
 
 CREATE TABLE BusinessPartner (

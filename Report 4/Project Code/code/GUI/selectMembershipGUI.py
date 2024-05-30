@@ -1,9 +1,7 @@
 import sys
 sys.path.append('../functions/')
-sys.path.append('../database/')
 import tkinter as tk
 from tkinter import messagebox
-from dbConnection import create_connection
 from continueRegist import continueRegistration
 from mainPage import mainPage
 from allClasses import  Beneficiary

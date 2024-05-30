@@ -50,3 +50,5 @@ class Points:
             finally:
                 connection.close()  
         return points        
+
+

@@ -127,6 +127,7 @@ CREATE TABLE Beneficiary (
     date_of_birth DATE,
     address VARCHAR(255),
     contact_number VARCHAR(20),
+    location_status ENUM('Active', 'Inactive') DEFAULT 'Inactive',
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
 );
 

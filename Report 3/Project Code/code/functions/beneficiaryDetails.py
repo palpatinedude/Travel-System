@@ -4,8 +4,7 @@ import re
 from dbConnection import create_connection
 from datetime import datetime
 from tkinter import messagebox
-from simpleUser import SimpleUser
-from serviceProvider import ServiceProvider
+from allClasses import  SimpleUser, ServiceProvider
 
 
 def beneficiaryDetails(user_id, beneficiary_type, dob_entry, address_entry, contact_number_entry, additional_entries, window):

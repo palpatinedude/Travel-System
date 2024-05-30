@@ -2,11 +2,7 @@ import sys
 sys.path.append('../database/')
 sys.path.append('../classes/')
 from dbConnection import create_connection
-from user import User
-from beneficiary import Beneficiary
-from businessPartner import BusinessPartner
-from country import Country
-from city import City
+from allClasses import User, Country, City, Beneficiary, BusinessPartner
 
 
 def check_location_existence(location):

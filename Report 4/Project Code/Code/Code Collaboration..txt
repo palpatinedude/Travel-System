@@ -1,0 +1,66 @@
+Η Μαριάνθη Θώδη και η Βασιλική Νασιέλη ανέλαβαν τη διαχείριση των test cases και τον σχεδιασμό της βάσης δεδομένων για το έργο μας. Αυτό περιλαμβάνει τη δημιουργία test cases για τον έλεγχο της λειτουργικότητας του λογισμικού, καθώς και τον σχεδιασμό της δομής της βάσης δεδομένων που θα χρησιμοποιηθεί για την αποθήκευση των δεδομένων της εφαρμογής.
+
+Για το class diagram και το domain model, δημιούργησαμε την αντίστοιχη δομή και σχέσεις μεταξύ των οντοτήτων (entities) που χρησιμοποιούνται στο σύστημα, καθώς και τις κλάσεις και τις σχέσεις μεταξύ αυτών στο class diagram. Η συνεργασία  επέτρεψε τη δημιουργία μιας συνεκτικής και λειτουργικής δομής για το έργο μας, ενισχύοντας την κατανόηση του συστήματος και διευκολύνοντας την ανάπτυξη και τον έλεγχο του λογισμικού.
+
+Κατανέμαμε το έργο σε δύο άτομα, αρχίζοντας με την υλοποίηση των λειτουργιών σύνδεσης / εγγραφής και τη δημιουργία της κύριας σελίδας. Στη συνέχεια, αναπτύξαμε τις σελίδες "Enter Destination" , "Social Bonding","Explore Destination με budget planner και filter","Make Reservation","Edit Profile" και κλπ. Εργαζόμασταν σε διαφορετικά branches και συνενώσαμε τον κώδικα βήμα προς βήμα.
+
+---------------- Νασιέλη Βασιλική --------------------------------
+
+>>> Use Cases:
+Social Bonding Page (Chatting & Friend Requesting)
+Enter Destination Page
+Review Publication 
+Response ( in progress) 
+
+>>> Files:(σημειώσεις) (φαίνονται και στο github)
+- models.py : αρχείο το οποίο περιέχει τις κλάσεις, μαζί με τον σχεδιασμό των γραφικών.
+Συγκεκριμένα έχουν υλοποιηθεί τα:
+- chatting.py 
+- config.py -> Για αποθήκευση και συνεχή προώθηση των στοιχείων του χρήστη κατά την διάρκεια εναλλαγής παραθύρων.
+- db_connector.py
+- enter_destination_gui.py
+- make_friends.py
+- review_response 
+
+>>> Comments:
+
+Η βασική ιδέα είναι πώς ο κώδικας των σελιδών πέρα του Main Page, θα ενσωματωθεί στο αρχείο mainPage.py , ώστε η πλοήγηση να μπορεί να γίνεται έυκολα από το run του loginpage.py μόνο.
+
+Σε επόμενη παράδοση, θα γίνει προσπάθεια για κατάτμηση/η σύμπτηξη των κλάσεων.
+
+---------------- Θώδη Μαριάνθη --------------------------------
+
+>>> Use Cases:
+Profile
+Card
+Points
+Login/Register
+Budget Filtering
+Make Reservation
+
+>>> Files:(σημειώσεις) (φαίνονται και στο github)
+ allClasses.py
+ availableServices.py
+ beneficiaryDetails.py
+ continueRegist.py
+ loginAuthentication.py
+ partnerDetails.py
+ registAuthentication.py
+ accomodationGUI.py
+ beneficiaryGUI.py
+ budgetGUI.py
+ cardGUI.py
+ pointsGUI.py
+ editProfileGUI.py
+ exploreDestinationGUI.py
+ filtersGUI.py
+ loginpage.py
+ registration.py
+ mainPage.py
+ packagesGUI.py
+ partner.py
+ profileGUI.py
+ 
+>>> Comments:
+στο registration.py στο entry location σωστό format country(space) ,(space) city .
+

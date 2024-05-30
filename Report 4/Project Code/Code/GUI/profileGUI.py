@@ -1,13 +1,15 @@
 import sys
 sys.path.append('Report 4/Project Code/Code/functions')
 sys.path.append('Report 4/Project Code/Code/classes')
-sys.path.append('Report 4/Project Code/GUI')
 import tkinter as tk
 import config
-from allClasses import Beneficiary
+from allClasses import Beneficiary, Membership
 from editProfileGUI import changeMyInfo
 from db_connector import create_connection
 from makefriendsGUI import viewFriendRequests, friendRequests
+
+from allClasses import Beneficiary, Membership
+from editProfileGUI import changeMyInfo
 
 def viewEditProfile(window, beneficiary_id):
     print("edit profile button")
@@ -23,11 +25,38 @@ def viewEditProfile(window, beneficiary_id):
 def viewFriends():
     print("view friends button")
 
-def friendRequests(window,beneficiary_id):
+def friendRequests():
     print("view friend requests button")
-    friendRequests(window,beneficiary_id)
 
-    ####################
+def handleMembershipCancellation(beneficiary_id):
+    #for membership cancellation confirmation
+    membership_window = tk.Toplevel()
+    membership_window.title("Cancel Membership")
+    
+
+    confirmation_msg = "Are you sure you want to cancel your membership?"
+    
+    #  confirmation message
+    confirmation_label = tk.Label(membership_window, text=confirmation_msg, font=("Arial", 12))
+    confirmation_label.pack(pady=10)
+    
+    #  buttons
+    def confirmMembershipCancellation():
+        confirm = messagebox.askyesno("Confirm", confirmation_msg)
+        if confirm:
+            cancelMembership(beneficiary_id)
+            membership_window.destroy()
+
+    
+    confirm_button = tk.Button(membership_window, text="Yes", command=confirmMembershipCancellation)
+    confirm_button.pack(pady=5)
+    cancel_button = tk.Button(membership_window, text="No", command=membership_window.destroy)
+    cancel_button.pack(pady=5)
+
+def cancelMembership(beneficiary_id):
+    membership = Membership()
+    membership.delete(beneficiary_id)
+    messagebox.showinfo("Success", "Your membership has been canceled")
 
 def showProfile(beneficiary_id):
     profile_window = tk.Tk()
@@ -43,7 +72,8 @@ def showProfile(beneficiary_id):
     profile_label = tk.Label(profile_window, text="My Profile", font=("Arial", 20), bg="#836FFF", fg="black")
     profile_label.pack(pady=20)
 
-    # img = tk.PhotoImage(file='GUI/profile.png')
+    # img = tk.PhotoImage(file='Report 4/Project Code/Code/GUI/profile.png')
+    # img = img.subsample(2)
     # img_label = tk.Label(profile_window, image=img, bg="#33A1C9")
     # img_label.image = img
     # img_label.place(x=50, y=90)
@@ -57,7 +87,7 @@ def showProfile(beneficiary_id):
     edit_button.pack(pady=5)
     friends_button = tk.Button(button_frame, text="Friends", command=viewFriends, font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
     friends_button.pack(pady=5)
-    friend_requests_button = tk.Button(button_frame, text="Friend Requests", command=friendRequests(profile_window,beneficiary_id), font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
+    friend_requests_button = tk.Button(button_frame, text="Friend Requests", command=friendRequests, font=("Arial", 10), bg="#9FB6CD", fg="black", width=13, height=2)
     friend_requests_button.pack(pady=5)
 
     button_frame2 = tk.Frame(profile_window, bg="#7171C6")
@@ -69,7 +99,7 @@ def showProfile(beneficiary_id):
     bookings_button.pack(pady=10)
     notifications_button = tk.Button(button_frame2, text="Notifications", font=("Arial", 10), bg="#9FB6CD", fg="black", width=30, height=2)
     notifications_button.pack(pady=10)
-    membership_button = tk.Button(button_frame2, text="Membership", font=("Arial", 10), bg="#9FB6CD", fg="black", width=30, height=2)
+    membership_button = tk.Button(button_frame2, text="Membership", command=lambda: handleMembershipCancellation(beneficiary_id), font=("Arial", 10), bg="#9FB6CD", fg="black", width=30, height=2)
     membership_button.pack(pady=10)
 
     profile_window.mainloop()

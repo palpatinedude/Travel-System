@@ -12,10 +12,10 @@ import config
 from models import SocialBondingGUI, ReviewApp
 
 
-def exploreDestinationAction(window):
+def exploreDestinationAction(window,beneficiary_id):
     print("Explore Destination action")
     window.destroy()
-    chooseFilters()
+    chooseFilters(beneficiary_id)
 
     
 def socialBondingAction(window):
@@ -82,7 +82,7 @@ def mainPage(beneficiary_id):
     button_frame = tk.Frame(main_window)
     button_frame.pack(pady=50)
 
-    explore_button = tk.Button(button_frame, text="Explore Destination", command=lambda: exploreDestinationAction(main_window), width=20, height=3, bg="#71C671", fg="white")
+    explore_button = tk.Button(button_frame, text="Explore Destination", command=lambda: exploreDestinationAction(main_window,beneficiary_id), width=20, height=3, bg="#71C671", fg="white")
     explore_button.grid(row=0, column=0, padx=10, pady=40)
 
     social_button = tk.Button(button_frame, text="Social Bonding", command=lambda: socialBondingAction(main_window), width=20, height=3, bg="#71C671", fg="white")

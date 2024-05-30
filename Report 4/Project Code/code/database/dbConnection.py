@@ -7,7 +7,7 @@ def create_connection():
             host='localhost',
             user='root',
             password='ceidstar2802!!',
-            database='odyssey'
+            database='odysseyDB'
         )
         if connection.is_connected():
             print("Connection to MySQL database established")

@@ -1,11 +1,8 @@
-Code Collaboration.
+Η Μαριάνθη Θώδη και η Βασιλική Νασιέλη ανέλαβαν τη διαχείριση των test cases και τον σχεδιασμό της βάσης δεδομένων για το έργο μας. Αυτό περιλαμβάνει τη δημιουργία test cases για τον έλεγχο της λειτουργικότητας του λογισμικού, καθώς και τον σχεδιασμό της δομής της βάσης δεδομένων που θα χρησιμοποιηθεί για την αποθήκευση των δεδομένων της εφαρμογής.
 
-Για το κομμάτι υλοποίησης του κώδικα, συνεργαστήκαμε 2 άτομα. 
-Η υλοποίηση ξεκίνησε από τις λειτουργίες που αφορούν τα login/registration, καθώς και την υλοποίηση του main page πάνω στο οποίο στηρίζονται οι περισσότερες περιπτώσεις χρήσεων. Επιπλέον, υλοποιήθηκε επίσης αρχικά , η σελίδα "Enter Destination" Η οποία θα πρέπει να εμφανίζεται αμέσως μετά το login page. 
+Για το class diagram και το domain model, δημιούργησαμε την αντίστοιχη δομή και σχέσεις μεταξύ των οντοτήτων (entities) που χρησιμοποιούνται στο σύστημα, καθώς και τις κλάσεις και τις σχέσεις μεταξύ αυτών στο class diagram. Η συνεργασία  επέτρεψε τη δημιουργία μιας συνεκτικής και λειτουργικής δομής για το έργο μας, ενισχύοντας την κατανόηση του συστήματος και διευκολύνοντας την ανάπτυξη και τον έλεγχο του λογισμικού.
 
-Λειτουργήσαμε σε 2 διαφορετικά branch και η ένωση έγινε τμηματικά.
-
-Ο διαμοιρασμός του έργου έγινε ως εξής:
+Κατανέμαμε το έργο σε δύο άτομα, αρχίζοντας με την υλοποίηση των λειτουργιών σύνδεσης / εγγραφής και τη δημιουργία της κύριας σελίδας. Στη συνέχεια, αναπτύξαμε τις σελίδες "Enter Destination" , "Social Bonding","Explore Destination με budget planner και filter","Make Reservation","Edit Profile" και κλπ. Εργαζόμασταν σε διαφορετικά branches και συνενώσαμε τον κώδικα βήμα προς βήμα.
 
 ---------------- Νασιέλη Βασιλική --------------------------------
 
@@ -38,10 +35,32 @@ Profile
 Card
 Points
 Login/Register
-Membership
+Budget Filtering
+Make Reservation
 
 >>> Files:(σημειώσεις) (φαίνονται και στο github)
-
+ allClasses.py
+ availableServices.py
+ beneficiaryDetails.py
+ continueRegist.py
+ loginAuthentication.py
+ partnerDetails.py
+ registAuthentication.py
+ accomodationGUI.py
+ beneficiaryGUI.py
+ budgetGUI.py
+ cardGUI.py
+ pointsGUI.py
+ editProfileGUI.py
+ exploreDestinationGUI.py
+ filtersGUI.py
+ loginpage.py
+ registration.py
+ mainPage.py
+ packagesGUI.py
+ partner.py
+ profileGUI.py
+ 
 >>> Comments:
 στο registration.py στο entry location σωστό format country(space) ,(space) city .
 

@@ -2,22 +2,22 @@ import sys
 sys.path.append('../classes/')
 import tkinter as tk
 from allClasses import Market, Bars, Hotels, FoodAndBeverage, Accommodation, Car, Activity
-from accomodationGUI import displayAccomodation
+from accomodationGUI import displayAccommodation
 
-def open_accommodation_window(window,accommodation):
+def open_accommodation_window(window,accommodation,beneficiary_id):
     print("Accommodation window opened")
     window.destroy()
-    displayAccomodation(accommodation)
+    displayAccommodation(accommodation,beneficiary_id)
     
-def open_car_window(window,car):
+def open_car_window(window,car,beneficiary_id):
     print("Car window opened")
     window.destroy()
     
-def open_activity_window(window,activity):
+def open_activity_window(window,activity,beneficiary_id):
     print("Activity window opened")
     window.destroy()
 
-def showServices(filter_parameters=None, budget_amount=None):
+def showServices(filter_parameters=None, budget_amount=None, beneficiary_id=None):
     services_window = tk.Tk()
     services_window.title("Display Services")
     
@@ -90,15 +90,15 @@ def showServices(filter_parameters=None, budget_amount=None):
 
     # services for each type
     for accommodation in accommodations:
-        accommodation_button = tk.Button(accommodation_frame, text=accommodation.service_name, bg="#FFD39B", command=lambda: open_accommodation_window(services_window,accommodation))
+        accommodation_button = tk.Button(accommodation_frame, text=accommodation.service_name, bg="#FFD39B", command=lambda: open_accommodation_window(services_window,accommodation,beneficiary_id))
         accommodation_button.pack(anchor="w", padx=5, pady=5)
 
     for car in cars:
-        car_button = tk.Button(car_frame, text=car.service_name, bg="#98F5FF", command=lambda: open_car_window(services_window,car))
+        car_button = tk.Button(car_frame, text=car.service_name, bg="#98F5FF", command=lambda: open_car_window(services_window,car,beneficiary_id))
         car_button.pack(anchor="w", padx=5, pady=5)
 
     for activity in activities:
-        activity_button = tk.Button(activity_frame, text=activity.service_name, bg="#FF9912",  command=lambda: open_activity_window(services_window,activity))
+        activity_button = tk.Button(activity_frame, text=activity.service_name, bg="#FF9912",  command=lambda: open_activity_window(services_window,activity,beneficiary_id))
         activity_button.pack(anchor="w", padx=5, pady=5)    
     
     services_window.mainloop()

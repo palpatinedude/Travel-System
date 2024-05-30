@@ -16,7 +16,7 @@ relaxation_var = None
 cultural_var = None
 countryside_var = None
 
-def goToBudgetGUI(window):
+def goToBudgetGUI(window,beneficiary_id):
     global solo_var, couple_var, family_var, group_var, eco_var, adventurous_var, sightseeing_var, nature_var, city_var, mountain_var, relaxation_var, cultural_var, countryside_var
     
     selected_filters = []
@@ -48,9 +48,9 @@ def goToBudgetGUI(window):
         selected_filters.append("Countryside")
 
     window.destroy()  
-    showBudget(selected_filters)
+    showBudget(selected_filters,beneficiary_id)
 
-def chooseFilters():
+def chooseFilters(beneficiary_id):
     global solo_var, couple_var, family_var, group_var, eco_var, adventurous_var, sightseeing_var, nature_var, city_var, mountain_var, relaxation_var, cultural_var, countryside_var
     
     filter_window = tk.Tk()
@@ -112,7 +112,7 @@ def chooseFilters():
     countryside_cb.pack(anchor="center", pady=10)
 
 
-    explore_button = tk.Button(filter_window, text="Explore", command=lambda: goToBudgetGUI(filter_window), bg="lightcoral", width=checkbox_width, height=checkbox_height, font=checkbox_font)
+    explore_button = tk.Button(filter_window, text="Explore", command=lambda: goToBudgetGUI(filter_window,beneficiary_id), bg="lightcoral", width=checkbox_width, height=checkbox_height, font=checkbox_font)
     explore_button.pack(pady=10)
 
     filter_window.mainloop()

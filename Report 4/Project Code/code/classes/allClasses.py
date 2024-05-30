@@ -1,5 +1,8 @@
 import sys
+sys.path.append('../database/')
 from dbConnection import create_connection
+
+
 
 class User:
     def __init__(self, user_id=None, username=None, name=None, lastname=None, email=None, password=None, role=None, country_id=None, city_id=None):
@@ -394,7 +397,7 @@ class ServiceProvider(Beneficiary):
 
 
 class Membership:
-    def __init__(self ,membership_type=None, duration=None, membership_status=None,  created_date=None, membership_id=None):
+    def __init__(self, membership_type=None, duration=None, membership_status=None, created_date=None, membership_id=None):
         self.membership_id = membership_id
         self.membership_type = membership_type
         self.duration = duration
@@ -428,6 +431,93 @@ class Membership:
                 connection.commit()
         except Exception as e:
             print(f"Error: {e}")
+
+    def get_membership_id_by_beneficiary_id(self, beneficiary_id):
+        print(beneficiary_id)
+        try:
+            with create_connection() as connection:
+                cursor = connection.cursor()
+                query = """SELECT membership_id FROM Beneficiary WHERE beneficiary_id = %s"""
+                cursor.execute(query, (beneficiary_id,))
+                result = cursor.fetchone()
+                if result:
+                    return result[0] 
+                else:
+                    print("No membership found for the given beneficiary_id.")
+                    return None
+        except Exception as e:
+            print(f"Error: {e}")
+
+    def delete(self, beneficiary_id):
+        try:
+            # delete pointshistory associated with the beneficiary_id
+            points_history_deleted = self.delete_points_history(beneficiary_id)
+            
+            #If pointshistory deleted successfully, delete associated points
+            if points_history_deleted:
+                points_deleted = self.delete_points(beneficiary_id)
+                if points_deleted:
+                    #If points deleted successfully, delete the card
+                    card_deleted = self.delete_card(beneficiary_id)
+                    if card_deleted:
+                        # if card deleted successfully, delete the membership
+                        self.delete_membership(beneficiary_id)
+        except Exception as e:
+            print(f"Error: {e}")
+
+    def delete_membership(self, beneficiary_id):
+        try:
+            membership_id = self.get_membership_id_by_beneficiary_id(beneficiary_id)
+            if membership_id:
+                with create_connection() as connection:
+                    cursor = connection.cursor()
+                    query = """DELETE FROM Membership WHERE membership_id = %s"""
+                    cursor.execute(query, (membership_id,))
+                    print("Membership deleted successfully!")
+                    connection.commit()
+            else:
+                print("No membership found for the given beneficiary_id.")
+        except Exception as e:
+            print(f"Error: {e}")
+
+    def delete_card(self, beneficiary_id):
+        try:
+            with create_connection() as connection:
+                cursor = connection.cursor()
+                query = """DELETE FROM Card WHERE beneficiary_id = %s"""
+                cursor.execute(query, (beneficiary_id,))
+                connection.commit()
+                print("Card deleted successfully!")
+                return True
+        except Exception as e:
+            print(f"Error deleting Card: {e}")
+            return False
+
+    def delete_points(self, beneficiary_id):
+        try:
+            with create_connection() as connection:
+                cursor = connection.cursor()
+                query = """DELETE FROM Points WHERE card_id IN (SELECT card_id FROM Card WHERE beneficiary_id = %s)"""
+                cursor.execute(query, (beneficiary_id,))
+                connection.commit()
+                print("Points deleted successfully!")
+                return True
+        except Exception as e:
+            print(f"Error deleting Points: {e}")
+            return False
+
+    def delete_points_history(self, beneficiary_id):
+        try:
+            with create_connection() as connection:
+                cursor = connection.cursor()
+                query = """DELETE FROM PointsHistory WHERE points_id IN (SELECT points_id FROM Points WHERE card_id IN (SELECT card_id FROM Card WHERE beneficiary_id = %s))"""
+                cursor.execute(query, (beneficiary_id,))
+                connection.commit()
+                print("PointsHistory deleted successfully!")
+                return True
+        except Exception as e:
+            print(f"Error deleting PointsHistory: {e}")
+            return False
 
 class Card:
     def __init__(self, beneficiary_id=None, cardnumber=None, barcode=None, expiration_date=None, card_id=None):
@@ -671,8 +761,8 @@ class Business:
             conn.commit()
             print("Business saved successfully")
 
-        except mysql.connector.Error as error:
-            print("Failed to save business: {}".format(error))
+        except Exception as e:
+            print("Failed to save business: {}".format(e))
 
         finally:
             if conn.is_connected():
@@ -698,8 +788,8 @@ class Market(Business):
             conn.commit()
             print("Market saved successfully")
 
-        except mysql.connector.Error as error:
-            print("Failed to save market: {}".format(error))
+        except Exception as e:
+            print("Failed to save market: {}".format(e))
 
         finally:
             if conn.is_connected():
@@ -734,8 +824,8 @@ class Market(Business):
                     market_specific_attribute=row['market_specific_attribute']
                 ))
 
-        except mysql.connector.Error as error:
-            print("Failed to retrieve markets: {}".format(error))
+        except Exception as e:
+            print("Failed to retrieve markets: {}".format(e))
 
         finally:
             if conn.is_connected():
@@ -763,8 +853,8 @@ class FoodAndBeverage(Business):
             conn.commit()
             print("Food and Beverage saved successfully")
 
-        except mysql.connector.Error as error:
-            print("Failed to save Food and Beverage: {}".format(error))
+        except Exception as e:
+            print("Failed to save Food and Beverage: {}".format(e))
 
         finally:
             if conn.is_connected():
@@ -796,8 +886,8 @@ class FoodAndBeverage(Business):
                     food_beverage_specific_attribute=row['food_beverage_specific_attribute']
                 ))
 
-        except mysql.connector.Error as error:
-            print("Failed to retrieve food and beverages: {}".format(error))
+        except Exception as e:
+            print("Failed to retrieve food and beverages: {}".format(e))
 
         finally:
             if conn.is_connected():
@@ -827,8 +917,8 @@ class Hotels(Business):
             conn.commit()
             print("Hotels saved successfully")
 
-        except mysql.connector.Error as error:
-            print("Failed to save Hotels: {}".format(error))
+        except Exception as e:
+            print("Failed to save Hotels: {}".format(e))
 
         finally:
             if conn.is_connected():
@@ -862,8 +952,8 @@ class Hotels(Business):
                     hotel_specific_attribute=row['hotel_specific_attribute']
                 ))
 
-        except mysql.connector.Error as error:
-            print("Failed to retrieve hotels: {}".format(error))
+        except Exception as e:
+            print("Failed to retrieve hotels: {}".format(w))
 
         finally:
             if conn.is_connected():
@@ -892,8 +982,8 @@ class Bars(Business):
             conn.commit()
             print("Bars saved successfully")
 
-        except mysql.connector.Error as error:
-            print("Failed to save Bars: {}".format(error))
+        except Exception as e:
+            print("Failed to save Bars: {}".format(e))
 
         finally:
             if conn.is_connected():
@@ -926,8 +1016,8 @@ class Bars(Business):
                     bar_specific_attribute=row['bar_specific_attribute']
                 ))
 
-        except mysql.connector.Error as error:
-            print("Failed to retrieve bars: {}".format(error))
+        except Exception as e:
+            print("Failed to retrieve bars: {}".format(e))
 
         finally:
             if conn.is_connected():
@@ -935,100 +1025,6 @@ class Bars(Business):
                 conn.close()
 
         return bars
-
-class Service:
-    def __init__(self, provider_id, description, service_name, country_id, city_id):
-        self.provider_id = provider_id
-        self.description = description
-        self.service_name = service_name
-        self.country_id = country_id
-        self.city_id = city_id
-
-    def save(self):
-        try:
-            with create_connection() as connection:
-                cursor = connection.cursor()
-                query = """
-                INSERT INTO Service (provider_id, description, service_name, country_id, city_id)
-                VALUES (%s, %s, %s, %s, %s)
-                """
-                values = (self.provider_id, self.description, self.service_name, self.country_id, self.city_id)
-                cursor.execute(query, values)
-                connection.commit()
-                self.service_id = cursor.lastrowid
-                print("Service saved successfully!")
-        except Exception as e:
-            print(f"Error: {e}")
-
-class Accommodation(Service):
-    def __init__(self, provider_id, description, service_name, country_id, city_id, num_rooms, facilities):
-        super().__init__(provider_id, description, service_name, country_id, city_id)
-        self.num_rooms = num_rooms
-        self.facilities = facilities
-
-    def save(self):
-       # super().save()
-        try:
-            with create_connection() as connection:
-                cursor = connection.cursor()
-                query = """
-                INSERT INTO Accommodation (service_id, num_rooms, facilities)
-                VALUES (%s, %s, %s)
-                """
-                values = (self.service_id, self.num_rooms, self.facilities)
-                cursor.execute(query, values)
-                connection.commit()
-                print("Accommodation saved successfully!")
-        except Exception as e:
-            print(f"Error: {e}")
-
-class Car(Service):
-    def __init__(self, provider_id, description, service_name, country_id, city_id, car_model, year_of_manufacture, car_type, rental_rate):
-        super().__init__(provider_id, description, service_name, country_id, city_id)
-        self.car_model = car_model
-        self.year_of_manufacture = year_of_manufacture
-        self.car_type = car_type
-        self.rental_rate = rental_rate
-
-    def save(self):
-        #super().save()
-        try:
-            with create_connection() as connection:
-                cursor = connection.cursor()
-                query = """
-                INSERT INTO Car (service_id, car_model, year_of_manufacture, car_type, rental_rate)
-                VALUES (%s, %s, %s, %s, %s)
-                """
-                values = (self.service_id, self.car_model, self.year_of_manufacture, self.car_type, self.rental_rate)
-                cursor.execute(query, values)
-                connection.commit()
-                print("Car saved successfully!")
-        except Exception as e:
-            print(f"Error: {e}")
-
-class Activity(Service):
-    def __init__(self, provider_id, description, service_name, country_id, city_id, activity_name, age_requirement, duration_hours, activity_description):
-        super().__init__(provider_id, description, service_name, country_id, city_id)
-        self.activity_name = activity_name
-        self.age_requirement = age_requirement
-        self.duration_hours = duration_hours
-        self.activity_description = activity_description
-
-    def save(self):
-      #  super().save()
-        try:
-            with create_connection() as connection:
-                cursor = connection.cursor()
-                query = """
-                INSERT INTO Activity (service_id, activity_name, age_requirement, duration_hours, activity_description)
-                VALUES (%s, %s, %s, %s, %s)
-                """
-                values = (self.service_id, self.activity_name, self.age_requirement, self.duration_hours, self.activity_description)
-                cursor.execute(query, values)
-                connection.commit()
-                print("Activity saved successfully!")
-        except Exception as e:
-            print(f"Error: {e}")                
 
 class Service:
     def __init__(self, provider_id, description, service_name, country_id, city_id):
@@ -1051,8 +1047,8 @@ class Service:
                 conn.commit()
                 print(f"{self.service_name} saved successfully")
 
-        except mysql.connector.Error as error:
-            print(f"Failed to save {self.service_name}: {error}")
+        except Exception as e:
+            print(f"Failed to save {self.service_name}: {e}")
 
     @staticmethod
     def get_all():
@@ -1073,16 +1069,17 @@ class Service:
                         city_id=row['city_id']
                     ))
 
-        except mysql.connector.Error as error:
-            print(f"Failed to retrieve services: {error}")
+        except Exception as e:
+            print(f"Failed to retrieve services: {e}")
 
         return services
 
 class Accommodation(Service):
-    def __init__(self, provider_id, description, service_name, country_id, city_id, num_rooms, facilities):
+    def __init__(self, provider_id, description, service_name, country_id, city_id, num_rooms, facilities,service_id):
         super().__init__(provider_id, description, service_name, country_id, city_id)
         self.num_rooms = num_rooms
         self.facilities = facilities
+        self.service_id = service_id 
 
     def save(self):
        # super().save()
@@ -1097,8 +1094,8 @@ class Accommodation(Service):
                 conn.commit()
                 print("Accommodation saved successfully")
 
-        except mysql.connector.Error as error:
-            print(f"Failed to save accommodation: {error}")
+        except Exception as e:
+            print(f"Failed to save accommodation: {e}")
 
     @staticmethod
     def get_all():
@@ -1109,9 +1106,9 @@ class Accommodation(Service):
 
                 sql = "SELECT * FROM Accommodation INNER JOIN Service ON Accommodation.service_id = Service.provider_service_id"
                 cursor.execute(sql)
-
                 for row in cursor.fetchall():
                     accommodations.append(Accommodation(
+                        service_id=row['service_id'], 
                         provider_id=row['provider_id'],
                         description=row['description'],
                         service_name=row['service_name'],
@@ -1121,8 +1118,8 @@ class Accommodation(Service):
                         facilities=row['facilities']
                     ))
 
-        except mysql.connector.Error as error:
-            print(f"Failed to retrieve accommodations: {error}")
+        except Exception as e:
+            print(f"Failed to retrieve accommodations: {e}")
 
         return accommodations
 
@@ -1147,8 +1144,8 @@ class Car(Service):
                 conn.commit()
                 print("Car saved successfully")
 
-        except mysql.connector.Error as error:
-            print(f"Failed to save car: {error}")
+        except Exception as e:
+            print(f"Failed to save car: {e}")
 
     @staticmethod
     def get_all():
@@ -1173,8 +1170,8 @@ class Car(Service):
                         rental_rate=row['rental_rate']
                     ))
 
-        except mysql.connector.Error as error:
-            print(f"Failed to retrieve cars: {error}")
+        except Exception as error:
+            print(f"Failed to retrieve cars: {e}")
 
         return cars
 
@@ -1199,8 +1196,8 @@ class Activity(Service):
                 conn.commit()
                 print("Activity saved successfully")
 
-        except mysql.connector.Error as error:
-            print(f"Failed to save activity: {error}")
+        except Exception as e:
+            print(f"Failed to save activity: {e}")
 
     @staticmethod
     def get_all():
@@ -1225,7 +1222,59 @@ class Activity(Service):
                         activity_description=row['activity_description']
                     ))
 
-        except mysql.connector.Error as error:
-            print(f"Failed to retrieve activities: {error}")
+        except Exception as e:
+            print(f"Failed to retrieve activities: {e}")
 
-        return activities            
+        return activities      
+
+
+class Booking:
+        def __init__(self, booking_id=None, booking_date=None, booking_status=None, booker_id=None, service_id=None, booking_details=None):
+            self.booking_id = booking_id
+            self.booking_date = booking_date
+            self.booking_status = booking_status if booking_status is not None else 'pending'
+            self.booker_id = booker_id
+            self.service_id = service_id
+            self.booking_details = booking_details
+        def save(self):
+            try:
+                with create_connection() as conn:
+                    cursor = conn.cursor()
+                    sql = "INSERT INTO Booking (booking_date, booking_status, booker_id, service_id, booking_details) VALUES (%s, %s, %s, %s, %s)"
+                    val = (self.booking_date, self.booking_status, self.booker_id, self.service_id, self.booking_details)
+                    cursor.execute(sql, val)
+                    conn.commit()
+                    print("Booking saved successfully")
+            except Exception as e:
+                print(f"Failed to save booking: {error}")
+        def update(self, booking_status=None, booking_details=None):
+            try:
+                with create_connection() as conn:
+                    cursor = conn.cursor()
+                    sql = "UPDATE Booking SET booking_status = %s, booking_details = %s WHERE booking_id = %s"
+                    val = (booking_status, booking_details, self.booking_id)
+                    cursor.execute(sql, val)
+                    conn.commit()
+                    print("Booking updated successfully")
+            except Exception as e:
+                print(f"Failed to update booking: {error}")
+        @staticmethod
+        def get_all():
+            bookings = []
+            try:
+                with create_connection() as conn:
+                    cursor = conn.cursor(dictionary=True)
+                    sql = "SELECT * FROM Booking"
+                    cursor.execute(sql)
+                    for row in cursor.fetchall():
+                        bookings.append(Booking(
+                            booking_id=row['booking_id'],
+                            booking_date=row['booking_date'],
+                            booking_status=row['booking_status'],
+                            booker_id=row['booker_id'],
+                            service_id=row['service_id'],
+                            booking_details=row['booking_details']
+                        ))
+            except Exception as e:
+                print(f"Failed to retrieve bookings: {e}")
+            return bookings

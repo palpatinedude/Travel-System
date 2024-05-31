@@ -1,3 +1,14 @@
+Project Overview:
+
+Our mobile app project utilizes tkinter, a python library known for its simplicity and ease of use in creating graphical user interfaces . The aim is to develop a user-friendly application covering various functionalities such as user authentication (login and registration), browsing businesses, and making bookings. The project's directory structure is organized into separate modules for gui, classes, functions, and database, promoting modularity, code organization, and ease of maintenance.
+
+Directory Structure:
+
+    GUI: Contains python scripts responsible for creating the graphical user interface using tkinter.
+    Classes: Includes python classes defining the data models used in the application.
+    Functions: Houses python scripts that handle  logic and interaction with external database.
+    Database: Stores database-related files, such as sql scripts, configuration files, etc.
+    Images: Keep the images that used in the GUI
 project_directory/
 │
 ├── GUI/
@@ -8,5 +19,26 @@ project_directory/
 │
 ├── database/
 │   
-├── images/
-│ 
+└── images/
+
+
+Modular Approach:
+
+    GUI: Utilizes tkinter to create an intuitive and interactive interface for users. Each screen or functionality is encapsulated within separate python scripts, promoting code reusability and maintainability.
+
+    Classes: Defines the data models used in the application using python classes. This separation allows for clear representation of different entities within the app and facilitates data manipulation and storage.
+
+    Functions: Implements the application's business logic and handles interactions with external services or databases. This separation ensures that the gui remains focused on presentation logic, while business logic is abstracted away into separate service functions.
+
+    Database: Manages database-related tasks, including database setup, migrations, and interactions. It contains sql scripts and configuration files necessary for database operations.
+
+    Images:  Hold the images for the background images.
+
+
+How to Run:
+
+    Navigate to the GUI directory in the terminal or command prompt.
+    Run the loginpage.py script using the command python loginpage.py.
+    Interact with the GUI to log in, register, browse businesses, and make bookings.
+
+By organizing the code into separate directories and modules, the project promotes reusability, scalability, and ease of maintenance. This modular approach allows for efficient management of different aspects of the application, facilitating future modifications and enhancements.

@@ -292,7 +292,7 @@ class FriendRequestGUI:
     def displayUserProfile(self, user):
         profile_window = tk.Toplevel(self.root)
         profile_window.title(f"{user['username']}'s Profile")
-        profile_window.geometry("300x200")
+        profile_window.geometry("360x640")
 
         tk.Label(profile_window, text=f"Username: {user['username']}").pack(pady=10)
         tk.Button(profile_window, text="Send Friend Request", command=lambda: self.sendFriendRequest(user)).pack(pady=10)
@@ -324,15 +324,15 @@ class FriendRequestGUI:
         messagebox.showinfo("Info", "Friend request cancelled.")
         
     def showAddFriends(self):
-        user_id = config.current_user['user_id']  # Use the current logged-in user's ID
+        user_id = config.current_user.user_id # Use the current logged-in user's ID
         cursor = self.connection.cursor(dictionary=True)
         query = """
-        SELECT u.username 
-        FROM FriendRequest fr
-        JOIN User u ON fr.user2_id = u.user_id
-        WHERE fr.user1_id = %s AND fr.status = 'accepted'
+        SELECT u.user_id, u.username 
+        FROM User u
+        JOIN FriendRequest fr ON (fr.user1_id = %s AND fr.user2_id = u.user_id) OR (fr.user2_id = %s AND fr.user1_id = u.user_id)
+        WHERE fr.status = 'accepted';
         """
-        cursor.execute(query, (user_id,))
+        cursor.execute(query, (user_id, user_id))
         friends = cursor.fetchall()
         cursor.close()
 
@@ -459,10 +459,6 @@ class SocialBondingGUI:
         self.chat_button = tk.Button(self.main_frame, text="Chat", bg="white", command=self.open_chat)
         self.chat_button.place(x=300, y=0, width=50, height=50)
 
-        # Buttons
-        self.friends_button = tk.Button(self.main_frame, text="My Friends", bg="light blue", command=self.show_friends)
-        self.friends_button.pack(fill=tk.X, pady=10)
-
         self.add_friends_button = tk.Button(self.main_frame, text="Add Friends", bg="light blue", command=self.add_friends)
         self.add_friends_button.pack(fill=tk.X, pady=10)
 
@@ -513,8 +509,68 @@ class SocialBondingGUI:
 
 
     def show_people_near_me(self):
-        # Implement the method to show people near me
-        messagebox.showinfo("People Near Me", "Showing people near me...")
+        if self.isSharing():
+            self.fetch_and_display_people_near_me()
+        else:
+            self.no_location_sharing_label = tk.Label(self.main_frame, text="Location sharing is not active.")
+            self.no_location_sharing_label.pack(fill=tk.X, pady=5)
+
+    def isSharing(self):
+        user_id = config.current_user.user_id  # Use the current logged-in user's ID
+        try:
+            cursor = self.connection.cursor(dictionary=True)
+            query = """
+            SELECT location_status
+            FROM Beneficiary
+            WHERE user_id = %s
+            """
+            cursor.execute(query, (user_id,))
+            result = cursor.fetchone()
+            cursor.close()
+
+            if result:
+                location_status = result['location_status']
+                if location_status == "Active":
+                    return True
+                else:
+                    self.no_location_sharing_label = tk.Label(self.main_frame, text=f"Your location sharing status is: {location_status}")
+                    self.no_location_sharing_label.pack(fill=tk.X, pady=5)
+                    return False
+            else:
+                messagebox.showerror("Error", "User not found in Beneficiary table.")
+                return False
+        except mysql.connector.Error as err:
+            messagebox.showerror("Error", f"Error fetching location status: {err}")
+            return False
+
+    def fetch_and_display_people_near_me(self):
+        cursor = self.connection.cursor(dictionary=True)
+        user_id = config.current_user.user_id  # Use the current logged-in user's ID
+        query = """
+        SELECT u.user_id, u.username
+        FROM User u
+        JOIN Beneficiary b ON u.user_id = b.user_id
+        WHERE b.location_status = 'Active' AND u.user_id != %s
+        """
+        cursor.execute(query, (user_id,))
+        people_near_me = cursor.fetchall()
+        cursor.close()
+
+        if people_near_me:
+            people_window = tk.Toplevel(self.root)
+            people_window.title("People Near Me")
+            people_window.geometry("360x640")
+
+            for i, person in enumerate(people_near_me):
+                person_button = tk.Button(people_window, text=person['username'])
+                person_button.pack(fill=tk.X, pady=5)
+        else:
+            no_people_label = tk.Label(self.main_frame, text="No people found near you.")
+            no_people_label.pack(fill=tk.X, pady=5)
+
+    def displayOptionWindow(self):
+        pass
+
 
 ################################# CHATTING GUI ##########################################
 

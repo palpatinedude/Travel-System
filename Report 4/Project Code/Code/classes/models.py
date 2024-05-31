@@ -300,7 +300,7 @@ class FriendRequestGUI:
 
 
     def sendFriendRequest(self, user):
-        sender_id = config.current_user['user_id']  # Use the current logged-in user's ID
+        sender_id = config.current_user.user_id  # Use the current logged-in user's ID
         recipient_id = user['user_id']
         cursor = self.connection.cursor()
         query = "INSERT INTO FriendRequest (user1_id, user2_id, status) VALUES (%s, %s, 'pending')"
@@ -341,7 +341,7 @@ class FriendRequestGUI:
 
     def fetchRecommendedFriends(self):
         # Fetch recommended friends who are not already friends with the current user
-        user_id = config.current_user['user_id']
+        user_id = config.current_user.user_id  # Use the current logged-in user's ID
         cursor = self.connection.cursor(dictionary=True)
 
         # Query to select recommended friends who are not already friends with the current user
@@ -459,6 +459,10 @@ class SocialBondingGUI:
         self.chat_button = tk.Button(self.main_frame, text="Chat", bg="white", command=self.open_chat)
         self.chat_button.place(x=300, y=0, width=50, height=50)
 
+        # Buttons
+        self.friends_button = tk.Button(self.main_frame, text="My Friends", bg="light blue", command=self.show_friends)
+        self.friends_button.pack(fill=tk.X, pady=10)
+
         self.add_friends_button = tk.Button(self.main_frame, text="Add Friends", bg="light blue", command=self.add_friends)
         self.add_friends_button.pack(fill=tk.X, pady=10)
 
@@ -472,15 +476,15 @@ class SocialBondingGUI:
         root.mainloop()
 
     def show_friends(self):
-        user_id = config.current_user['user_id']  # Use the current logged-in user's ID
+        user_id = config.current_user.user_id  # Use the current logged-in user's ID
         cursor = self.connection.cursor(dictionary=True)
         query = """
         SELECT u.user_id, u.username 
         FROM User u
-        JOIN FriendRequest fr ON fr.user2_id = u.user_id
-        WHERE fr.user1_id = %s AND fr.status = 'accepted'
+        JOIN FriendRequest fr ON (fr.user1_id = %s AND fr.user2_id = u.user_id) OR (fr.user2_id = %s AND fr.user1_id = u.user_id)
+        WHERE fr.status = 'accepted';
         """
-        cursor.execute(query, (user_id,))
+        cursor.execute(query, (user_id, user_id))
         friends = cursor.fetchall()
         cursor.close()
 
@@ -577,120 +581,72 @@ class SocialBondingGUI:
 class ChattingGUI:
     def __init__(self, root, friend_id=None):
         self.root = root
-        self.root.title("Chatting")
-        self.root.geometry("360x640")  # Set window size
+        self.root.title("Chat")
+        self.root.geometry("360x640")
+        self.friend_id = friend_id  # The ID of the friend to chat with
 
         self.connection = create_connection()  # Establish database connection
-        self.friend_id = friend_id
 
         self.main_frame = tk.Frame(root)
-        self.main_frame.pack(expand=True, padx=20, pady=20)
+        self.main_frame.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
 
-        tk.Label(self.main_frame, text="Chat with Friends", font=("Arial", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
+        # Chat history display
+        self.chat_display = scrolledtext.ScrolledText(self.main_frame, wrap=tk.WORD, state='disabled', height=20)
+        self.chat_display.pack(expand=True, fill=tk.BOTH)
 
-        # Load friends of the current user
-        self.friends = self.showFriends()
+        # Entry box for typing messages
+        self.message_entry = tk.Entry(self.main_frame, width=50)
+        self.message_entry.pack(side=tk.LEFT, padx=(0, 10))
 
-        if self.friends:
-            self.showFriendsPage()
-        else:
-            self.noFriendsMsg()
+        # Send button
+        self.send_button = tk.Button(self.main_frame, text="Send", command=self.send_message)
+        self.send_button.pack(side=tk.RIGHT)
 
-    def areFriends(self, friend_id):
-        # Function to check if selected user is a friend of the current user
-        user_id = config.current_user['user_id']
-        cursor = self.connection.cursor()
-        query = "SELECT * FROM FriendRequest WHERE user1_id = %s AND user2_id = %s AND status = 'accepted'"
-        cursor.execute(query, (user_id, friend_id))
-        result = cursor.fetchone()
-        cursor.close()
-        return result is not None
+        if self.friend_id:
+            self.load_chat_history()
 
-    def showFriends(self):
-        user_id = config.current_user['user_id']
+    def load_chat_history(self):
         cursor = self.connection.cursor(dictionary=True)
+        user_id = config.current_user.user_id  # Use the current logged-in user's ID
         query = """
-        SELECT u.user_id, u.username 
-        FROM User u
-        JOIN FriendRequest fr ON fr.user2_id = u.user_id
-        WHERE fr.user1_id = %s AND fr.status = 'accepted'
+        SELECT sender_id, message_text, sent_at
+        FROM chatMessage
+        WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s)
+        ORDER BY sent_at
         """
-        cursor.execute(query, (user_id,))
-        friends = cursor.fetchall()
-        cursor.close()
-        return friends
-
-    def noFriendsMsg(self):
-        # Function to display a message if the user has no friends yet
-        messagebox.showinfo("No Friends", "You haven't added any friends yet.")
-
-    def load_chat(self):
-        # Implement the method to load chat history
-        pass
-
-    def loadChat(self, friend_id):
-        # Function to load chat history between current user and selected friend
-        user_id = config.current_user['user_id']
-        cursor = self.connection.cursor(dictionary=True)
-        query = "SELECT * FROM ChatMessage WHERE (sender_id = %s AND receiver_id = %s) OR (sender_id = %s AND receiver_id = %s) ORDER BY timestamp"
-        cursor.execute(query, (user_id, friend_id, friend_id, user_id))
+        cursor.execute(query, (user_id, self.friend_id, self.friend_id, user_id))
         messages = cursor.fetchall()
         cursor.close()
-        return messages
 
-    def returnMessages(self, friend_id):
-        # Function to return messages exchanged with the selected friend
-        messages = self.loadChat(friend_id)
-        return messages
+        self.chat_display.config(state='normal')
+        self.chat_display.delete(1.0, tk.END)
+        for message in messages:
+            sender = "Me" if message['sender_id'] == user_id else "Friend"
+            self.chat_display.insert(tk.END, f"{sender}: {message['message_text']}\n")
+        self.chat_display.config(state='disabled')
 
-    def createChat(self, friend_id):
-        # Function to create a chat window with the selected friend
-        if not self.areFriends(friend_id):
-            messagebox.showerror("Error", "You are not friends with this user.")
-            return
+    def send_message(self):
+        message_text = self.message_entry.get().strip()
+        if message_text:
+            self.message_entry.delete(0, tk.END)
+            user_id = config.current_user.user_id  # Use the current logged-in user's ID
+            cursor = self.connection.cursor()
+            query = "INSERT INTO chatMessage (sender_id, receiver_id, message_text, sent_at) VALUES (%s, %s, %s, NOW())"
+            cursor.execute(query, (user_id, self.friend_id, message_text))
+            self.connection.commit()
+            cursor.close()
 
-        chat_window = tk.Toplevel(self.root)
-        chat_window.title(f"Chat with {friend_id}")
+            self.load_chat_history()  # Reload chat history to show the new message
+        user_id = config.current_user.user_id
 
-        chat_frame = tk.Frame(chat_window)
-        chat_frame.pack(expand=True, fill=tk.BOTH)
-
-        self.chat_text = tk.Text(chat_frame, state=tk.DISABLED)
-        self.chat_text.pack(expand=True, fill=tk.BOTH)
-
-        entry_frame = tk.Frame(chat_window)
-        entry_frame.pack(fill=tk.X)
-
-        self.message_entry = tk.Entry(entry_frame)
-        self.message_entry.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5, pady=5)
-
-        send_button = tk.Button(entry_frame, text="Send", command=lambda: self.sendMessages(friend_id))
-        send_button.pack(side=tk.RIGHT, padx=5, pady=5)
-
-        self.loadChat(friend_id)
-
-    def sendMessages(self, friend_id):
-        # Function to send a message to the selected friend
-        message = self.message_entry.get()
-        if self.emptyMsg(message):
-            messagebox.showerror("Error", "The message can't be empty.")
-            return
-
-        user_id = config.current_user['user_id']
-        cursor = self.connection.cursor()
-        query = "INSERT INTO ChatMessage (sender_id, receiver_id, message_text) VALUES (%s, %s, %s)"
-        cursor.execute(query, (user_id, friend_id, message))
-        self.connection.commit()
-        cursor.close()
-
-        self.message_entry.delete(0, tk.END)
-        self.updateChat(friend_id, message)
+        # self.message_entry.delete(0, tk.END)
+        self.updateChat(self.friend_id, message_text)
 
     def updateChat(self, friend_id, message):
         # Function to update chat history after sending a message
-        self.chat_text.config(state=tk.NORMAL)
-        self.chat_text.insert(tk.END, f"You: {message}\n")
-        self.chat_text.config(state=tk.DISABLED)
+        self.message_entry.config(state=tk.NORMAL)
+        self.message_entry.insert(tk.END, f"You: {message}\n")
+        self.message_entry.config(state=tk.DISABLED)
 
     def emptyMsg(self, message):
         # Function to check if the message is empty

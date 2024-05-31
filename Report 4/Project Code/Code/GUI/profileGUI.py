@@ -7,7 +7,7 @@ from allClasses import Beneficiary, Membership
 from editProfileGUI import changeMyInfo
 from db_connector import create_connection
 from makefriendsGUI import viewFriendRequests, friendRequests
-from models import FriendsApp
+from models import FriendRequestApp, FriendsApp
 
 from allClasses import Beneficiary, Membership
 from editProfileGUI import changeMyInfo
@@ -31,6 +31,9 @@ def viewFriends():
 
 def friendRequests():
     print("view friend requests button")
+    root = tk.Tk()
+    app = FriendRequestApp(root)
+    root.mainloop()
 
 def handleMembershipCancellation(beneficiary_id):
     #for membership cancellation confirmation

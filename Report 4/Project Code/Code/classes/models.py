@@ -403,6 +403,45 @@ class FriendsApp:
             no_friends_label = tk.Label(self.friends_frame, text="You haven't added any friends yet.", bg='#118599', fg='white', font=('Arial', 14, 'italic'))
             no_friends_label.pack(pady=20)
 
+################################# friend requesting #########################################
+
+class FriendRequestApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Friend Requests")
+        self.root.geometry("360x640")
+        self.connection = create_connection()  # Establish database connection
+
+        self.requests_frame = tk.Frame(self.root, bg='#118599')
+        self.requests_frame.pack(fill=tk.BOTH, expand=True)
+
+        self.title_label = tk.Label(self.requests_frame, text="Friend Requests", bg='#118599', fg='white', font=('Arial', 22, 'bold'))
+        self.title_label.pack(pady=20)
+
+        self.show_friend_requests()
+
+    def show_friend_requests(self):
+        cursor = self.connection.cursor(dictionary=True)
+        user_id = config.current_user.user_id  # Use the current logged-in user's ID
+        query = """
+        SELECT u.user_id, u.username
+        FROM User u
+        JOIN FriendRequest fr ON fr.user1_id = u.user_id
+        WHERE fr.user2_id = %s AND fr.status = 'pending';
+        """
+        cursor.execute(query, (user_id,))
+        requests = cursor.fetchall()
+        cursor.close()
+
+        if requests:
+            for i, request in enumerate(requests):
+                request_label = tk.Label(self.requests_frame, text=request['username'], font=('Arial', 14), bg='white', fg='#118599')
+                request_label.pack(fill=tk.X, pady=5, padx=20)
+        else:
+            no_requests_label = tk.Label(self.requests_frame, text="You have no friend requests.", bg='#118599', fg='white', font=('Arial', 14, 'italic'))
+            no_requests_label.pack(pady=20)
+
+
 # ############################### CHATTING GUI ##########################################
 
 class SocialBondingGUI:

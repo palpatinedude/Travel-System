@@ -98,8 +98,7 @@ CREATE TABLE Hotels (
     hotel_filters TEXT,
     hotel_stars INT,
     hotel_floors INT, 
-    hotel_specific_attribute VARCHAR(255),   
-    FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
+    hotel_specific_attribute VARCHAR(255),     FOREIGN KEY (business_id) REFERENCES Business(business_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Bars (
@@ -152,6 +151,22 @@ CREATE TABLE Service (
     FOREIGN KEY (country_id) REFERENCES Country(country_id),
     FOREIGN KEY (city_id) REFERENCES City(city_id),
     FOREIGN KEY (provider_id) REFERENCES ServiceProvider(provider_id) ON DELETE CASCADE
+);
+
+CREATE TABLE ServiceAvailability (
+    service_id INT,
+    available_date DATE,
+    PRIMARY KEY (service_id, available_date),
+    FOREIGN KEY (service_id) REFERENCES Service(provider_service_id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE AvailableHours (
+    available_hours_id INT PRIMARY KEY AUTO_INCREMENT,
+    service_id INT,
+    available_date DATE,
+    time_range VARCHAR(11), 
+    FOREIGN KEY (service_id, available_date) REFERENCES ServiceAvailability(service_id, available_date) ON DELETE CASCADE
 );
 
 CREATE TABLE Accommodation (

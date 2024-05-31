@@ -348,12 +348,9 @@ class FriendRequestGUI:
         query = """
         SELECT u.user_id, u.username 
         FROM User u
-        WHERE u.user_id NOT IN (
-            SELECT user2_id 
-            FROM FriendRequest 
-            WHERE user1_id = %s
-        ) AND u.user_id != %s
-        LIMIT 2
+        JOIN FriendRequest fr ON (fr.user1_id = %s AND fr.user2_id = u.user_id) 
+                              OR (fr.user2_id = %s AND fr.user1_id = u.user_id)
+        WHERE fr.status = 'accepted';
         """
         cursor.execute(query, (user_id, user_id))
 
@@ -367,6 +364,44 @@ class FriendRequestGUI:
                 friend_button.grid(row=5+i, column=0, columnspan=2, pady=5)
         else:
             messagebox.showinfo("Recommended Friends", "No recommended friends found.")
+
+################################# FRIENDS ###############################################
+
+class FriendsApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("My Friends")
+        self.root.geometry("360x640")
+        self.connection = create_connection()  # Establish database connection
+
+        self.friends_frame = tk.Frame(self.root, bg='#118599')
+        self.friends_frame.pack(fill=tk.BOTH, expand=True)
+
+        self.title_label = tk.Label(self.friends_frame, text="My Friends", bg='#118599', fg='white', font=('Arial', 22, 'bold'))
+        self.title_label.pack(pady=20)
+
+        self.profile_show_friends()
+
+    def profile_show_friends(self):
+        cursor = self.connection.cursor(dictionary=True)
+        user_id = config.current_user.user_id  # Use the current logged-in user's ID
+        query = """
+        SELECT u.user_id, u.username 
+        FROM User u
+        JOIN FriendRequest fr ON (fr.user1_id = %s AND fr.user2_id = u.user_id) OR (fr.user2_id = %s AND fr.user1_id = u.user_id)
+        WHERE fr.status = 'accepted';
+        """
+        cursor.execute(query, (user_id, user_id))
+        friends = cursor.fetchall()
+        cursor.close()
+
+        if friends:
+            for i, friend in enumerate(friends):
+                friend_button = tk.Button(self.friends_frame, text=friend['username'], font=('Arial', 14), bg='white', fg='#118599')
+                friend_button.pack(fill=tk.X, pady=5, padx=20)
+        else:
+            no_friends_label = tk.Label(self.friends_frame, text="You haven't added any friends yet.", bg='#118599', fg='white', font=('Arial', 14, 'italic'))
+            no_friends_label.pack(pady=20)
 
 # ############################### CHATTING GUI ##########################################
 

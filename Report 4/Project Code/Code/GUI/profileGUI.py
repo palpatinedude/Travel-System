@@ -7,6 +7,7 @@ from allClasses import Beneficiary, Membership
 from editProfileGUI import changeMyInfo
 from db_connector import create_connection
 from makefriendsGUI import viewFriendRequests, friendRequests
+from models import FriendsApp
 
 from allClasses import Beneficiary, Membership
 from editProfileGUI import changeMyInfo
@@ -24,6 +25,9 @@ def viewEditProfile(window, beneficiary_id):
 
 def viewFriends():
     print("view friends button")
+    root = tk.Tk()
+    app = FriendsApp(root)
+    root.mainloop()
 
 def friendRequests():
     print("view friend requests button")

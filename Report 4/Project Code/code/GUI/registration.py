@@ -1,11 +1,13 @@
 import sys
 sys.path.append('../functions/')
 sys.path.append('../classes/')
+sys.path.append('../database/')
+from db_connector import create_connection
 import tkinter as tk
 from tkinter import messagebox
 from selectMembershipGUI import packagesWindow
 from PIL import Image, ImageTk
-from registAuthentication import registerUser
+from registAuthentication import registerUser, validateUsername,validatePassword
 from beneficiaryGUI import beneficiaryWindow
 from partner import partnerWindow
 from allClasses import User
@@ -18,6 +20,7 @@ def register(username_entry, name_entry, lastname_entry, email_entry, password_e
     lastname = lastname_entry.get()
     email = email_entry.get()
     password = password_entry.get()
+   
     repeat_password = repeat_password_entry.get()
     role = role_var.get()
     location = location_entry.get()
@@ -25,6 +28,16 @@ def register(username_entry, name_entry, lastname_entry, email_entry, password_e
     if not all([username,name, lastname, email, password, repeat_password, role, location]):
         messagebox.showerror("Registration Error", "Please enter all fields.")
         return
+
+    if not validateUsername(username):
+        messagebox.showerror("Login Error", "Invalid username format.")
+        return   
+
+
+    if not validatePassword(password):
+        print(password)
+        messagebox.showerror("Registration Error", "Invalid password format.")
+        return     
 
     if password != repeat_password:
         messagebox.showerror("Registration Error", "Passwords do not match.")
@@ -37,6 +50,7 @@ def register(username_entry, name_entry, lastname_entry, email_entry, password_e
     if User.check_email_existence(email):
         messagebox.showerror("Registration Error", "Email already exists. Please use a different one.")
         return
+
 
 # IN THE LOCATION ENTRY HERE WE CAN ADD A FUNCTION TO CHECK IF THE LOCATION EXISTS IN THE DATABASE AND IF THE FORMAT IS CORRECT
 

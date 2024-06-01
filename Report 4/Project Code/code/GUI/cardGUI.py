@@ -1,6 +1,8 @@
+import sys
+sys.path.append('../database/')
 import tkinter as tk
 from tkinter import messagebox
-from dbConnection import create_connection
+from db_connector import create_connection
 import barcode
 from barcode.writer import ImageWriter
 from PIL import Image, ImageTk

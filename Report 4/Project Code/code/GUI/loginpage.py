@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 from subprocess import Popen
 import sys
 sys.path.append('../functions/')
+sys.path.append('../classes/')
 from loginAuthentication import authenticate
 from registration import registrationWindow
 from mainPage import mainPage

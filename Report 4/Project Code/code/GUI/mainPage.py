@@ -1,5 +1,6 @@
 import sys
 sys.path.append('../functions/')
+sys.path.append('../classes/')
 import tkinter as tk
 from cardGUI import displayCard
 from pointsGUI import displayPoints

@@ -1,8 +1,29 @@
 import sys
 sys.path.append('../database/')
 sys.path.append('../classes/')
+import re
 from db_connector import create_connection
 from allClasses import User, Country, City, Beneficiary, BusinessPartner
+
+def validateUsername(username):
+    pattern = r"^[a-zA-Z][a-zA-Z0-9_]{2,19}$"
+
+    if re.match(pattern, username):
+        return True
+    else:
+        return False
+
+def validatePassword(password_entry):
+    if len(password_entry) < 6:
+        return False
+
+    if not any(char.isdigit() for char in password_entry):
+        return False
+
+    if not any(char.isalpha() for char in password_entry):
+        return False
+    return True, None
+
 
 def check_location_existence(location):
     try:

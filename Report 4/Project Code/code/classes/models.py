@@ -1,7 +1,7 @@
 import tkinter as tk
 import os
 from tkinter import messagebox, ttk
-from dbConnection import create_connection
+from db_connector import create_connection
 from tkinter import scrolledtext, Toplevel, Listbox, Button, Scrollbar
 import config
 import mysql.connector

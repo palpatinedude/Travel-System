@@ -24,13 +24,15 @@ project_directory/
 
 Modular Approach:
 
-    GUI Module: Utilizes tkinter to create an intuitive and interactive interface for users. Each screen or functionality is encapsulated within separate python scripts, promoting code reusability and maintainability.
+    GUI: Utilizes tkinter to create an intuitive and interactive interface for users. Each screen or functionality is encapsulated within separate python scripts, promoting code reusability and maintainability.
 
-    Models Module: Defines the data models used in the application using python classes. This separation allows for clear representation of different entities within the app and facilitates data manipulation and storage.
+    Classes: Defines the data models used in the application using python classes. This separation allows for clear representation of different entities within the app and facilitates data manipulation and storage.
 
-    Services Module: Implements the application's business logic and handles interactions with external services or databases. This separation ensures that the gui remains focused on presentation logic, while business logic is abstracted away into separate service functions.
+    Functions: Implements the application's business logic and handles interactions with external services or databases. This separation ensures that the gui remains focused on presentation logic, while business logic is abstracted away into separate service functions.
 
-    Database Module: Manages database-related tasks, including database setup, migrations, and interactions. It contains sql scripts and configuration files necessary for database operations.
+    Database: Manages database-related tasks, including database setup, migrations, and interactions. It contains sql scripts and configuration files necessary for database operations.
+
+    Images:  Hold the images for the background images.
 
 
 How to Run:

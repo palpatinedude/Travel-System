@@ -1,17 +1,16 @@
 import sys
-sys.path.append('database')
-sys.path.append('Report 4/Project Code/Code/functions')
-sys.path.append('Report 4/Project Code/Code/classes')
-sys.path.append('Report 4/Project Code/CodeGUI')
+sys.path.append('../functions/')
+sys.path.append('../classes/')
+sys.path.append('../database/')
+from db_connector import create_connection
 import tkinter as tk
 from tkinter import messagebox
+from selectMembershipGUI import packagesWindow
 from PIL import Image, ImageTk
-from registAuthentication import registerUser
-from db_connector import create_connection
+from registAuthentication import registerUser, validateUsername,validatePassword
 from beneficiaryGUI import beneficiaryWindow
 from partner import partnerWindow
 from allClasses import User
-from selectMembershipGUI import packagesWindow
 
 def register(username_entry, name_entry, lastname_entry, email_entry, password_entry, repeat_password_entry, role_var, location_entry, registration_window):
     connection = create_connection()
@@ -21,6 +20,7 @@ def register(username_entry, name_entry, lastname_entry, email_entry, password_e
     lastname = lastname_entry.get()
     email = email_entry.get()
     password = password_entry.get()
+   
     repeat_password = repeat_password_entry.get()
     role = role_var.get()
     location = location_entry.get()
@@ -28,6 +28,16 @@ def register(username_entry, name_entry, lastname_entry, email_entry, password_e
     if not all([username,name, lastname, email, password, repeat_password, role, location]):
         messagebox.showerror("Registration Error", "Please enter all fields.")
         return
+
+    if not validateUsername(username):
+        messagebox.showerror("Login Error", "Invalid username format.")
+        return   
+
+
+    if not validatePassword(password):
+        print(password)
+        messagebox.showerror("Registration Error", "Invalid password format.")
+        return     
 
     if password != repeat_password:
         messagebox.showerror("Registration Error", "Passwords do not match.")
@@ -40,6 +50,7 @@ def register(username_entry, name_entry, lastname_entry, email_entry, password_e
     if User.check_email_existence(email):
         messagebox.showerror("Registration Error", "Email already exists. Please use a different one.")
         return
+
 
 # IN THE LOCATION ENTRY HERE WE CAN ADD A FUNCTION TO CHECK IF THE LOCATION EXISTS IN THE DATABASE AND IF THE FORMAT IS CORRECT
 
@@ -72,13 +83,13 @@ def registrationWindow():
     registration_window.geometry(f"{phone_width}x{phone_height}")
 
     # load the background image
-    # background_image = Image.open("../images/registration.jpg")
-    # background_photo = ImageTk.PhotoImage(background_image)
+    background_image = Image.open("../images/registration.jpg")
+    background_photo = ImageTk.PhotoImage(background_image)
 
     # create a canvas to display the background image
     canvas = tk.Canvas(registration_window, width=phone_width, height=phone_height)
     canvas.pack(fill="both", expand=True)
-    # canvas.create_image(0, 0, anchor="nw", image=background_photo)
+    canvas.create_image(0, 0, anchor="nw", image=background_photo)
 
    
     # create labels 
@@ -139,3 +150,5 @@ def registrationWindow():
     continue_button.place(relx=0.1, rely=0.9)
 
     registration_window.mainloop()
+
+

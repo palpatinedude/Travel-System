@@ -1,17 +1,16 @@
+
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 from subprocess import Popen
-from registration import registrationWindow
 import sys
-sys.path.append('Report 4/Project Code/Code/functions')
-sys.path.append('Report 4/Project Code/Code/classes')
-sys.path.append('Report 4/Project Code/CodeGUI')
+sys.path.append('../functions/')
+sys.path.append('../classes/')
 from loginAuthentication import authenticate
-import config  # import the config module
-from mainPage import mainPage 
-from models import DestinationGui
+from registration import registrationWindow
+from mainPage import mainPage
 from allClasses import Beneficiary
+import config
 
 def login():
     print("Login button clicked")
@@ -31,20 +30,14 @@ def login():
         if beneficiary:
             beneficiary_id = beneficiary.beneficiary_id
             messagebox.showinfo("Login", "Login Successful!")
-            print("Logged in user:", config.current_user.user_id) 
+            print("Logged in user:", config.current_user) 
             root.destroy()
-            show_destination_gui()
             mainPage(beneficiary_id)
         else:
             messagebox.showerror("Login Error", "Beneficiary ID not found.")
     else:
         messagebox.showerror("Login Error", "Invalid username or password.")
 
-
-def show_destination_gui():
-    dest_root = tk.Tk()
-    app = DestinationGui(dest_root)
-    dest_root.mainloop()
 
 def registrationPage():
     '''
@@ -65,13 +58,13 @@ phone_width = 360
 phone_height = 640
 root.geometry(f"{phone_width}x{phone_height}")
 
-# background_image = Image.open("../images/loginpage.webp")
-# background_photo = ImageTk.PhotoImage(background_image)
+background_image = Image.open("../images/loginpage.webp")
+background_photo = ImageTk.PhotoImage(background_image)
 
 # create a canvas to display the background image
 canvas = tk.Canvas(root, width=phone_width, height=phone_height)
 canvas.pack(fill="both", expand=True) 
-# canvas.create_image(0, 0, anchor="nw", image=background_photo)
+canvas.create_image(0, 0, anchor="nw", image=background_photo)
 
 # create labels
 username_label = tk.Label(root, text="Username:",  bg="pink")

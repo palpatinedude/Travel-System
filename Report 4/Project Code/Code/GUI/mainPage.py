@@ -1,21 +1,24 @@
 import sys
-sys.path.append('Report 4/Project Code/Code/functions')
-sys.path.append('Report 4/Project Code/Code/classes')
-sys.path.append('Report 4/Project Code/CodeGUI')
+sys.path.append('../functions/')
+sys.path.append('../classes/')
 import tkinter as tk
-import config
-from models import SocialBondingGUI, ReviewApp
+from cardGUI import displayCard
+from pointsGUI import displayPoints
 from profileGUI import showProfile
 from cardGUI import displayCard
 from pointsGUI import displayPoints
-from functools import partial
+from profileGUI import showProfile
 from filtersGUI import chooseFilters
+import config
+from models import SocialBondingGUI, ReviewApp
+
 
 def exploreDestinationAction(window,beneficiary_id):
     print("Explore Destination action")
     window.destroy()
     chooseFilters(beneficiary_id)
 
+    
 def socialBondingAction(window):
     print("Social Bonding action")
     if config.current_user:
@@ -29,14 +32,18 @@ def entertainmentAction(window):
 def mapAction(window):
     print("Map action")
 
-def profileAction(window, beneficiary_id):
+def profileAction(window,beneficiary_id):
     print("Profile action")
-    if config.current_user:
-        # window.destroy() 
-        showProfile(beneficiary_id)
+    window.destroy() 
+    showProfile(beneficiary_id)
 
 def destinationAction(window):
     print("Destination action")
+    if config.current_user:
+        root = tk.Tk()
+        app = ReviewApp(root)
+        root.mainloop()
+
 
 def cardAction(window):
     print("Card action")
@@ -46,7 +53,7 @@ def cardAction(window):
 def pointsAction(window,beneficiary_id):
     print("Point action") 
     window.destroy() 
-    displayPoints(beneficiary_id) 
+    displayPoints(beneficiary_id)   
 
 def mainPage(beneficiary_id):
     main_window = tk.Tk()

@@ -625,9 +625,16 @@ class ChattingGUI:
             self.chat_display.insert(tk.END, f"{sender}: {message['message_text']}\n")
         self.chat_display.config(state='disabled')
 
+    def is_message_too_long(self, message):
+        return len(message) > 100
+
     def send_message(self):
         message_text = self.message_entry.get().strip()
         if message_text:
+            if self.is_message_too_long(message_text):
+                messagebox.showerror("Message is too long. Please keep it under 100 characters.")
+                return
+
             self.message_entry.delete(0, tk.END)
             user_id = config.current_user.user_id  # Use the current logged-in user's ID
             cursor = self.connection.cursor()
@@ -637,11 +644,8 @@ class ChattingGUI:
             cursor.close()
 
             self.load_chat_history()  # Reload chat history to show the new message
-        user_id = config.current_user.user_id
 
-        # self.message_entry.delete(0, tk.END)
-        self.updateChat(self.friend_id, message_text)
-
+            self.updateChat(self.friend_id, message_text)
     def updateChat(self, friend_id, message):
         # Function to update chat history after sending a message
         self.message_entry.config(state=tk.NORMAL)
@@ -657,8 +661,3 @@ class ChattingGUI:
         for i, friend in enumerate(self.friends):
             friend_button = tk.Button(self.main_frame, text=friend['username'], command=lambda id=friend['user_id']: self.createChat(id))
             friend_button.grid(row=1+i, column=0, columnspan=2, pady=5)
-
-######################################################   classes marianthi
-######################################################################
-#####################################################    gia merge 
-

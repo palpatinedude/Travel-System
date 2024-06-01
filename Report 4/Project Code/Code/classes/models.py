@@ -3,6 +3,7 @@ import tkinter as tk
 import os
 sys.path.append('Report 4/Project Code/Code/functions')
 sys.path.append('Report 4/Project Code/Code/classes')
+sys.path.append('Report 4/Project Code/Code/database')
 sys.path.append('Report 4/Project Code/CodeGUI')
 from tkinter import messagebox, ttk
 from db_connector import create_connection, close_connection

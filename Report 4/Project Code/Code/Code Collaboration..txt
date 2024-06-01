@@ -10,7 +10,6 @@
 Social Bonding Page (Chatting & Friend Requesting)
 Enter Destination Page
 Review Publication 
-Response ( in progress) 
 
 >>> Files:(σημειώσεις) (φαίνονται και στο github)
 - models.py : αρχείο το οποίο περιέχει τις κλάσεις, μαζί με τον σχεδιασμό των γραφικών.
@@ -21,7 +20,10 @@ Response ( in progress)
 - enter_destination_gui.py
 - make_friends.py
 - review_response 
-
+- συμβολή σε mainPage
+- συμβολή σε loginPage
+- συμβολή σε accomodationGUI.py
+- συμβολή σε profileGUI.py
 >>> Comments:
 
 Η βασική ιδέα είναι πώς ο κώδικας των σελιδών πέρα του Main Page, θα ενσωματωθεί στο αρχείο mainPage.py , ώστε η πλοήγηση να μπορεί να γίνεται έυκολα από το run του loginpage.py μόνο.
